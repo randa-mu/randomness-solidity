@@ -36,7 +36,8 @@ contract RandomnessScript is Script {
 
         // SignatureSchemeAddressProvider signatureSchemeAddressProvider = new SignatureSchemeAddressProvider(admin);
         // using existing SignatureSchemeAddressProvider contract on Filecoin Calibration testnet
-        SignatureSchemeAddressProvider signatureSchemeAddressProvider = SignatureSchemeAddressProvider(0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A);
+        SignatureSchemeAddressProvider signatureSchemeAddressProvider =
+            SignatureSchemeAddressProvider(0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A);
         MockBN254SignatureScheme bn254SignatureScheme = new MockBN254SignatureScheme();
         signatureSchemeAddressProvider.updateSignatureScheme(SCHEME_ID, address(bn254SignatureScheme));
 
