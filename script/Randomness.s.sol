@@ -34,7 +34,9 @@ contract RandomnessScript is Script {
 
         address admin = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
 
-        SignatureSchemeAddressProvider signatureSchemeAddressProvider = new SignatureSchemeAddressProvider(admin);
+        // SignatureSchemeAddressProvider signatureSchemeAddressProvider = new SignatureSchemeAddressProvider(admin);
+        // using existing SignatureSchemeAddressProvider contract on Filecoin Calibration testnet
+        SignatureSchemeAddressProvider signatureSchemeAddressProvider = SignatureSchemeAddressProvider(0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A);
         MockBN254SignatureScheme bn254SignatureScheme = new MockBN254SignatureScheme();
         signatureSchemeAddressProvider.updateSignatureScheme(SCHEME_ID, address(bn254SignatureScheme));
 
@@ -47,11 +49,11 @@ contract RandomnessScript is Script {
         console.log("\nSignatureSender implementation contract deployed at: ", address(signatureSenderImplementation));
 
         RandomnessSender randomnessSenderImplementation = new RandomnessSender();
-        console.log("\nRandomnessSender implementation contract deployed at: ", address(randomnessSenderImplementation));
+        console.log("RandomnessSender implementation contract deployed at: ", address(randomnessSenderImplementation));
 
         // deploy proxy contracts and point them to their implementation contracts
         UUPSProxy signatureSenderProxy = new UUPSProxy(address(signatureSenderImplementation), "");
-        console.log("Signature Sender proxy contract deployed at: ", address(signatureSenderProxy));
+        console.log("\nSignature Sender proxy contract deployed at: ", address(signatureSenderProxy));
 
         UUPSProxy randomnessSenderProxy = new UUPSProxy(address(randomnessSenderImplementation), "");
         console.log("Randomness Sender proxy contract deployed at: ", address(randomnessSenderProxy));

@@ -1,29 +1,23 @@
-## blocklock-solidity
+## randomness-solidity
 
-This repository contains the Solidity-based smart contracts library that facilitates Randamu's on-chain timelock encryption and decryption.
+This repository contains the Solidity-based smart contracts library that facilitates Randamu's on-chain randomness requests.
 
-By leveraging this library, developers can implement time-based data unlocking mechanisms securely in their smart contracts.
+By leveraging this library, smart contract developers can leverage on verifiable randomness on-chain that is tamper-proof.
 
 This library is designed with modularity and simplicity in mind, allowing developers to extend and integrate it into their existing projects easily.
-
-### Features
-* Timelock Encryption: Encrypt data that can only be decrypted after a specified block number.
-* Decryption Callback: Implement custom logic that gets triggered when the decryption key is received, i.e., decryption of the Ciphertext.
-* Abstract Interface: Extend and implement the library to suit your specific needs.
-
 
 
 ### Smart Contract Addresses
 
 | Contract        | Address | Network          |
 |-----------------|---------|------------------|
-| BlocklockSender Proxy | 0xfF66908E1d7d23ff62791505b2eC120128918F44   | Filecoin Testnet |
-| BlocklockSender Implementation | 0x02097463c21f21214499FAa538240029d2e4A220   | Filecoin Testnet |
-| DecryptionSender Proxy | 0x9297Bb1d423ef7386C8b2e6B7BdE377977FBedd3   | Filecoin Testnet |
-| DecryptionSender Implementation | 0xea9111e44D23029945f2E46b2bFf26b04D15bd6F   | Filecoin Testnet |
-| SignatureSchemeAddressProvider | 0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A   | Filecoin Testnet |
-| BlocklockSignatureScheme | 0x62C9CF8Ff30177d8479eDaB017f38017bEbf10C2   | Filecoin Testnet |
-| MockBlocklockReceiver | 0x6f637EcB3Eaf8bEd0fc597Dc54F477a33BBCA72B   | Filecoin Testnet |
+| SignatureSender Proxy |  0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B  | Filecoin Calibration Testnet |
+| SignatureSender Implementation | 0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8   | Filecoin Calibration Testnet |
+| RandomnessSender Proxy |  0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC  | Filecoin Calibration Testnet |
+| RandomnessSender Implementation |  0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1  | Filecoin Calibration Testnet |
+| SignatureSchemeAddressProvider |  0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A  | Filecoin Calibration Testnet |
+| MockBN254SignatureScheme | 0xE5aedc08Cf2B5650Cd84CE6DcaDC3763bAa8770B   | Filecoin Calibration Testnet |
+| MockRandomnessReceiver |  0x82345Cad6c5D11509F89281875269381d0673cd2  | Filecoin Calibration Testnet |
 
 
 ### Using the Solidity Interfaces
@@ -33,23 +27,21 @@ This library is designed with modularity and simplicity in mind, allowing develo
 ##### Hardhat (npm)
 
 ```sh
-$ npm install blocklock-solidity
+$ npm install randomness-solidity
 ```
 
 ##### Foundry 
 ```sh
-$ forge install randa-mu/blocklock-solidity
+$ forge install randa-mu/randomness-solidity
 ```
 
 #### Importing
 
-To use this library in your project, import the required files into your contract and use the proxy contract address for BlocklockSender in the constructor as the blocklockContract parameter:
+To use this library in your project, import the required files into your contract and use the proxy contract address for RandomnessSender in the constructor as the randomnessSender address parameter:
 
 ```solidity
-// Import the Types library for managing ciphertexts
-import {TypesLib} from "blocklock-solidity/src/libraries/TypesLib.sol";
-// Import the AbstractBlocklockReceiver for handling timelock decryption callbacks
-import {AbstractBlocklockReceiver} from "blocklock-solidity/src/AbstractBlocklockReceiver.sol";
+// Import the abstract RandomnessReceiverBase contract for creating randomness requests and handling randomness callbacks
+import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
 ```
 
 #### Example Usage
@@ -58,44 +50,47 @@ import {AbstractBlocklockReceiver} from "blocklock-solidity/src/AbstractBlockloc
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
-import {TypesLib} from "blocklock-solidity/src/libraries/TypesLib.sol";
-import {AbstractBlocklockReceiver} from "blocklock-solidity/src/AbstractBlocklockReceiver.sol";
+import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
 
-contract MockBlocklockReceiver is AbstractBlocklockReceiver {
+contract MockRandomnessReceiver is RandomnessReceiverBase {
+    bytes32 public randomness;
     uint256 public requestId;
-    TypesLib.Ciphertext public encryptedValue;
-    uint256 public plainTextValue;
 
-    constructor(address blocklockContract) AbstractBlocklockReceiver(blocklockContract) {}
+    constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
 
-    function createTimelockRequest(uint256 decryptionBlockNumber, TypesLib.Ciphertext calldata encryptedData)
-        external
-        returns (uint256)
-    {
-        // Create timelock request
-        requestId = blocklock.requestBlocklock(decryptionBlockNumber, encryptedData);
-        // Store the Ciphertext
-        encryptedValue = encryptedData;
-        return requestId;
+    /**
+     * @dev Requests randomness.
+     *
+     * This function calls the `requestRandomness` method to request a random value.
+     * The `requestId` is updated with the ID returned from the randomness request.
+     */
+    function rollDice() external {
+        requestId = requestRandomness();
     }
 
-    function receiveBlocklock(uint256 requestID, bytes calldata decryptionKey)
-        external
-        override
-        onlyBlocklockContract
-    {
-        require(requestID == requestId, "Invalid request id");
-        // Decrypt stored Ciphertext with the decryption key
-        plainTextValue = abi.decode(blocklock.decrypt(encryptedValue, decryptionKey), (uint256));
+    /**
+     * @dev Callback function that is called when randomness is received.
+     * @param requestID The ID of the randomness request that was made.
+     * @param _randomness The random value received.
+     *
+     * This function verifies that the received `requestID` matches the one that
+     * was previously stored. If they match, it updates the `randomness` state variable
+     * with the newly received random value.
+     *
+     * Reverts if the `requestID` does not match the stored `requestId`, ensuring that
+     * the randomness is received in response to a valid request.
+     */
+    function onRandomnessReceived(uint256 requestID, bytes32 _randomness) internal override {
+        require(requestId == requestID, "Request ID mismatch");
+        randomness = _randomness;
     }
 }
 ```
 
 ### How It Works
 
-* Encryption: Use the off-chain TypeScript library to generate the encrypted data (`TypesLib.Ciphertext`) with a threshold network public key. The following solidity types are supported by the TypeScript library - uint256, int256, address, string, bool, bytes32, bytes, uint256 array, address array, and struct.
-* Timelock Request: Call `blocklock.requestBlocklock` with the block number after which decryption is allowed and the encrypted data or Ciphertext.
-* Decryption: Once the specified block number is reached, a callback to your `receiveBlocklock` logic is triggered with the decryption key to unlock the data.
+* Randomness Request: The `requestRandomness` function allows the receiver smart contract to request randomness via the `RandomnessSender` contract.
+* Callback Handling: The inherited `onRandomnessReceived` function allows the smart contract developer implement custom logic to handle the received randomness from Randamu's threshold network.
 
 ### Licensing
 
@@ -104,7 +99,3 @@ This library is licensed under the MIT License which can be accessed [here](LICE
 ### Contributing
 
 Contributions are welcome! If you find a bug, have a feature request, or want to improve the code, feel free to open an issue or submit a pull request.
-
-### Acknowledgments
-
-Special thanks to the Filecoin Foundation for supporting the development of this library.

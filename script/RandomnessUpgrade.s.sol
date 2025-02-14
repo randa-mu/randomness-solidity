@@ -32,8 +32,8 @@ contract RandomnessUpgradeScript is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        address signatureSenderProxyAddr = 0x9297Bb1d423ef7386C8b2e6B7BdE377977FBedd3;
-        address randomnessSenderProxyAddr = 0xfF66908E1d7d23ff62791505b2eC120128918F44;
+        address signatureSenderProxyAddr = 0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B;
+        address randomnessSenderProxyAddr = 0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC;
 
         // deploy implementation contracts for signature and randomness senders
         SignatureSender signatureSenderImplementation = new SignatureSender();
