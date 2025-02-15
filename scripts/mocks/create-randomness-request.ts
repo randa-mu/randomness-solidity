@@ -92,7 +92,7 @@ async function replacePendingTransaction() {
 
 async function getTransactionCount(walletAddr: AddressLike) {
     const txCount = await provider.getTransactionCount(walletAddr);
-    console.log(`Transaction cound for ${walletAddr} is ${txCount}`);
+    console.log(`Transaction count for ${walletAddr} is ${txCount}`);
     return txCount;
 }
 
@@ -109,7 +109,8 @@ async function main() {
         // get signer wallet trasaction count
         await getTransactionCount(walletAddr);
 
-        // await createRandomnessRequest();
+        // create a new randomness request
+        await createRandomnessRequest();
     } catch (error) {
         console.error("Error fetching latest block number:", error);
     }
