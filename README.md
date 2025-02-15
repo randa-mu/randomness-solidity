@@ -17,7 +17,7 @@ This library is designed with modularity and simplicity in mind, allowing develo
 | RandomnessSender Implementation |  0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1  | Filecoin Calibration Testnet |
 | SignatureSchemeAddressProvider |  0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A  | Filecoin Calibration Testnet |
 | MockBN254SignatureScheme | 0xE5aedc08Cf2B5650Cd84CE6DcaDC3763bAa8770B   | Filecoin Calibration Testnet |
-| MockRandomnessReceiver |  0x82345Cad6c5D11509F89281875269381d0673cd2  | Filecoin Calibration Testnet |
+| MockRandomnessReceiver |  0x6e7B9Ccb146f6547172E5cef237BBc222EC4D676  | Filecoin Calibration Testnet |
 
 
 ### Using the Solidity Interfaces

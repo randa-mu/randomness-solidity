@@ -5,7 +5,7 @@ import {IRandomnessReceiver} from "./interfaces/IRandomnessReceiver.sol";
 import {IRandomnessSender} from "./interfaces/IRandomnessSender.sol";
 
 abstract contract RandomnessReceiverBase is IRandomnessReceiver {
-    IRandomnessSender internal immutable randomnessSender;
+    IRandomnessSender public immutable randomnessSender;
 
     modifier onlyRandomnessSender() {
         require(msg.sender == address(randomnessSender), "Only randomnessSender can call");

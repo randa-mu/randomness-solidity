@@ -153,6 +153,8 @@ contract RandomnessSenderTest is Test {
     function test_requestRandomnessWithCallback() public {
         MockRandomnessReceiver consumer = new MockRandomnessReceiver(address(randomnessSender));
 
+        assert(address(consumer.randomnessSender()) != address(0));
+
         uint256 requestId = 1;
         bytes memory message = hex"f1340c24d522ebe58dea2f543c1935c1978858405e39cf96c0e37cc82831b483";
         bytes memory messageHash =
