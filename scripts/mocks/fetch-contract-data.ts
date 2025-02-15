@@ -65,10 +65,10 @@ async function main() {
         console.log("randomnessSender addr from mockRandomnessReceiver", await mockRandomnessReceiver.randomnessSender());
         console.log("Current randomness value from mockRandomnessReceiver", await mockRandomnessReceiver.randomness());
         console.log("Current requestId value from mockRandomnessReceiver", await mockRandomnessReceiver.requestId());
-        console.log("is request id in flight?", await signatureSender.isInFlight(await mockRandomnessReceiver.requestId()));
+        console.log("is the current request id in flight?", await signatureSender.isInFlight(await mockRandomnessReceiver.requestId()));
 
-        // console.log(await randomnessSender.getRequest(65))
-        // console.log("\n", await signatureSender.getRequest(65))
+        console.log(await randomnessSender.getRequest(1))
+        console.log("\n", await signatureSender.getRequest(1))
 
         const erroredRequestIds = await signatureSender.getAllErroredRequestIds()
         console.log(erroredRequestIds)
