@@ -2,7 +2,7 @@
 
 This repository contains the Solidity-based smart contracts library that facilitates Randamu's on-chain randomness requests.
 
-By leveraging this library, smart contract developers can leverage on verifiable randomness on-chain that is tamper-proof.
+By leveraging this library, smart contract developers can leverage on verifiable randomness on-chain that is tamper-proof and bias resistant.
 
 This library is designed with modularity and simplicity in mind, allowing developers to extend and integrate it into their existing projects easily.
 
