@@ -92,6 +92,12 @@ contract RandomnessSenderTest is Test {
         assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
     }
 
+    function test_UpdateSignatureScheme() public {
+        vm.prank(owner);
+        vm.expectRevert("Invalid contract address for schemeAddress");
+        addrProvider.updateSignatureScheme(bn254SignatureSchemeID, 0x73D1EcCa90a16F27691c63eCad7D5119f0bC743A);
+    }
+
     function test_requestRandomnessWithPublicKeyAsSerialisedG2Point() public {
         // public key as G2 Point extracted from bls-bn254-js using mcl.serialiseG2Point(pubKey)
         // [

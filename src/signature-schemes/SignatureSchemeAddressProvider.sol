@@ -28,7 +28,7 @@ contract SignatureSchemeAddressProvider is ISignatureSchemeAddressProvider, Acce
      */
     function updateSignatureScheme(string calldata schemeID, address schemeAddress) external onlyOwner {
         require(
-            !(schemeAddress == address(0) && schemeAddress.code.length == 0),
+            (schemeAddress != address(0) && schemeAddress.code.length != 0),
             "Invalid contract address for schemeAddress"
         );
         schemes[schemeID] = schemeAddress;
