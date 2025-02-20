@@ -71,13 +71,13 @@ async function main() {
         console.log("\n", await signatureSender.getRequest(2))
 
         const erroredRequestIds = await signatureSender.getAllErroredRequestIds()
-        console.log(erroredRequestIds)
+        console.log(`Errored request ids ${erroredRequestIds}`)
 
         const unfilfilledRequestIds = await signatureSender.getAllUnfulfilledRequestIds()
-        console.log(unfilfilledRequestIds)
+        console.log(`Unfulfilled request ids ${unfilfilledRequestIds}`)
 
         const fulfilledRequestIds = await signatureSender.getAllFulfilledRequestIds()
-        console.log(fulfilledRequestIds)
+        console.log(`Unfulfilled request ids ${fulfilledRequestIds}`)
     } catch (error) {
         console.error("Error fetching latest block number:", error);
     }
