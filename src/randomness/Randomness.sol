@@ -10,6 +10,7 @@ import {TypesLib} from "../libraries/TypesLib.sol";
 import {SignatureSender} from "../signature-requests/SignatureSender.sol";
 
 library Randomness {
+    // Message signing DST
     bytes public constant DST = bytes("BLS_SIG_BN254G1_XMD:KECCAK-256_SVDW_RO_NUL_");
 
     function request(IRandomnessSender randomnessContract) public returns (uint256) {
