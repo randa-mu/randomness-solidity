@@ -179,7 +179,7 @@ contract SignatureSender is
     }
 
     function retryCallback(uint256 requestID) external {
-        require(hasErrored(requestID), "No request with specified requestID");
+        require(hasErrored(requestID), "No request with specified requestID has errored");
         TypesLib.SignatureRequest memory request = requests[requestID];
 
         (bool success,) = request.callback.call(
