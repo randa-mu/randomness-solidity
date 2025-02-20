@@ -67,8 +67,8 @@ async function main() {
         console.log("Current requestId value from mockRandomnessReceiver", await mockRandomnessReceiver.requestId());
         console.log("is the current request id in flight?", await signatureSender.isInFlight(await mockRandomnessReceiver.requestId()));
 
-        console.log(await randomnessSender.getRequest(1))
-        console.log("\n", await signatureSender.getRequest(1))
+        console.log(await randomnessSender.getRequest(2))
+        console.log("\n", await signatureSender.getRequest(2))
 
         const erroredRequestIds = await signatureSender.getAllErroredRequestIds()
         console.log(erroredRequestIds)

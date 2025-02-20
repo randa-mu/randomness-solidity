@@ -71,17 +71,3 @@ contract RandomnessScript is Script {
         console.log("\nMockRandomnessReceiver deployed at: ", address(mockRandomnessReceiver));
     }
 }
-
-/**
- * # Deployment steps
- *
- * ## STEP 1. Load the variables in the .env file
- * source .env
- *
- * ## STEP 2. Deploy and verify the contract
- * forge script script/Randomness.s.sol:RandomnessScript --rpc-url $CALIBRATIONNET_RPC_URL --broadcast -g 100000 -vvvv
- *
- * -g is the gas limit passed in order to prevent a common error with deploying contracts to the FEVM as per the docs in the filecoin fevm foundry kit here - https://github.com/filecoin-project/fevm-foundry-kit/tree/main
- *
- * For ethereum, add --verify with etherscan key in .env and foundry.toml files
- */

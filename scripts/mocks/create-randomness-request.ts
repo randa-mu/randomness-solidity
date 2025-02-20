@@ -82,9 +82,9 @@ async function replacePendingTransaction() {
         gasLimit: 10000000000,
         gasPrice: 2000000000
     }
-    // let estimate = await provider.estimateGas(tx)
-    // tx.gasLimit = estimate;
-    // tx.gasPrice = ethers.parseUnits("0.14085197", "gwei");
+    let estimate = await provider.estimateGas(txData)
+    txData.gasLimit = Number(estimate);
+    txData.gasPrice = Number(ethers.parseUnits("0.14085197", "gwei"));
     let tx = await signer.sendTransaction(txData)
     let receipt = await tx.wait(1)
     console.log(receipt)
