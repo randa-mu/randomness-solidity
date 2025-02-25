@@ -200,7 +200,7 @@ contract RandomnessSenderTest is Test {
         assertEq(expected, actual, "array was not empty");
     }
 
-    function test_selectArrayIndices_One_returnsAll() public pure {
+    function test_selectArrayIndices_One_returnsAll() public view {
         uint256[] memory expected = new uint256[](1);
         expected[0] = uint256(0);
         uint256[] memory actual = Randomness.selectArrayIndices(1, 1, hex"deadbeef");

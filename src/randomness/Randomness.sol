@@ -34,7 +34,7 @@ library Randomness {
         return pairingSuccess && callSuccess;
     }
 
-    function selectArrayIndices(uint256 lengthOfArray, uint256 countToDraw, bytes calldata signature)
+    function selectArrayIndices(uint256 lengthOfArray, uint256 countToDraw, bytes32 randomBytes)
         public
         pure
         returns (uint256[] memory)
@@ -51,7 +51,6 @@ library Randomness {
             return winners;
         }
 
-        bytes32 randomBytes = keccak256(signature);
         uint256 randomness;
         assembly {
             randomness := randomBytes
