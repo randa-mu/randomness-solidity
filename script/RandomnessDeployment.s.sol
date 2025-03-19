@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.24;
+pragma solidity ^0.8;
 
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
@@ -14,7 +14,7 @@ import {MockBN254SignatureScheme} from "../src/mocks/MockBN254SignatureScheme.so
 import {RandomnessSender} from "../src/randomness/RandomnessSender.sol";
 import {MockRandomnessReceiver} from "../src/mocks/MockRandomnessReceiver.sol";
 
-contract RandomnessScript is Script {
+contract RandomnessDeploymentScript is Script {
     string SCHEME_ID = "BN254";
 
     BLS.PointG2 pk = BLS.PointG2({
