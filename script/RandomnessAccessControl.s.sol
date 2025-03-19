@@ -11,7 +11,6 @@ import {SignatureSender} from "../src/signature-requests/SignatureSender.sol";
 import {RandomnessSender} from "../src/randomness/RandomnessSender.sol";
 
 contract RandomnessAccessControlScript is Script {
-
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
