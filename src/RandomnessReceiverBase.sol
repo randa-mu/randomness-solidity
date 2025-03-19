@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.24;
+pragma solidity ^0.8;
 
 import {IRandomnessReceiver} from "./interfaces/IRandomnessReceiver.sol";
 import {IRandomnessSender} from "./interfaces/IRandomnessSender.sol";
