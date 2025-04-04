@@ -1,63 +1,91 @@
-## randomness-solidity
+# Randomness-Solidity
+[![Solidity ^0.8.x](https://img.shields.io/badge/Solidity-%5E0.8.x-blue)](https://soliditylang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Foundry Tests](https://img.shields.io/badge/Tested%20with-Foundry-red)](https://book.getfoundry.sh/)
 
-This repository contains the Solidity-based smart contracts library that facilitates Randamu's on-chain randomness requests.
-
-By leveraging this library, smart contract developers can leverage on verifiable randomness on-chain that is tamper-proof and bias resistant.
-
-This library is designed with modularity and simplicity in mind, allowing developers to extend and integrate it into their existing projects easily.
-
-
-### Smart Contract Addresses
-
-| Contract        | Address | Network          |
-|-----------------|---------|------------------|
-| SignatureSender Proxy |  0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B  | Filecoin Calibration Testnet |
-| SignatureSender Implementation | 0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8   | Filecoin Calibration Testnet |
-| RandomnessSender Proxy |  0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC  | Filecoin Calibration Testnet |
-| RandomnessSender Implementation |  0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1  | Filecoin Calibration Testnet |
-| SignatureSchemeAddressProvider |  0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A  | Filecoin Calibration Testnet |
-| MockBN254SignatureScheme | 0xE5aedc08Cf2B5650Cd84CE6DcaDC3763bAa8770B   | Filecoin Calibration Testnet |
-| MockRandomnessReceiver |  0x6e7B9Ccb146f6547172E5cef237BBc222EC4D676  | Filecoin Calibration Testnet |
+A Solidity library for generating on-chain randomness from the [Dcipher threshold network](https://cdn.prod.website-files.com/67a0c7a231a36eebe3898ec5/67e1555201daa0e41c3f34f5_dcipher%20-%20Lightpaper%20(Reduced)%20(1).pdf). Designed for developers who need flexible, verifiable, and secure on-chain randomness solutions.
 
 
-### Using the Solidity Interfaces
+## Overview
+In decentralized applications, unpredictable random values are essential for ensuring fairness and preventing manipulation. Secure randomness ensures that outcomes are both **unbiased** and **unpredictable**, making it impossible for any single participant to influence the result. This is particularly critical in use cases such as NFT trait generation, decentralized governance, lotteries, and other scenarios where fairness is a core requirement.
 
-#### Installation
+This repository provides a Solidity-based library for requesting on-chain randomness powered by the **Dcipher threshold network**. Random values are generated through supported threshold signature schemes, which guarantees that the output is publicly verifiable, tamper-resistant, and unpredictable until revealed. This cryptographic foundation ensures that smart contracts relying on randomness can operate in a secure and trust-minimized manner.
 
-##### Hardhat (npm)
+The library is designed with modularity and simplicity in mind, allowing developers to easily integrate it into their existing smart contract projects. Its extensible architecture makes it suitable for a wide range of applications that require robust on-chain randomness.
 
-```sh
-$ npm install randomness-solidity
+### Features
+Powered by the Dcipher threshold network and various signature schemes, this randomness libaries offers:
+
+- **Verifiable & Trustless**: Not just decentralized, unpredictrable, but also publickly verifiable trustless randomness.
+- **Unpredictable**: Using highly unpredictable and diverse inputs for a hash function like `keccak256()`.
+- **Modular Design**: Choose from multiple randomness  & signature schemes.
+
+
+## Smart Contracts    
+
+### Randomness
+Provides functionality to generate and verify randomness based on conditional threshold signatures from the Dcipher network.   
+- ✨ `RandomnessReceiverBase.sol` - An abstract contract that developers **must implement** to request and receive randomness within their own smart contracts.
+- `RandomnessSender.sol` - Handles the processing and management of randomness requests using the conditional signing mechanism provided by the Dcipher threshold network. 
+
+### Signature  
+Because randomness is derived from conditional threshold signatures produced by the Dcipher network, this library also includes contracts for requesting and processing signature requests using a defined schema. 
+- `SignatureSchemeAddressProvider.sol` - Maintains the list of supported signature schemes (e.g., BLS).
+- `SignatureReceiverBase.sol` - An abstract contract for requesting and receiving threshold signatures from the Dcipher network. 
+- `SignatureRequest.sol` - Core contract for managing conditional threshold signing of messages using the Dcipher network.
+
+### Support Network
+*Filecoin Calibration Testnet*
+| Contract        | Address |
+|-----------------|---------|
+| **✨ RandomnessSender (Proxy)** |  [0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC](https://calibration.filfox.info/en/address/0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC)  |
+| RandomnessSender (Impl) |  [0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1](https://calibration.filfox.info/en/address/0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1)  |
+| SignatureSender (Proxy) |  [0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B](https://calibration.filfox.info/en/address/0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B)  |
+| SignatureSender (Impl) | [0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8](https://calibration.filfox.info/en/address/0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8)   |
+| SignatureSchemeAddressProvider |  [0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A](https://calibration.filfox.info/en/address/0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A)  |
+
+## Quick Start  
+### Installation
+To get started, install the randomness-solidity library in your smart contract project using your preferred development tool.
+
+**Hardhat (npm)**
+```bash
+npm install randomness-solidity
+```  
+**Foundry**
+```bash
+forge install randa-mu/randomness-solidity
 ```
 
-##### Foundry 
-```sh
-$ forge install randa-mu/randomness-solidity
-```
+### How to use
 
-#### Importing
+1. **Import the library**
 
-To use this library in your project, import the required files into your contract and use the proxy contract address for RandomnessSender in the constructor as the randomnessSender address parameter:
+    Start by importing the `RandomnessReceiverBase.sol` abstract contract into your smart contract. This contract provides the interface for making randomness requests and handling callbacks
 
-```solidity
-// Import the abstract RandomnessReceiverBase contract for creating randomness requests and handling randomness callbacks
-import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
-```
+    ```solidity
+    // Import the abstract RandomnessReceiverBase contract for creating randomness requests and handling randomness callbacks
+    import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
+    ```
 
-#### Example Usage
+2. **Extend the  `RandomnessReceiverBase` contract**
 
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8;
+   To use the library, your contract must inherit from `RandomnessReceiverBase` and specify the deployed `RandomnessSender` contract address from your desired [network](#support-network) in the constructor. 
 
-import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
+    ```solidity
+    contract diceRoller is RandomnessReceiverBase {
+        constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
+        ...
+    }
+    ```
 
-contract MockRandomnessReceiver is RandomnessReceiverBase {
-    bytes32 public randomness;
-    uint256 public requestId;
+3. **Request Randomness**
 
-    constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
+    Use the `requestRandomness()` function to send a randomness request to the Dcipher network. This request will be forwarded to the pre-deployed `RandomnessSender` contract.
 
+    The function returns a `requestId`, which should be stored to verify the response when randomness is delivered.
+
+    ```solidity
     /**
      * @dev Requests randomness.
      *
@@ -67,7 +95,13 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
     function rollDice() external {
         requestId = requestRandomness();
     }
+    ```
 
+4. **Handle the Randomness Callback**
+
+    When the Dcipher network fulfills the request, the `onRandomnessReceived` callback will be triggered with the generated random value. You must override this function to handle the response.
+    
+    ```solidity
     /**
      * @dev Callback function that is called when randomness is received.
      * @param requestID The ID of the randomness request that was made.
@@ -76,26 +110,66 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
      * This function verifies that the received `requestID` matches the one that
      * was previously stored. If they match, it updates the `randomness` state variable
      * with the newly received random value.
-     *
-     * Reverts if the `requestID` does not match the stored `requestId`, ensuring that
-     * the randomness is received in response to a valid request.
      */
     function onRandomnessReceived(uint256 requestID, bytes32 _randomness) internal override {
         require(requestId == requestID, "Request ID mismatch");
         randomness = _randomness;
     }
+    ```
+
+### Example Contract
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8;
+
+import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
+
+contract diceRoller is RandomnessReceiverBase {
+    bytes32 public diceNumber;
+    uint256 public requestId;
+
+    constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
+
+    function rollDice() external {
+        requestId = requestRandomness();
+    }
+
+    function onRandomnessReceived(uint256 requestID, bytes32 _randomness) internal override {
+        require(requestId == requestID, "Request ID mismatch");
+        diceNumber = _randomness;
+    }
 }
 ```
 
-### How It Works
+## API Documentation
 
-* Randomness Request: The `requestRandomness` function allows the receiver smart contract to request randomness via the `RandomnessSender` contract.
-* Callback Handling: The inherited `onRandomnessReceived` function allows the smart contract developer implement custom logic to handle the received randomness from Randamu's threshold network.
+### RandomnessReceiverBase.sol
+| Function  | Return | Description |
+|----------|------------|------------|
+| `requestRandomness()` | `uint256 requestID` |Requests the generation of a random value from the Dcipher network | 
+| `onRandomnessReceived(uint256 requestID, bytes32 randomness)` | n/a |	Callback function to be implemented by the inheriting contract. Called when the randomness is delivered.  |
+ 
+### RandomnessSender.sol
+| Function | Return | Description |
+|----------|-------------|------------|
+| `isInFlight(uint256 requestID)` | `bool` | Returns `true` if the specified randomness request is still pending. |
+| `getRequest(uint256 requestId)` | `TypesLib.RandomnessRequest`  | Returns the details of the randomness request associated with the given request ID.  |
+| `getAllRequests()` | `TypesLib.RandomnessRequest[]` | Retrieves all randomness requests submitted to the contract.|
 
-### Licensing
+### SignatureSender.sol
+| Function | Return | Description |
+|----------|-------------|------------|
+| `isInFlight(uint256 requestID)` | `bool` | Returns true if the specified signature request is still pending.|
+| `getRequest(uint256 requestID)` | `TypesLib.SignatureRequest` | Returns the details of the signature request associated with the given request ID.|
+| `getPublicKey()` | `uint256[2] memory, uint256[2] memory` | Returns the public key components used in the signature verification process.|
 
-This library is licensed under the MIT License which can be accessed [here](LICENSE).
+### SignatureSender.sol
+| Function | Return | Description |
+|----------|-------------|------------|
+|`function verify(address randomnessContract, address signatureContract, bytes calldata signature uint256 requestID, address requester)`  | `bool` | Verifies that the provided randomness is valid and was generated by the Dcipher network for the given request.|
 
-### Contributing
+## License
+This library is licensed under the MIT License which can be accessed here.
 
+## Contributing  
 Contributions are welcome! If you find a bug, have a feature request, or want to improve the code, feel free to open an issue or submit a pull request.
