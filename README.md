@@ -81,7 +81,7 @@ forge install randa-mu/randomness-solidity
 
 3. **Request Randomness**
 
-    Use the `requestRandomness()` function to send a randomness request to the Dcipher network. This request will be forwarded to the pre-deployed `RandomnessSender` contract.
+    Use the `requestRandomness()` function to send a randomness request to the dcipher network. This request will be forwarded to the pre-deployed `RandomnessSender` contract.
 
     The function returns a `requestId`, which should be stored to verify the response when randomness is delivered.
 
