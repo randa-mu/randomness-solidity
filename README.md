@@ -73,7 +73,7 @@ forge install randa-mu/randomness-solidity
    To use the library, your contract must inherit from `RandomnessReceiverBase` and specify the deployed `RandomnessSender` contract address from your desired [network](#support-network) in the constructor. 
 
     ```solidity
-    contract diceRoller is RandomnessReceiverBase {
+    contract DiceRoller is RandomnessReceiverBase {
         constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
         ...
     }
