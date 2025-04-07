@@ -146,7 +146,7 @@ contract diceRoller is RandomnessReceiverBase {
 ### RandomnessReceiverBase.sol
 | Function  | Return | Description |
 |----------|------------|------------|
-| `requestRandomness()` | `uint256 requestID` |Requests the generation of a random value from the Dcipher network | 
+| `requestRandomness()` | `uint256 requestID` |Requests the generation of a random value from the dcipher network | 
 | `onRandomnessReceived(uint256 requestID, bytes32 randomness)` | n/a |	Callback function to be implemented by the inheriting contract. Called when the randomness is delivered.  |
  
 ### RandomnessSender.sol
