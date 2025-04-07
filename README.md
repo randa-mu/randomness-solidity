@@ -16,7 +16,7 @@ The library is designed with modularity and simplicity in mind, allowing develop
 ### Features
 Powered by the dcipher threshold network and its threshold-based cryptographic schemes, this randomness library offers:
 
-- **Verifiable & Trustless**: Not just decentralized, unpredictrable, but also publickly verifiable trustless randomness.
+- **Verifiable & Trustless**: Not just decentralized, unpredictable, but also publicly verifiable trustless randomness.
 - **Unpredictable**: Using highly unpredictable and diverse inputs for a hash function like `keccak256()`.
 - **Modular Design**: Choose from multiple randomness  & signature schemes.
 
