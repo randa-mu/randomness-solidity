@@ -67,7 +67,7 @@ forge install randa-mu/randomness-solidity
 
     ```solidity
     // Import the abstract RandomnessReceiverBase contract for creating randomness requests and handling randomness callbacks
-    import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
+    import { RandomnessReceiverBase } from "randomness-solidity/src/RandomnessReceiverBase.sol";
     ```
 
 2. **Extend the  `RandomnessReceiverBase` contract**
@@ -124,9 +124,9 @@ forge install randa-mu/randomness-solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
+import { RandomnessReceiverBase } from "randomness-solidity/src/RandomnessReceiverBase.sol";
 
-contract diceRoller is RandomnessReceiverBase {
+contract DiceRoller is RandomnessReceiverBase {
     bytes32 public diceNumber;
     uint256 public requestId;
 
