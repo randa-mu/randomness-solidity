@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Foundry Tests](https://img.shields.io/badge/Tested%20with-Foundry-red)](https://book.getfoundry.sh/)
 
-A Solidity library for generating on-chain randomness from the [Dcipher threshold network](https://cdn.prod.website-files.com/67a0c7a231a36eebe3898ec5/67e1555201daa0e41c3f34f5_dcipher%20-%20Lightpaper%20(Reduced)%20(1).pdf). Designed for developers who need flexible, verifiable, and secure on-chain randomness solutions.
+A Solidity library for generating on-chain randomness from the [dcipher threshold network](https://dcipher.network). Designed for developers who need flexible, verifiable, and secure on-chain randomness solutions.
 
 
 ## Overview
