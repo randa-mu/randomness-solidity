@@ -29,7 +29,7 @@ Provides functionality to generate and verify randomness based on conditional th
 - `RandomnessSender.sol` - Handles the processing and management of randomness requests using the conditional signing mechanism provided by the dcipher threshold network. 
 
 ### Signature  
-Because randomness is derived from conditional threshold signatures produced by the Dcipher network, this library also includes contracts for requesting and processing signature requests using a defined schema. 
+Because randomness is derived from conditional threshold signatures produced by the dcipher network, this library also includes contracts for requesting and processing signature requests using a defined schema. 
 - `SignatureSchemeAddressProvider.sol` - Maintains the list of supported signature schemes (e.g., BLS).
 - `SignatureReceiverBase.sol` - An abstract contract for requesting and receiving threshold signatures from the Dcipher network. 
 - `SignatureRequest.sol` - Core contract for managing conditional threshold signing of messages using the Dcipher network.
