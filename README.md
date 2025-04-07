@@ -14,7 +14,7 @@ This repository provides a Solidity-based library for requesting on-chain random
 The library is designed with modularity and simplicity in mind, allowing developers to easily integrate it into their existing smart contract projects. Its extensible architecture makes it suitable for a wide range of applications that require robust on-chain randomness.
 
 ### Features
-Powered by the Dcipher threshold network and various signature schemes, this randomness libaries offers:
+Powered by the dcipher threshold network and its threshold-based cryptographic schemes, this randomness library offers:
 
 - **Verifiable & Trustless**: Not just decentralized, unpredictrable, but also publickly verifiable trustless randomness.
 - **Unpredictable**: Using highly unpredictable and diverse inputs for a hash function like `keccak256()`.
