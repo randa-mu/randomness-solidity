@@ -99,7 +99,7 @@ forge install randa-mu/randomness-solidity
 
 4. **Handle the Randomness Callback**
 
-    When the Dcipher network fulfills the request, the `onRandomnessReceived` callback will be triggered with the generated random value. You must override this function to handle the response.
+    When the dcipher network fulfills the request, the `onRandomnessReceived` callback will be triggered with the generated random value. You must override this function to handle the response.
     
     ```solidity
     /**
