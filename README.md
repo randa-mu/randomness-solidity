@@ -34,7 +34,7 @@ Because randomness is derived from conditional threshold signatures produced by 
 - `SignatureReceiverBase.sol` - An abstract contract for requesting and receiving threshold signatures from the Dcipher network. 
 - `SignatureRequest.sol` - Core contract for managing conditional threshold signing of messages using the Dcipher network.
 
-### Support Network
+### Supported Network
 *Filecoin Calibration Testnet*
 | Contract        | Address |
 |-----------------|---------|
