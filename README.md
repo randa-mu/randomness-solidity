@@ -26,7 +26,7 @@ Powered by the dcipher threshold network and its threshold-based cryptographic s
 ### Randomness
 Provides functionality to generate and verify randomness based on conditional threshold signatures from the dcipher network.   
 - ✨ `RandomnessReceiverBase.sol` - An abstract contract that developers **must implement** to request and receive randomness within their own smart contracts.
-- `RandomnessSender.sol` - Handles the processing and management of randomness requests using the conditional signing mechanism provided by the Dcipher threshold network. 
+- `RandomnessSender.sol` - Handles the processing and management of randomness requests using the conditional signing mechanism provided by the dcipher threshold network. 
 
 ### Signature  
 Because randomness is derived from conditional threshold signatures produced by the Dcipher network, this library also includes contracts for requesting and processing signature requests using a defined schema. 
