@@ -1,4 +1,4 @@
-# Randomness-Solidity
+# randomness-solidity
 [![Solidity ^0.8.x](https://img.shields.io/badge/Solidity-%5E0.8.x-blue)](https://soliditylang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Foundry Tests](https://img.shields.io/badge/Tested%20with-Foundry-red)](https://book.getfoundry.sh/)
@@ -17,7 +17,7 @@ The library is designed with modularity and simplicity in mind, allowing develop
 Powered by the dcipher threshold network and its threshold-based cryptographic schemes, this randomness library offers:
 
 - **Verifiable & Trustless**: Not just decentralized, unpredictable, but also publicly verifiable trustless randomness.
-- **Unpredictable**: Using highly unpredictable and diverse inputs for a hash function like `keccak256()`.
+- **Unpredictable**: Using highly unpredictable and diverse inputs for a hash function.
 - **Modular Design**: Choose from multiple randomness  & signature schemes.
 
 
@@ -33,6 +33,8 @@ Because randomness is derived from conditional threshold signatures produced by 
 - `SignatureSchemeAddressProvider.sol` - Maintains the list of supported signature schemes (e.g., BLS).
 - `SignatureReceiverBase.sol` - An abstract contract for requesting and receiving threshold signatures from the Dcipher network. 
 - `SignatureRequest.sol` - Core contract for managing conditional threshold signing of messages using the Dcipher network.
+
+> 💡 **Note:** You only need to extend `RandomnessReceiverBase.sol` to customize randomness requests. All other required contracts are already deployed on supported networks.
 
 ### Supported Network
 *Filecoin Calibration Testnet*
@@ -99,7 +101,7 @@ forge install randa-mu/randomness-solidity
 
 4. **Handle the Randomness Callback**
 
-    When the dcipher network fulfills the request, the `onRandomnessReceived` callback will be triggered with the generated random value. You must override this function to handle the response.
+    When the dcipher network fulfills the request, the `onRandomnessReceived` callback will be triggered with the generated random value which is **automatically verified** with the specifed threshold signature scheme . You must override this function to handle the response.
     
     ```solidity
     /**
