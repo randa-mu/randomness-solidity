@@ -57,7 +57,7 @@ includes contracts for requesting and processing signature requests using a defi
 > 💡 **Note:** You only need to extend `RandomnessReceiverBase.sol` to customize randomness requests. All other required
 > contracts are already deployed on supported networks.
 
-### Supported Network
+### Supported Networks
 
 #### Filecoin Calibnet
 
