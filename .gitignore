@@ -165,3 +165,6 @@ types
 cache_hardhat
 artifacts
 typechain-types
+
+# Deployments
+script/json/Deployment_input.json
