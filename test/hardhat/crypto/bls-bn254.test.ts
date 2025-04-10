@@ -1,4 +1,4 @@
-import { BlsBn254, serialiseG2Point } from "../../../scripts/crypto";
+import { BlsBn254, serialiseG2Point } from "../helpers/crypto";
 
 const { expect } = require("chai");
 
