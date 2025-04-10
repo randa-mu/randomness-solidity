@@ -54,13 +54,13 @@ Because randomness is derived from conditional threshold signatures produced by 
 
 | Contract                        | Address                                                                                                                       | 
 |---------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| **RandomnessSender Proxy**      | [0x31e01BCA94b787D3B4a16C378Bd5D200686dEb99](https://sepolia.basescan.org/address/0x31e01BCA94b787D3B4a16C378Bd5D200686dEb99) |
-| RandomnessSender Implementation | [0xA4baaF6eF2a7B39b766027262ABA518ED43F365f](https://sepolia.basescan.org/address/0xA4baaF6eF2a7B39b766027262ABA518ED43F365f) |
-| SignatureSender Proxy           | [0xace52a14d892393B8d38A51c2aa2E6d85a619c58](https://sepolia.basescan.org/address/0xace52a14d892393B8d38A51c2aa2E6d85a619c58) |
-| SignatureSender Implementation  | [0xdbF8A47E90009a639859E72213449531663eFDeC](https://sepolia.basescan.org/address/0xdbF8A47E90009a639859E72213449531663eFDeC) |
-| SignatureSchemeAddressProvider  | [0xB27E28956301eDB95d35181fAc7743E5378F5D50](https://sepolia.basescan.org/address/0xB27E28956301eDB95d35181fAc7743E5378F5D50) |
-| BN254SignatureScheme            | [0xa03c70AC664F66e9eee5bA2497627133DBF02D8d](https://sepolia.basescan.org/address/0xa03c70AC664F66e9eee5bA2497627133DBF02D8d) |
-| MockRandomnessReceiver          | [0x93B465392F8B4993Db724690A3b527Ec035d3a9F](https://sepolia.basescan.org/address/0x93B465392F8B4993Db724690A3b527Ec035d3a9F) |
+| **RandomnessSender Proxy**      | [0x615bf9f39bA234b0A3a5C10e0035506F66C59F46](https://sepolia.basescan.org/address/0x615bf9f39bA234b0A3a5C10e0035506F66C59F46) |
+| RandomnessSender Implementation | [0xFfa65753436EA2Ea12472B6755db280abBE3Ab21](https://sepolia.basescan.org/address/0xFfa65753436EA2Ea12472B6755db280abBE3Ab21) |
+| SignatureSender Proxy           | [0xDe3578A94f7534294390A711f788930360Df2fCf](https://sepolia.basescan.org/address/0xDe3578A94f7534294390A711f788930360Df2fCf) |
+| SignatureSender Implementation  | [0x53800d92Ec7428a3C8996C2A19a9F6dAA7AFf06D](https://sepolia.basescan.org/address/0x53800d92Ec7428a3C8996C2A19a9F6dAA7AFf06D) |
+| SignatureSchemeAddressProvider  | [0x483D0Abcbff4A090E00cFf31E739Dc327C2E7cfb](https://sepolia.basescan.org/address/0x483D0Abcbff4A090E00cFf31E739Dc327C2E7cfb) |
+| BN254SignatureScheme            | [0xF827F249C4605B73b668a9c403900c888013984C](https://sepolia.basescan.org/address/0xF827F249C4605B73b668a9c403900c888013984C) |
+| MockRandomnessReceiver          | [0xA0B3f7144077e579e5C2955e769DB7FdD054f282](https://sepolia.basescan.org/address/0xA0B3f7144077e579e5C2955e769DB7FdD054f282) |
 
 #### Polygon PoS
 
