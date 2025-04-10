@@ -15,7 +15,6 @@ import {Factory} from "src/factory/Factory.sol";
 /// @title DeploySignatureSchemeAddressProvider
 /// @dev Script for deploying SignatureSchemeAddressProvider contract.
 contract DeploySignatureSchemeAddressProvider is JsonUtils, EnvReader {
-
     function run() public virtual {
         deploySignatureSchemeAddressProvider();
     }

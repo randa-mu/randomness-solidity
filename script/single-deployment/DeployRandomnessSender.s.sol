@@ -17,7 +17,6 @@ import {Factory} from "src/factory/Factory.sol";
 /// @dev Script for deploying or upgrading the RandomnessSender contract.
 /// Reads an environment variable to determine if it's an upgrade (new implementation only) or a full deployment.
 contract DeployRandomnessSender is JsonUtils, EnvReader {
-
     /// @notice Runs the deployment script, checking the environment variable to determine whether to upgrade or deploy.
     function run() public virtual {
         bool isUpgrade = vm.envBool("IS_UPGRADE");

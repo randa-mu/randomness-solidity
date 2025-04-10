@@ -18,7 +18,6 @@ import {Factory} from "src/factory/Factory.sol";
 /// @dev Script for deploying or upgrading the SignatureSender contract.
 /// Reads an environment variable to determine if it's an upgrade (new implementation only) or a full deployment.
 contract DeploySignatureSender is JsonUtils, SignatureUtils, EnvReader {
-
     function run() public virtual {
         bool isUpgrade = vm.envBool("IS_UPGRADE");
         address signatureSchemeAddressProvider =

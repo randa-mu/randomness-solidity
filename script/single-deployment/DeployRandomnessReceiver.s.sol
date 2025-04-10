@@ -14,7 +14,6 @@ import {Factory} from "src/factory/Factory.sol";
 /// @title DeploySignatureSchemeAddressProvider
 /// @dev Script for deploying MockRandomnessReceiver contract.
 contract DeployRandomnessReceiver is JsonUtils {
-
     function run() public virtual {
         address randomnessSenderAddr =
             _readAddressFromJsonInput(Constants.DEPLOYMENT_INPUT_JSON_PATH, "randomnessSenderProxyAddress");
