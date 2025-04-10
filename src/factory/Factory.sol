@@ -2,6 +2,7 @@
 pragma solidity ^0.8;
 
 /// @title Factory Contract
+/// @author Randamu
 /// @notice Allows deterministic deployment of contracts using CREATE2
 /// @dev Useful for deploying contracts to predictable addresses
 contract Factory {
