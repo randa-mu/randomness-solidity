@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+/// SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
 import {AccessControlEnumerableUpgradeable} from
@@ -14,6 +14,9 @@ import {ISignatureSender} from "../interfaces/ISignatureSender.sol";
 
 import {SignatureReceiverBase} from "../signature-requests/SignatureReceiverBase.sol";
 
+/// @title RandomnessSender contract
+/// @author Randamu
+/// @notice Handles randomness requests and forwards them using a signature-based system.
 contract RandomnessSender is
     IRandomnessSender,
     SignatureReceiverBase,
@@ -21,27 +24,35 @@ contract RandomnessSender is
     UUPSUpgradeable,
     AccessControlEnumerableUpgradeable
 {
-    // the DST is used to separate randomness being used as signatures for other things
+    /// @notice The domain separation tag (DST) used for randomness requests.
     string public constant DST = "randomness:0.0.1:bn254";
+    /// @notice The identifier for the signature scheme used.
     string public constant SCHEME_ID = "BN254";
+    /// @notice Role identifier for the contract administrator.
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
+    /// @notice Internal nonce used to track randomness requests.
     uint256 public nonce = 0;
 
-    // Mapping from randomness requestID to callbacks
+    /// @notice Mapping from randomness request ID to request details.
     mapping(uint256 => TypesLib.RandomnessRequest) private callbacks;
-    // array of all requests
+    /// @notice Array of all randomness requests.
     TypesLib.RandomnessRequest[] private allRequests;
 
+    /// @notice Emitted when a randomness request is initiated.
     event RandomnessRequested(
         uint256 indexed requestID, uint256 indexed nonce, address indexed requester, uint256 requestedAt
     );
+    /// @notice Emitted when a randomness callback is successfully processed.
     event RandomnessCallbackSuccess(uint256 indexed requestID, bytes32 randomness, bytes signature);
+    /// @notice Emitted when the signature sender address is updated.
     event SignatureSenderUpdated(address indexed signatureSender);
 
+    /// @notice Thrown when a randomness callback fails.
     error RandomnessCallbackFailed(uint256 requestID);
 
-    modifier onlyOwner() {
+    /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
+    modifier onlyAdmin() {
         _checkRole(ADMIN_ROLE);
         _;
     }
@@ -51,6 +62,7 @@ contract RandomnessSender is
         _disableInitializers();
     }
 
+    /// @notice Initializes the contract with a signature sender and owner.
     function initialize(address _signatureSender, address owner) public initializer {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
@@ -62,12 +74,10 @@ contract RandomnessSender is
         signatureSender = ISignatureSender(_signatureSender);
     }
 
-    // OVERRIDDEN UPGRADE FUNCTIONS
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+    /// @notice Authorizes contract upgrades.
+    function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
 
-    /**
-     * @dev See {IRandomnessSender-requestRandomness}.
-     */
+    /// @notice Requests randomness and returns a request ID.
     function requestRandomness() external returns (uint256 requestID) {
         nonce += 1;
 
@@ -83,12 +93,10 @@ contract RandomnessSender is
         emit RandomnessRequested(requestID, nonce, msg.sender, block.timestamp);
     }
 
-    /**
-     * @dev See {SignatureReceiverBase-onSignatureReceived}.
-     */
+    /// @notice Processes a received signature and invokes the callback.
     function onSignatureReceived(uint256 requestID, bytes calldata signature) internal override {
         TypesLib.RandomnessRequest memory r = callbacks[requestID];
-        require(r.nonce > 0, "request with that requestID did not exist");
+        require(r.nonce > 0, "Request with that requestID did not exist");
 
         bytes32 randomness = keccak256(signature);
 
@@ -102,45 +110,33 @@ contract RandomnessSender is
         }
     }
 
-    /**
-     * @dev See {IRandomnessSender-setSignatureSender}.
-     */
-    function setSignatureSender(address newSignatureSender) external onlyOwner {
+    /// @notice Updates the signature sender address.
+    function setSignatureSender(address newSignatureSender) external onlyAdmin {
         signatureSender = ISignatureSender(newSignatureSender);
         emit SignatureSenderUpdated(newSignatureSender);
     }
 
-    /**
-     * @dev See {ISignatureSender-isInFlight}.
-     */
+    /// @notice Checks if a request is still in flight.
     function isInFlight(uint256 requestID) external view returns (bool) {
         return signatureSender.isInFlight(requestID);
     }
 
-    /**
-     * @dev See {IRandomnessSender-messageFrom}.
-     */
+    /// @notice Generates a message from a randomness request.
     function messageFrom(TypesLib.RandomnessRequest memory r) public pure returns (bytes memory) {
         return abi.encodePacked(keccak256(abi.encode(DST, r.nonce)));
     }
 
-    /**
-     * @dev See {IRandomnessSender-getRequest}.
-     */
+    /// @notice Retrieves a randomness request by ID.
     function getRequest(uint256 requestId) external view returns (TypesLib.RandomnessRequest memory) {
         return callbacks[requestId];
     }
 
-    /**
-     * @dev See {IRandomnessSender-getAllRequests}.
-     */
+    /// @notice Retrieves all randomness requests.
     function getAllRequests() external view returns (TypesLib.RandomnessRequest[] memory) {
         return allRequests;
     }
 
-    /**
-     * @dev Returns the version number of the upgradeable contract.
-     */
+    /// @notice Returns the contract version.
     function version() external pure returns (string memory) {
         return "0.0.1";
     }
