@@ -67,7 +67,7 @@ Which is used by the [DeployBN254SignatureScheme.sol](script/single-deployment/D
 
 ## Upgrade a Single Contract
 
-To upgrade the impelementation contract for any of the `Sender` contracts, set the `IS_UPGRADE` to `true` in the `.env` file. Then in [Constants.sol](script/libraries/Constants.sol), set the `SALT` for deployment. After setting the salt, run the deployment command only for the specific contract to upgrade, e.g., if upgrading `SignatureSender` implementation, run the following command for a single contract deployment:
+To upgrade the implementation contract for any of the `Sender` contracts, set the `IS_UPGRADE` to `true` in the `.env` file. Then in [Constants.sol](script/libraries/Constants.sol), set the `SALT` for deployment. After setting the salt, run the deployment command only for the specific contract to upgrade, e.g., if upgrading `SignatureSender` implementation, run the following command for a single contract deployment:
 
 ```bash
 forge script script/single-deployment/DeploySignatureSender.s.sol:DeploySignatureSender --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --slow
