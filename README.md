@@ -18,7 +18,7 @@ Powered by the dcipher threshold network and its threshold-based cryptographic s
 
 - **Verifiable & Trustless**: Not just decentralized, unpredictable, but also publicly verifiable trustless randomness.
 - **Unpredictable**: Using highly unpredictable and diverse inputs for a hash function.
-- **Modular Design**: Choose from multiple randomness  & signature schemes.
+- **Modular Design**: Choose from multiple randomness & signature schemes.
 
 
 ## Smart Contracts    
