@@ -9,14 +9,19 @@ import {RandomnessSender} from "./RandomnessSender.sol";
 import {TypesLib} from "../libraries/TypesLib.sol";
 import {SignatureSender} from "../signature-requests/SignatureSender.sol";
 
+/// @title Randomness library contract
+/// @author Randamu
+/// @notice Helper functions for randomness verification and usage.
 library Randomness {
     // Message signing DST
     bytes public constant DST = bytes("BLS_SIG_BN254G1_XMD:KECCAK-256_SVDW_RO_NUL_");
 
+    /// @notice Request for randomness.
     function request(IRandomnessSender randomnessContract) public returns (uint256) {
         return randomnessContract.requestRandomness();
     }
 
+    /// @notice Verify randomness received from offchain threshold network.
     function verify(
         address randomnessContract,
         address signatureContract,
@@ -34,6 +39,7 @@ library Randomness {
         return pairingSuccess && callSuccess;
     }
 
+    /// @notice Select array indices randomly
     function selectArrayIndices(uint256 lengthOfArray, uint256 countToDraw, bytes32 randomBytes)
         public
         pure
