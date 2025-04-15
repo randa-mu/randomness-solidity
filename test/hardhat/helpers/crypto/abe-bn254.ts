@@ -1,12 +1,11 @@
 /**
  * Conditional Encryption / Attribute-Based Encryption for marshmallow
  */
-
-import { encrypt_towards_identity_g1, G1, G2, get_identity_g1, serializeCiphertext } from "./ibe-bn254"
+import { encrypt_towards_identity_g1, G1, G2, get_identity_g1, serializeCiphertext } from "./ibe-bn254";
 
 export type Conditions = {
-    blockHeight: bigint
-}
+  blockHeight: bigint;
+};
 
 /**
  * Encrypt a message such that it can only be decrypted once various conditions are satisfied.
@@ -16,9 +15,9 @@ export type Conditions = {
  * @returns encrypted message
  */
 export function encryptWithConditions(message: Uint8Array, conditions: Conditions, pk: G2): Uint8Array {
-    const identity = identityFromConditions(conditions)
-    const ciphertext = encrypt_towards_identity_g1(message, identity, pk)
-    return serializeCiphertext(ciphertext)
+  const identity = identityFromConditions(conditions);
+  const ciphertext = encrypt_towards_identity_g1(message, identity, pk);
+  return serializeCiphertext(ciphertext);
 }
 
 /**
@@ -27,9 +26,9 @@ export function encryptWithConditions(message: Uint8Array, conditions: Condition
  * @returns identity representing the conditions
  */
 export function identityG1FromConditions(conditions: Conditions): G1 {
-    const encodedConditions = encodeConditions(conditions)
-    const identity = identityFromEncodedConditions(encodedConditions)
-    return get_identity_g1(identity)
+  const encodedConditions = encodeConditions(conditions);
+  const identity = identityFromEncodedConditions(encodedConditions);
+  return get_identity_g1(identity);
 }
 
 /**
@@ -38,8 +37,8 @@ export function identityG1FromConditions(conditions: Conditions): G1 {
  * @returns identity representing the conditions
  */
 export function identityG1FromEncodedConditions(encodedConditions: Uint8Array): G1 {
-    const identity = identityFromEncodedConditions(encodedConditions)
-    return get_identity_g1(identity)
+  const identity = identityFromEncodedConditions(encodedConditions);
+  return get_identity_g1(identity);
 }
 
 /**
@@ -48,8 +47,8 @@ export function identityG1FromEncodedConditions(encodedConditions: Uint8Array): 
  * @returns identity representing the conditions
  */
 export function identityFromConditions(conditions: Conditions): Uint8Array {
-    const encodedConditions = encodeConditions(conditions)
-    return identityFromEncodedConditions(encodedConditions)
+  const encodedConditions = encodeConditions(conditions);
+  return identityFromEncodedConditions(encodedConditions);
 }
 
 /**
@@ -58,7 +57,7 @@ export function identityFromConditions(conditions: Conditions): Uint8Array {
  * @returns identity representing the conditions
  */
 function identityFromEncodedConditions(encodedConditions: Uint8Array): Uint8Array {
-    return encodedConditions
+  return encodedConditions;
 }
 
 /**
@@ -67,15 +66,15 @@ function identityFromEncodedConditions(encodedConditions: Uint8Array): Uint8Arra
  * @returns encoded conditions as a byte array
  */
 export function encodeConditions(conditions: Conditions): Uint8Array {
-    const encodedBlockHeight = blockHeightToBEBytes(conditions.blockHeight)
-    return encodedBlockHeight
+  const encodedBlockHeight = blockHeightToBEBytes(conditions.blockHeight);
+  return encodedBlockHeight;
 }
 
 function blockHeightToBEBytes(blockHeight: bigint) {
-    // Assume a block height < 2**64
-    const buffer = new ArrayBuffer(8)
-    const dataView = new DataView(buffer)
-    dataView.setBigUint64(0, blockHeight)
+  // Assume a block height < 2**64
+  const buffer = new ArrayBuffer(8);
+  const dataView = new DataView(buffer);
+  dataView.setBigUint64(0, blockHeight);
 
-    return new Uint8Array(buffer)
+  return new Uint8Array(buffer);
 }
