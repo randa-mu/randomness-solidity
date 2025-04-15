@@ -71,48 +71,6 @@ library BLS {
     error InvalidDSTLength(bytes dst);
     error ModExpFailed(uint256 base, uint256 exponent, uint256 modulus);
 
-    /// @notice Aggregate valid partial signatures using Lagrange interpolation.
-    /// @param partialSignatures The array of valid partial signatures on G1.
-    /// @param ids The array of unique identifiers corresponding to each signature / signer.
-    /// @return aggregatedSignature The aggregated signature obtained through Lagrange interpolation.
-    function aggregateSignatures(PointG1[] memory partialSignatures, uint256[] memory ids)
-        internal
-        view
-        returns (PointG1 memory aggregatedSignature)
-    {
-        require(partialSignatures.length == ids.length, "Mismatch in number of signatures and IDs");
-        require(partialSignatures.length > 0, "No signatures provided");
-
-        PointG1 memory result = PointG1(0, 0);
-
-        for (uint256 i = 0; i < partialSignatures.length; i++) {
-            // Calculate the Lagrange coefficient for the i-th partial signature
-            uint256 li = 1;
-            uint256 numerator = 1;
-            uint256 denominator = 1;
-
-            for (uint256 j = 0; j < partialSignatures.length; j++) {
-                if (i != j) {
-                    // Lagrange basis polynomial computation: li = li * (x_j / (x_j - x_i)) mod N
-                    numerator = numerator * ids[j];
-                    denominator = denominator * (ids[j] + N - ids[i]) % N;
-                }
-            }
-
-            // Perform modular inverse for the denominator
-            uint256 denominatorInv = inverse(denominator);
-
-            // Multiply by the term in the Lagrange basis polynomial
-            li = (li * numerator % N) * denominatorInv % N;
-
-            // Add the weighted partial signature to the result
-            PointG1 memory weightedSignature = scalarMulG1Point(partialSignatures[i], li);
-            result = addG1Points(result, weightedSignature);
-        }
-
-        aggregatedSignature = result;
-    }
-
     /// @notice Computes the negation of a point on the G1 curve.
     /// @dev Returns the negation of the input point p on the elliptic curve.
     ///      If the point is at infinity (x = 0, y = 0), it returns the point
