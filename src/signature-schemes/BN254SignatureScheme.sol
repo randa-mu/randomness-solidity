@@ -44,12 +44,20 @@ contract BN254SignatureScheme is ISignatureScheme {
         return (point.x, point.y);
     }
 
-    /// @notice Hashes a message to a point on G1 and
-    /// returns the point encoded as bytes
+    /// @notice Hashes a message and encodes the result as bytes
     /// @param message The input message to hash
     /// @return The encoded point in bytes format
     function hashToBytes(bytes calldata message) external view returns (bytes memory) {
         (uint256 x, uint256 y) = hashToPoint(message);
         return BLS.g1Marshal(BLS.PointG1({x: x, y: y}));
+    }
+
+    /// @notice Returns the current blockchain chain ID.
+    /// @dev Uses inline assembly to retrieve the `chainid` opcode.
+    /// @return chainId The current chain ID of the network.
+    function getChainId() public view returns (uint256 chainId) {
+        assembly {
+            chainId := chainid()
+        }
     }
 }
