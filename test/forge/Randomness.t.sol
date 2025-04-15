@@ -24,9 +24,9 @@ contract RandomnessSenderTest is Test {
     RandomnessSender public randomnessSender;
 
     bytes public validPK =
-        hex"17f941e4476dcbb7f1bcdd8009de1c0eb566584dcc71f2fdd47c19299e1b157b1e19f27cfb92e62703c6749417ddfdfcc27c97c468017d7f5b38de1c18dc00dc25c3b772e4a73242e892c96926f61e7337dc2e71fe0627f05908d4d53f5cda222767676ceb18f948326ab16d056fd553bed1d2a6aa0e83f59b90c35a7ef9d073";
+        hex"193dd83042440aa88f03559af73082aa3a82fd75ac010e44f998df71a70c1b18091e61b376a2269e8781808a334c4d003a6d28d0f1c846c77ad616ef46036efb1356aff6f95e17ffed7154053386fb08d45d7d6c243fefe735533c41f20d2f66292a799c4de5c4101e9cd6234419cafde90ce78372363329e8013a6591dc1f4c";
     bytes public validSignature =
-        hex"2eeaedb81b1db5f76c1cfa65c30d932140d373581d20df6359fb5543a8da994f08db5e1ca5a8da473cee8627e9babdb50081ceff658841762907cc02bb32b6bc";
+        hex"239f4439927ce9a65d9faa6a3dc37e76465ca03ccb9b5eac7431ea3672519cb40edeb214c433757f8168b48057c03f7ead38c7ccd5e640da35f536cda7368cdb";
 
     bytes public conditions = "";
     string public constant bn254SignatureSchemeID = "BN254";
@@ -62,7 +62,7 @@ contract RandomnessSenderTest is Test {
         randomnessSender = RandomnessSender(address(randomnessSenderProxy));
 
         // initialize the contracts
-        signatureSender.initialize(pk.x, pk.y, owner, address(addrProvider));
+        signatureSender.initialize([pk.x[1], pk.x[0]], [pk.y[1], pk.y[0]], owner, address(addrProvider));
         randomnessSender.initialize(address(signatureSender), owner);
 
         vm.stopPrank();
@@ -73,6 +73,9 @@ contract RandomnessSenderTest is Test {
         assertTrue(randomnessSender.hasRole(ADMIN_ROLE, owner));
         assert(address(signatureSender) != address(0));
         assert(address(randomnessSender) != address(0));
+        console.logBytes(bn254SignatureScheme.DST());
+        console.log(bn254SignatureScheme.getChainId());
+        console.logString(string(bn254SignatureScheme.DST()));
     }
 
     function test_requestRandomness() public {
@@ -80,6 +83,10 @@ contract RandomnessSenderTest is Test {
 
         uint256 nonce = 1;
         uint256 requestId = 1;
+
+        TypesLib.RandomnessRequest memory r = TypesLib.RandomnessRequest({nonce: nonce, callback: address(consumer)});
+        bytes memory m = randomnessSender.messageFrom(r);
+        console.logBytes(m);
 
         vm.expectEmit(true, true, false, true);
         emit RandomnessSender.RandomnessRequested(requestId, nonce, address(consumer), block.timestamp);
@@ -99,23 +106,15 @@ contract RandomnessSenderTest is Test {
     }
 
     function test_requestRandomnessWithPublicKeyAsSerialisedG2Point() public {
-        // public key as G2 Point extracted from bls-bn254-js using mcl.serialiseG2Point(pubKey)
-        // [
-        //     12442316349387811221527474815635500164351084936938085948346776284608224569107n,
-        //     19858693350313519863251011409884323881765010968244803200893755253561698475319n,
-        //     6652058991114990590879242656355868341472089621891739731103204316870185931002n,
-        //     4797408320450670032659855449042593139334917799405362591512354151532022265130n
-        // ]
-
         vm.prank(owner);
         BLS.PointG2 memory pk = BLS.PointG2({
             x: [
-                12442316349387811221527474815635500164351084936938085948346776284608224569107,
-                19858693350313519863251011409884323881765010968244803200893755253561698475319
+                8638149349330570108677652796441858165325404935563082096242826356078161984234,
+                16121525072112359361934926943209995720689965714217991232266179978519906297287
             ],
             y: [
-                6652058991114990590879242656355868341472089621891739731103204316870185931002,
-                4797408320450670032659855449042593139334917799405362591512354151532022265130
+                16807748867183577599481162153843986787005704461067392034723877177545450990242,
+                10711948243348821890958607098066069707979954878386017489889834504283417879449
             ]
         });
 
@@ -151,7 +150,7 @@ contract RandomnessSenderTest is Test {
 
         vm.prank(owner);
         validSignature =
-            hex"27b3ffac2cb20c0e84870b2faae9095a3706fe34de99de92d0e447eb392e19b42bbff765ad9190fae62e2c4801204194c604acf8baf17a6b67a62ed59c7549f7";
+            hex"07cb8bd273e8f72e8563d4c40a186a93df75bd1783d1beacf9ed9cac80f0e7f7150170e72cde05b9a33aa3a8a10a4cde04c37f41860c5a5d585de9cf89d810db";
         signatureSender.fulfilSignatureRequest(requestIdFromConsumer, validSignature);
         assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
     }
@@ -164,7 +163,7 @@ contract RandomnessSenderTest is Test {
         uint256 requestId = 1;
         bytes memory message = hex"f1340c24d522ebe58dea2f543c1935c1978858405e39cf96c0e37cc82831b483";
         bytes memory messageHash =
-            hex"1448564251ddb6420dbe7b5936558cd5f8d2fb224fb21097392c5b6dbc11dfff1a9c3cbd091dbfb492938a7a8014f8ce0c2d3cac9738f622d74df53334cfa833";
+            hex"239feb7815f404ac6f284711d3667256be9be0eb8a962de1b31d21b253212a0b229fbde78040491bfa60796624dfaa8cca66be300352841d3d42712b81f5485f";
 
         vm.expectEmit(true, true, true, true, address(signatureSender));
         emit SignatureSender.SignatureRequested(

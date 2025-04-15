@@ -13,9 +13,6 @@ import {SignatureSender} from "../signature-requests/SignatureSender.sol";
 /// @author Randamu
 /// @notice Helper functions for randomness verification and usage.
 library Randomness {
-    // Message signing DST
-    bytes public constant DST = bytes("BLS_SIG_BN254G1_XMD:KECCAK-256_SVDW_RO_NUL_");
-
     /// @notice Request for randomness.
     function request(IRandomnessSender randomnessContract) public returns (uint256) {
         return randomnessContract.requestRandomness();
@@ -29,6 +26,10 @@ library Randomness {
         uint256 requestID,
         address requester
     ) public view returns (bool) {
+        // Message signing DST
+        bytes memory DST = abi.encodePacked(
+            "dcipher-randomness-v01-BN254G1_XMD:KECCAK-256_SVDW_RO_", _toHexString(bytes32(getChainId())), "_"
+        );
         (uint256[2] memory x, uint256[2] memory y) = ISignatureSender(signatureContract).getPublicKey();
         BLS.PointG2 memory pk = BLS.PointG2({x: x, y: y});
         BLS.PointG1 memory _message = BLS.hashToPoint(
@@ -67,5 +68,28 @@ library Randomness {
         }
 
         return winners;
+    }
+
+    /// @notice Returns the current blockchain chain ID.
+    /// @dev Uses inline assembly to retrieve the `chainid` opcode.
+    /// @return chainId The current chain ID of the network.
+    function getChainId() public view returns (uint256 chainId) {
+        assembly {
+            chainId := chainid()
+        }
+    }
+
+    /// @dev Converts bytes32 to 0x-prefixed hex string.
+    /// @param data The bytes32 data to convert.
+    function _toHexString(bytes32 data) internal pure returns (string memory) {
+        bytes memory hexChars = "0123456789abcdef";
+        bytes memory str = new bytes(2 + 64); // "0x" + 64 hex chars
+        str[0] = "0";
+        str[1] = "x";
+        for (uint256 i = 0; i < 32; i++) {
+            str[2 + i * 2] = hexChars[uint8(data[i] >> 4)];
+            str[2 + i * 2 + 1] = hexChars[uint8(data[i] & 0x0f)];
+        }
+        return string(str);
     }
 }
