@@ -8,14 +8,14 @@ import {TypesLib} from "../../src/libraries/TypesLib.sol";
 import {UUPSProxy} from "../../src/proxy/UUPSProxy.sol";
 import {SignatureSchemeAddressProvider} from "../../src/signature-schemes/SignatureSchemeAddressProvider.sol";
 import {SignatureSender} from "../../src/signature-requests/SignatureSender.sol";
-import {MockBN254SignatureScheme} from "../../src/mocks/MockBN254SignatureScheme.sol";
+import {BN254SignatureScheme} from "../../src/signature-schemes/BN254SignatureScheme.sol";
 import {RandomnessSender} from "../../src/randomness/RandomnessSender.sol";
 import {Randomness} from "../../src/randomness/Randomness.sol";
 import {MockRandomnessReceiver} from "../../src/mocks/MockRandomnessReceiver.sol";
 
 contract RandomnessSenderTest is Test {
     SignatureSchemeAddressProvider public addrProvider;
-    MockBN254SignatureScheme public bn254SignatureScheme;
+    BN254SignatureScheme public bn254SignatureScheme;
 
     UUPSProxy signatureSenderProxy;
     UUPSProxy randomnessSenderProxy;
@@ -41,7 +41,7 @@ contract RandomnessSenderTest is Test {
         addrProvider = new SignatureSchemeAddressProvider(address(0));
 
         // deploy bn254 signature scheme
-        bn254SignatureScheme = new MockBN254SignatureScheme();
+        bn254SignatureScheme = new BN254SignatureScheme();
         addrProvider.updateSignatureScheme(bn254SignatureSchemeID, address(bn254SignatureScheme));
 
         BLS.PointG2 memory pk = abi.decode(validPK, (BLS.PointG2));

@@ -41,7 +41,7 @@ For Etherscan verification, ensure that the `ETHERSCAN_API_KEY` environment vari
 
 ## Deploy a Single Contract
 
-To deploy a single contract, the scripts within the `script/single-deployment` directory are used, e.g., to deploy only the `MockBN254SignatureScheme.sol` contract contract, the command below is used:
+To deploy a single contract, the scripts within the `script/single-deployment` directory are used, e.g., to deploy only the `BN254SignatureScheme.sol` contract contract, the command below is used:
 
 ```sh
 source .env
@@ -62,7 +62,7 @@ For example, running the following command writes a JSON property `{"signatureSc
 forge script script/single-deployment/DeploySignatureSchemeAddressProvider.s.sol:DeploySignatureSchemeAddressProvider --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --slow
 ```
 
-Which is used by the [DeployBN254SignatureScheme.sol](script/single-deployment/DeployBN254SignatureScheme.s.sol) deployment script when deploying [MockBN254SignatureScheme.sol](src/mocks/MockBN254SignatureScheme.sol).
+Which is used by the [DeployBN254SignatureScheme.sol](script/single-deployment/DeployBN254SignatureScheme.s.sol) deployment script when deploying [BN254SignatureScheme.sol](src/signature-schemes/BN254SignatureScheme.sol).
 
 
 ## Upgrade a Single Contract

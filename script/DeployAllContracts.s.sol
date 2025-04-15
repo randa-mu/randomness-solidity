@@ -12,7 +12,7 @@ import {
 } from "./single-deployment/DeploySignatureSchemeAddressProvider.s.sol";
 import {SignatureSender, DeploySignatureSender} from "./single-deployment/DeploySignatureSender.s.sol";
 import {
-    MockBN254SignatureScheme, DeployBN254SignatureScheme
+    BN254SignatureScheme, DeployBN254SignatureScheme
 } from "./single-deployment/DeployBN254SignatureScheme.s.sol";
 import {MockRandomnessReceiver, DeployRandomnessReceiver} from "./single-deployment/DeployRandomnessReceiver.s.sol";
 
@@ -42,7 +42,7 @@ contract DeployAllContracts is
 
     /// @notice Deploys all required contracts or upgrades them based on the `isUpgrade` flag.
     /// @dev This function initializes multiple contracts and links them together as needed.
-    /// @return bn254SignatureScheme The deployed instance of MockBN254SignatureScheme.
+    /// @return bn254SignatureScheme The deployed instance of BN254SignatureScheme.
     /// @return mockRandomnessReceiver The deployed instance of MockRandomnessReceiver.
     /// @return randomnessSenderInstance The deployed instance of RandomnessSender.
     /// @return signatureSchemeAddressProvider The deployed instance of SignatureSchemeAddressProvider.
@@ -50,7 +50,7 @@ contract DeployAllContracts is
     function deployAll()
         public
         returns (
-            MockBN254SignatureScheme bn254SignatureScheme,
+            BN254SignatureScheme bn254SignatureScheme,
             MockRandomnessReceiver mockRandomnessReceiver,
             RandomnessSender randomnessSenderInstance,
             SignatureSchemeAddressProvider signatureSchemeAddressProvider,

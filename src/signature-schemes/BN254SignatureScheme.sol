@@ -4,10 +4,10 @@ pragma solidity ^0.8;
 import {BLS} from "../libraries/BLS.sol";
 import {ISignatureScheme} from "../interfaces/ISignatureScheme.sol";
 
-/// @title MockBN254SignatureScheme contract
+/// @title BN254SignatureScheme contract
 /// @author Randamu
 /// @notice A contract that implements a BN254 signature scheme
-contract MockBN254SignatureScheme is ISignatureScheme {
+contract BN254SignatureScheme is ISignatureScheme {
     /// @notice Identifier for the BN254 signature scheme
     string public constant SCHEME_ID = "BN254";
 
