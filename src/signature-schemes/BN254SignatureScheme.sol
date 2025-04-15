@@ -44,7 +44,8 @@ contract BN254SignatureScheme is ISignatureScheme {
         return (point.x, point.y);
     }
 
-    /// @notice Hashes a message and encodes the result as bytes
+    /// @notice Hashes a message to a point on G1 and 
+    /// returns the point encoded as bytes
     /// @param message The input message to hash
     /// @return The encoded point in bytes format
     function hashToBytes(bytes calldata message) external view returns (bytes memory) {
