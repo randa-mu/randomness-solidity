@@ -11,9 +11,7 @@ import {
     DeploySignatureSchemeAddressProvider
 } from "./single-deployment/DeploySignatureSchemeAddressProvider.s.sol";
 import {SignatureSender, DeploySignatureSender} from "./single-deployment/DeploySignatureSender.s.sol";
-import {
-    BN254SignatureScheme, DeployBN254SignatureScheme
-} from "./single-deployment/DeployBN254SignatureScheme.s.sol";
+import {BN254SignatureScheme, DeployBN254SignatureScheme} from "./single-deployment/DeployBN254SignatureScheme.s.sol";
 
 /// @title DeployAllContracts
 /// @author Randamu
@@ -28,10 +26,7 @@ contract DeployAllContracts is
     function run()
         public
         override(
-            DeployRandomnessSender,
-            DeploySignatureSchemeAddressProvider,
-            DeploySignatureSender,
-            DeployBN254SignatureScheme
+            DeployRandomnessSender, DeploySignatureSchemeAddressProvider, DeploySignatureSender, DeployBN254SignatureScheme
         )
     {
         deployAll();

@@ -7,7 +7,6 @@ import {console} from "forge-std/console.sol";
 import {Constants} from "../libraries/Constants.sol";
 
 import {JsonUtils} from "../utils/JsonUtils.sol";
-import {SignatureUtils} from "../utils/SignatureUtils.sol";
 import {EnvReader} from "../utils/EnvReader.sol";
 
 import {SignatureSender} from "src/signature-requests/SignatureSender.sol";
@@ -17,7 +16,7 @@ import {Factory} from "src/factory/Factory.sol";
 /// @title DeploySignatureSender
 /// @dev Script for deploying or upgrading the SignatureSender contract.
 /// Reads an environment variable to determine if it's an upgrade (new implementation only) or a full deployment.
-contract DeploySignatureSender is JsonUtils, SignatureUtils, EnvReader {
+contract DeploySignatureSender is JsonUtils, EnvReader {
     function run() public virtual {
         bool isUpgrade = vm.envBool("IS_UPGRADE");
         address signatureSchemeAddressProvider =
@@ -65,7 +64,7 @@ contract DeploySignatureSender is JsonUtils, SignatureUtils, EnvReader {
 
             vm.broadcast();
             signatureSenderInstance.initialize(
-                BLS_PUBLIC_KEY.x, BLS_PUBLIC_KEY.y, getSignerAddress(), signatureSchemeAddressProviderAddress
+                getBLSPublicKey().x, getBLSPublicKey().y, getSignerAddress(), signatureSchemeAddressProviderAddress
             );
 
             console.log("SignatureSender proxy contract deployed at: ", contractAddress);
