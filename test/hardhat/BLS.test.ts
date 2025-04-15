@@ -1,17 +1,18 @@
 import { ethers } from 'hardhat'
 import { BLSTest, BLSTest__factory } from '../../typechain-types'
 import { SignerWithAddress } from '@nomicfoundation/hardhat-ethers/signers'
-import { getBytes, hexlify, keccak256, sha256, toUtf8Bytes, zeroPadValue, randomBytes } from 'ethers'
+import { getBytes, hexlify, keccak256, sha256, toUtf8Bytes } from 'ethers'
 import { expect } from 'chai'
 import crypto from 'node:crypto'
-import { BlsBn254, kyberG1ToEvm, kyberG2ToEvm, toHex, kyberMarshalG2, kyberMarshalG1 } from '../hardhat/helpers/crypto'
+import { BlsBn254, kyberG1ToEvm, kyberG2ToEvm, toHex } from './helpers/crypto'
 import SVDW_TEST_VECTORS from './vectors/svdw'
 import { expand_message_xmd } from '@noble/curves/abstract/hash-to-curve'
 import { keccak_256 } from '@noble/hashes/sha3'
 
 
-// BLS solidity library tests
-// Adapted from https://github.com/kevincharm/bls-bn254.git
+// Integration tests for BLS signature scheme using BN254 curve
+// Validates compatibility between the TypeScript BLS library and the Solidity implementation.
+// Adapted from: https://github.com/kevincharm/bls-bn254.git
 describe('BLS', () => {
     let mcl: BlsBn254
     const domain = 'BLS_SIG_BN254G1_XMD:KECCAK-256_SSWU_RO_NUL_'
