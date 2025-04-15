@@ -7,7 +7,6 @@ on:
 
 env:
   FOUNDRY_PROFILE: ci
-  BLS_KEY: ${{ secrets.BLS_KEY }}
 
 jobs:
   check:
