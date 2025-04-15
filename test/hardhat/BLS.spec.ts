@@ -9,6 +9,9 @@ import SVDW_TEST_VECTORS from './vectors/svdw'
 import { expand_message_xmd } from '@noble/curves/abstract/hash-to-curve'
 import { keccak_256 } from '@noble/hashes/sha3'
 
+
+// BLS solidity library tests
+// Adapted from https://github.com/kevincharm/bls-bn254.git
 describe('BLS', () => {
     let mcl: BlsBn254
     const domain = 'BLS_SIG_BN254G1_XMD:KECCAK-256_SSWU_RO_NUL_'
