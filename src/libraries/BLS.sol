@@ -322,9 +322,8 @@ library BLS {
     function isValidSignature(uint256[2] memory signature) internal pure returns (bool) {
         if ((signature[0] >= N) || (signature[1] >= N)) {
             return false;
-        } else {
-            return isOnCurveG1(PointG1({x: signature[0], y: signature[1]}));
         }
+        return isOnCurveG1(PointG1({x: signature[0], y: signature[1]}));
     }
 
     /// @notice Check if `publicKey` is a valid public key
@@ -332,9 +331,8 @@ library BLS {
     function isValidPublicKey(uint256[4] memory publicKey) internal pure returns (bool) {
         if ((publicKey[0] >= N) || (publicKey[1] >= N) || (publicKey[2] >= N || (publicKey[3] >= N))) {
             return false;
-        } else {
-            return isOnCurveG2(PointG2({x: [publicKey[0], publicKey[1]], y: [publicKey[2], publicKey[3]]}));
         }
+        return isOnCurveG2(PointG2({x: [publicKey[0], publicKey[1]], y: [publicKey[2], publicKey[3]]}));
     }
 
     /// @notice Unmarshals a point on G1 from bytes in an uncompressed form.

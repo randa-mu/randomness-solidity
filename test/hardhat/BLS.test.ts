@@ -326,7 +326,7 @@ describe('BLS', () => {
 
 /// Pick random element from BN254 F_p, accounting for modulo bias
 function pickRandomF(): bigint {
-    for (;;) {
+    while (true) {
         const rand32 = crypto.getRandomValues(new Uint8Array(32)) // 256-bit
         const f = BigInt(hexlify(rand32))
         if (f < 21888242871839275222246405745257275088696311157297823662689037894645226208583n) {
