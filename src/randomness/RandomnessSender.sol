@@ -16,7 +16,8 @@ import {SignatureReceiverBase} from "../signature-requests/SignatureReceiverBase
 
 /// @title RandomnessSender contract
 /// @author Randamu
-/// @notice Handles randomness requests and forwards them using a signature-based system.
+/// @notice Handles randomness requests from user's contracts and
+/// forwards the randomness to them via a callback to the `receiveRandomness(...)` function.
 contract RandomnessSender is
     IRandomnessSender,
     SignatureReceiverBase,

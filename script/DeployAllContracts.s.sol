@@ -11,10 +11,7 @@ import {
     DeploySignatureSchemeAddressProvider
 } from "./single-deployment/DeploySignatureSchemeAddressProvider.s.sol";
 import {SignatureSender, DeploySignatureSender} from "./single-deployment/DeploySignatureSender.s.sol";
-import {
-    MockBN254SignatureScheme, DeployBN254SignatureScheme
-} from "./single-deployment/DeployBN254SignatureScheme.s.sol";
-import {MockRandomnessReceiver, DeployRandomnessReceiver} from "./single-deployment/DeployRandomnessReceiver.s.sol";
+import {BN254SignatureScheme, DeployBN254SignatureScheme} from "./single-deployment/DeployBN254SignatureScheme.s.sol";
 
 /// @title DeployAllContracts
 /// @author Randamu
@@ -24,17 +21,12 @@ contract DeployAllContracts is
     DeployRandomnessSender,
     DeploySignatureSchemeAddressProvider,
     DeploySignatureSender,
-    DeployBN254SignatureScheme,
-    DeployRandomnessReceiver
+    DeployBN254SignatureScheme
 {
     function run()
         public
         override(
-            DeployRandomnessSender,
-            DeploySignatureSchemeAddressProvider,
-            DeploySignatureSender,
-            DeployBN254SignatureScheme,
-            DeployRandomnessReceiver
+            DeployRandomnessSender, DeploySignatureSchemeAddressProvider, DeploySignatureSender, DeployBN254SignatureScheme
         )
     {
         deployAll();
@@ -42,16 +34,14 @@ contract DeployAllContracts is
 
     /// @notice Deploys all required contracts or upgrades them based on the `isUpgrade` flag.
     /// @dev This function initializes multiple contracts and links them together as needed.
-    /// @return bn254SignatureScheme The deployed instance of MockBN254SignatureScheme.
-    /// @return mockRandomnessReceiver The deployed instance of MockRandomnessReceiver.
+    /// @return bn254SignatureScheme The deployed instance of BN254SignatureScheme.
     /// @return randomnessSenderInstance The deployed instance of RandomnessSender.
     /// @return signatureSchemeAddressProvider The deployed instance of SignatureSchemeAddressProvider.
     /// @return signatureSenderInstance The deployed instance of SignatureSender.
     function deployAll()
         public
         returns (
-            MockBN254SignatureScheme bn254SignatureScheme,
-            MockRandomnessReceiver mockRandomnessReceiver,
+            BN254SignatureScheme bn254SignatureScheme,
             RandomnessSender randomnessSenderInstance,
             SignatureSchemeAddressProvider signatureSchemeAddressProvider,
             SignatureSender signatureSenderInstance
@@ -67,7 +57,5 @@ contract DeployAllContracts is
         signatureSenderInstance = deploySignatureSenderProxy(address(signatureSchemeAddressProvider), isUpgrade);
         // randomness sender
         randomnessSenderInstance = deployRandomnessSenderProxy(address(signatureSenderInstance), isUpgrade);
-        // mocks
-        mockRandomnessReceiver = deployRandomnessReceiver(address(randomnessSenderInstance));
     }
 }

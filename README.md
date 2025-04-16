@@ -40,39 +40,38 @@ Because randomness is derived from conditional threshold signatures produced by 
 
 #### Filecoin Calibnet
 
-| Contract                        | Address                                                                                                                             |
-|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| **RandomnessSender Proxy**      | [0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC](https://calibration.filfox.info/en/address/0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC) |
-| RandomnessSender Implementation | [0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1](https://calibration.filfox.info/en/address/0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1) |
-| SignatureSender Proxy           | [0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B](https://calibration.filfox.info/en/address/0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B) | 
-| SignatureSender Implementation  | [0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8](https://calibration.filfox.info/en/address/0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8) |
-| SignatureSchemeAddressProvider  | [0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A](https://calibration.filfox.info/en/address/0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A) |
-| MockBN254SignatureScheme        | [0xE5aedc08Cf2B5650Cd84CE6DcaDC3763bAa8770B](https://calibration.filfox.info/en/address/0xE5aedc08Cf2B5650Cd84CE6DcaDC3763bAa8770B) |
-| MockRandomnessReceiver          | [0x82345Cad6c5D11509F89281875269381d0673cd2](https://calibration.filfox.info/en/address/0x82345Cad6c5D11509F89281875269381d0673cd2) |
+| Contract      |  Description     | Address         |
+|---------| ----------------------|-------------|
+| **RandomnessSender Proxy**      | A lightweight and efficient proxy contract used in managing upgradeablility of the RandomnessSender implementation contract and delegates calls to the implementation contract (the logic contract) below. | [0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC](https://calibration.filfox.info/en/address/0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC) |
+| RandomnessSender Implementation | Handles randomness requests from user's contracts and forwards the randomness to them via a callback to the `receiveRandomness(...)` function. Users interact with RandomnessSender via the **Proxy** contract. | [0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1](https://calibration.filfox.info/en/address/0xF684f13850932bC7B51bd6bFF9236FB19E55F2B1) |
+| SignatureSender Proxy           | A lightweight and efficient proxy contract used in managing upgradeablility of the SignatureSender implementation contract | [0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B](https://calibration.filfox.info/en/address/0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B) | 
+| SignatureSender Implementation  | Smart Contract for Conditional Threshold Signing of messages sent within signature requests. Signatures are sent in callbacks to contract addresses implementing the SignatureReceiverBase abstract contract. In this case, the hash of the signature `keccak256(signature)` represents the randomness. | [0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8](https://calibration.filfox.info/en/address/0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8) |
+| SignatureSchemeAddressProvider  | Manages the contract addresses for different signature schemes. |  [0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A](https://calibration.filfox.info/en/address/0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A) |
+| BN254SignatureScheme        | The BN254 signature scheme contract. Contains signature verification logic using pairing checks. | [0xE5aedc08Cf2B5650Cd84CE6DcaDC3763bAa8770B](https://calibration.filfox.info/en/address/0xE5aedc08Cf2B5650Cd84CE6DcaDC3763bAa8770B) |
 
 #### Base Sepolia
 
-| Contract                        | Address                                                                                                                       | 
-|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| **RandomnessSender Proxy**      | [0x455bfe4B1B4393b458d413E2B0778A95F9B84B82](https://sepolia.basescan.org/address/0x455bfe4B1B4393b458d413E2B0778A95F9B84B82) |
-| RandomnessSender Implementation | [0xe6eFd7db04751EAD20ef113124D4E9D60e0Fe460](https://sepolia.basescan.org/address/0xe6eFd7db04751EAD20ef113124D4E9D60e0Fe460) |
-| SignatureSender Proxy           | [0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871](https://sepolia.basescan.org/address/0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871) |
-| SignatureSender Implementation  | [0x8aA1B57a24887dbacd6A68F7361eB42c6faac108](https://sepolia.basescan.org/address/0x8aA1B57a24887dbacd6A68F7361eB42c6faac108) |
-| SignatureSchemeAddressProvider  | [0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8](https://sepolia.basescan.org/address/0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8) |
-| BN254SignatureScheme            | [0x4d9dc5A7E087140d4F1e8f69f031dc2C4fB3b5EF](https://sepolia.basescan.org/address/0x4d9dc5A7E087140d4F1e8f69f031dc2C4fB3b5EF) |
-| MockRandomnessReceiver          | [0x3849BF5eDB2664d374cFd12418e0c83B7b3c2bF2](https://sepolia.basescan.org/address/0x3849BF5eDB2664d374cFd12418e0c83B7b3c2bF2) |
+| Contract      |  Description     | Address         |
+|---------| ----------------------|-------------|
+| **RandomnessSender Proxy**      | A lightweight and efficient proxy contract used in managing upgradeablility of the RandomnessSender implementation contract and delegates calls to the implementation contract (the logic contract) below. | [0x455bfe4B1B4393b458d413E2B0778A95F9B84B82](https://sepolia.basescan.org/address/0x455bfe4B1B4393b458d413E2B0778A95F9B84B82) |
+| RandomnessSender Implementation | Handles randomness requests from user's contracts and forwards the randomness to them via a callback to the `receiveRandomness(...)` function. Users interact with RandomnessSender via the **Proxy** contract. | [0xe6eFd7db04751EAD20ef113124D4E9D60e0Fe460](https://sepolia.basescan.org/address/0xe6eFd7db04751EAD20ef113124D4E9D60e0Fe460) |
+| SignatureSender Proxy           | A lightweight and efficient proxy contract used in managing upgradeablility of the SignatureSender implementation contract | [0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871](https://sepolia.basescan.org/address/0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871) |
+| SignatureSender Implementation  | Smart Contract for Conditional Threshold Signing of messages sent within signature requests. Signatures are sent in callbacks to contract addresses implementing the SignatureReceiverBase abstract contract. In this case, the hash of the signature `keccak256(signature)` represents the randomness. | [0x8aA1B57a24887dbacd6A68F7361eB42c6faac108](https://sepolia.basescan.org/address/0x8aA1B57a24887dbacd6A68F7361eB42c6faac108) |
+| SignatureSchemeAddressProvider  | Manages the contract addresses for different signature schemes. | [0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8](https://sepolia.basescan.org/address/0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8) |
+| BN254SignatureScheme            | The BN254 signature scheme contract. Contains signature verification logic using pairing checks. | [0x4d9dc5A7E087140d4F1e8f69f031dc2C4fB3b5EF](https://sepolia.basescan.org/address/0x4d9dc5A7E087140d4F1e8f69f031dc2C4fB3b5EF) |
+
 
 #### Polygon PoS
 
-| Contract                        | Address                                                                                                                  | 
-|---------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| **RandomnessSender Proxy**      | [0x455bfe4B1B4393b458d413E2B0778A95F9B84B82](https://polygonscan.com/address/0x455bfe4B1B4393b458d413E2B0778A95F9B84B82) |
-| RandomnessSender Implementation | [0xe6eFd7db04751EAD20ef113124D4E9D60e0Fe460](https://polygonscan.com/address/0xe6eFd7db04751EAD20ef113124D4E9D60e0Fe460) |
-| SignatureSender Proxy           | [0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871](https://polygonscan.com/address/0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871) |
-| SignatureSender Implementation  | [0x8aA1B57a24887dbacd6A68F7361eB42c6faac108](https://polygonscan.com/address/0x8aA1B57a24887dbacd6A68F7361eB42c6faac108) |
-| SignatureSchemeAddressProvider  | [0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8](https://polygonscan.com/address/0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8) |
-| BN254SignatureScheme            | [0x4d9dc5A7E087140d4F1e8f69f031dc2C4fB3b5EF](https://polygonscan.com/address/0x4d9dc5A7E087140d4F1e8f69f031dc2C4fB3b5EF) |
-| MockRandomnessReceiver          | [0x3849BF5eDB2664d374cFd12418e0c83B7b3c2bF2](https://polygonscan.com/address/0x3849BF5eDB2664d374cFd12418e0c83B7b3c2bF2) |
+| Contract      |  Description                        | Address         |
+|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| **RandomnessSender Proxy**      | A lightweight and efficient proxy contract used in managing upgradeablility of the RandomnessSender implementation contract and delegates calls to the implementation contract (the logic contract) below. | [0x455bfe4B1B4393b458d413E2B0778A95F9B84B82](https://polygonscan.com/address/0x455bfe4B1B4393b458d413E2B0778A95F9B84B82) |
+| RandomnessSender Implementation | Handles randomness requests from user's contracts and forwards the randomness to them via a callback to the `receiveRandomness(...)` function. Users interact with RandomnessSender via the **Proxy** contract. | [0xe6eFd7db04751EAD20ef113124D4E9D60e0Fe460](https://polygonscan.com/address/0xe6eFd7db04751EAD20ef113124D4E9D60e0Fe460) |
+| SignatureSender Proxy           | A lightweight and efficient proxy contract used in managing upgradeablility of the SignatureSender implementation contract | [0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871](https://polygonscan.com/address/0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871) |
+| SignatureSender Implementation  | Smart Contract for Conditional Threshold Signing of messages sent within signature requests. Signatures are sent in callbacks to contract addresses implementing the SignatureReceiverBase abstract contract. In this case, the hash of the signature `keccak256(signature)` represents the randomness. | [0x8aA1B57a24887dbacd6A68F7361eB42c6faac108](https://polygonscan.com/address/0x8aA1B57a24887dbacd6A68F7361eB42c6faac108) |
+| SignatureSchemeAddressProvider  | Manages the contract addresses for different signature schemes. | [0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8](https://polygonscan.com/address/0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8) |
+| BN254SignatureScheme            | The BN254 signature scheme contract. Contains signature verification logic using pairing checks. |  [0x4d9dc5A7E087140d4F1e8f69f031dc2C4fB3b5EF](https://polygonscan.com/address/0x4d9dc5A7E087140d4F1e8f69f031dc2C4fB3b5EF) |
+
 
 ## Quick Start
 
