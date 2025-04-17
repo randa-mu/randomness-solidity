@@ -170,7 +170,7 @@ contract RandomnessSenderTest is Test {
         address requester = address(10);
         uint256 requestID = 1;
         bool passedVerificationCheck =
-            Randomness.verify(address(randomnessSender), address(signatureSender), validSignature, requestID, requester);
+            Randomness.verify(address(randomnessSender), address(signatureSender), validSignature, requestID, requester, bn254SignatureScheme.DST());
         assert(passedVerificationCheck);
     }
 }
