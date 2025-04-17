@@ -169,8 +169,14 @@ contract RandomnessSenderTest is Test {
     function test_randomnessSignatureVerification() public view {
         address requester = address(10);
         uint256 requestID = 1;
-        bool passedVerificationCheck =
-            Randomness.verify(address(randomnessSender), address(signatureSender), validSignature, requestID, requester, bn254SignatureScheme.DST());
+        bool passedVerificationCheck = Randomness.verify(
+            address(randomnessSender),
+            address(signatureSender),
+            validSignature,
+            requestID,
+            requester,
+            bn254SignatureScheme.DST()
+        );
         assert(passedVerificationCheck);
     }
 }
