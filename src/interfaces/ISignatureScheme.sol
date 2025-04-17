@@ -27,4 +27,9 @@ interface ISignatureScheme {
     /// @param message The message to be hashed.
     /// @return bytes A point on the elliptic curve in G1, represented as bytes.
     function hashToBytes(bytes calldata message) external view returns (bytes memory);
+
+    /// @notice Returns the current blockchain chain ID.
+    /// @dev Uses inline assembly to retrieve the `chainid` opcode.
+    /// @return chainId The current chain ID of the network.
+    function getChainId() external view returns (uint256 chainId);
 }

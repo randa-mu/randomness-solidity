@@ -13,9 +13,6 @@ import {SignatureSender} from "../signature-requests/SignatureSender.sol";
 /// @author Randamu
 /// @notice Helper functions for randomness verification and usage.
 library Randomness {
-    // Message signing DST
-    bytes public constant DST = bytes("BLS_SIG_BN254G1_XMD:KECCAK-256_SVDW_RO_NUL_");
-
     /// @notice Request for randomness.
     function request(IRandomnessSender randomnessContract) public returns (uint256) {
         return randomnessContract.requestRandomness();
@@ -27,7 +24,8 @@ library Randomness {
         address signatureContract,
         bytes calldata signature,
         uint256 requestID,
-        address requester
+        address requester,
+        bytes calldata DST
     ) public view returns (bool) {
         (uint256[2] memory x, uint256[2] memory y) = ISignatureSender(signatureContract).getPublicKey();
         BLS.PointG2 memory pk = BLS.PointG2({x: x, y: y});

@@ -47,8 +47,9 @@ contract DeploySignatureSender is JsonUtils, EnvReader {
             vm.broadcast();
             address contractAddress;
 
-            if (Constants.USE_RANDAMU_FACTORY) {
-                contractAddress = Factory(Constants.CREATE2_FACTORY).deploy(Constants.SALT, code);
+            if (vm.envBool("USE_RANDAMU_FACTORY")) {
+                contractAddress =
+                    Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
 
                 signatureSenderInstance = SignatureSender(contractAddress);
             } else {
@@ -77,8 +78,9 @@ contract DeploySignatureSender is JsonUtils, EnvReader {
         bytes memory code = type(SignatureSender).creationCode;
 
         vm.broadcast();
-        if (Constants.USE_RANDAMU_FACTORY) {
-            implementation = Factory(Constants.CREATE2_FACTORY).deploy(Constants.SALT, code);
+        if (vm.envBool("USE_RANDAMU_FACTORY")) {
+            implementation =
+                Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
         } else {
             SignatureSender signatureSender = new SignatureSender{salt: Constants.SALT}();
             implementation = address(signatureSender);
