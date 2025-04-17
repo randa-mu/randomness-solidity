@@ -49,7 +49,8 @@ contract DeployRandomnessSender is JsonUtils, EnvReader {
             address contractAddress;
 
             if (vm.envBool("USE_RANDAMU_FACTORY")) {
-                contractAddress = Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
+                contractAddress =
+                    Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
 
                 randomnessSenderInstance = RandomnessSender(contractAddress);
             } else {
@@ -77,7 +78,8 @@ contract DeployRandomnessSender is JsonUtils, EnvReader {
 
         vm.broadcast();
         if (vm.envBool("USE_RANDAMU_FACTORY")) {
-            implementation = Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
+            implementation =
+                Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
         } else {
             RandomnessSender randomnessSender = new RandomnessSender{salt: Constants.SALT}();
             implementation = address(randomnessSender);
