@@ -3,7 +3,9 @@ pragma solidity ^0.8;
 
 import {BLS} from "../libraries/BLS.sol";
 
-contract BLSTest {
+import {Test} from "forge-std/Test.sol";
+
+contract BLSTest is Test {
     function test__expandMsgTo96(bytes memory domain, bytes memory message)
         external
         view

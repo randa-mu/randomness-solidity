@@ -25,8 +25,6 @@ contract RandomnessSender is
     UUPSUpgradeable,
     AccessControlEnumerableUpgradeable
 {
-    /// @notice The domain separation tag (DST) used for randomness requests.
-    string public constant DST = "randomness:0.0.1:bn254";
     /// @notice The identifier for the signature scheme used.
     string public constant SCHEME_ID = "BN254";
     /// @notice Role identifier for the contract administrator.
@@ -124,7 +122,7 @@ contract RandomnessSender is
 
     /// @notice Generates a message from a randomness request.
     function messageFrom(TypesLib.RandomnessRequest memory r) public pure returns (bytes memory) {
-        return abi.encodePacked(keccak256(abi.encode(DST, r.nonce)));
+        return abi.encodePacked(keccak256(abi.encode(r.nonce)));
     }
 
     /// @notice Retrieves a randomness request by ID.
