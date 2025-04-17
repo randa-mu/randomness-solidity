@@ -1,14 +1,17 @@
 import { BLSTest, BLSTest__factory } from "../../typechain-types";
-import { BlsBn254, kyberG1ToEvm, kyberG2ToEvm, toHex, kyberMarshalG2, kyberMarshalG1 } from "../hardhat/helpers/crypto";
+import { BlsBn254, kyberG1ToEvm, kyberG2ToEvm, toHex } from "./helpers/crypto";
 import SVDW_TEST_VECTORS from "./vectors/svdw";
 import { expand_message_xmd } from "@noble/curves/abstract/hash-to-curve";
 import { keccak_256 } from "@noble/hashes/sha3";
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
 import { expect } from "chai";
-import { getBytes, hexlify, keccak256, sha256, toUtf8Bytes, zeroPadValue, randomBytes } from "ethers";
+import { getBytes, hexlify, keccak256, sha256, toUtf8Bytes } from "ethers";
 import { ethers } from "hardhat";
 import crypto from "node:crypto";
 
+// Integration tests for BLS signature scheme using BN254 curve
+// Validates compatibility between the TypeScript BLS library and the Solidity implementation.
+// Adapted from: https://github.com/kevincharm/bls-bn254.git
 describe("BLS", () => {
   let mcl: BlsBn254;
   const domain = "BLS_SIG_BN254G1_XMD:KECCAK-256_SSWU_RO_NUL_";
@@ -299,7 +302,7 @@ describe("BLS", () => {
 
 /// Pick random element from BN254 F_p, accounting for modulo bias
 function pickRandomF(): bigint {
-  for (;;) {
+  while (true) {
     const rand32 = crypto.getRandomValues(new Uint8Array(32)); // 256-bit
     const f = BigInt(hexlify(rand32));
     if (f < 21888242871839275222246405745257275088696311157297823662689037894645226208583n) {

@@ -27,12 +27,12 @@ contract BLSTest is Test {
     }
 
     function test__mapToPoint(uint256 value) external view returns (uint256[2] memory p, uint256 gas) {
-        uint256 FIELD_MODULUS = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
-
-        // Add this assumption to restrict fuzzing range
-        vm.assume(value < FIELD_MODULUS);
-
         gas = gasleft();
+        uint256 N = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
+        // Skip values outside the BN254 field to avoid invalid field element errors during fuzz testing
+        if (value >= N) {
+            return (p, gas);
+        }
         p = BLS.mapToPoint(value);
         gas = gas - gasleft();
     }
