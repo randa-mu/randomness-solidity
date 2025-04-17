@@ -23,6 +23,48 @@ describe('BLS', () => {
         blsTest = await new BLSTest__factory(deployer).deploy()
     })
 
+    // fixme - remove this temporary test case
+    it.only('correct verifies a BLS sig from mcl', async () => {
+        const { secretKey, pubKey } = mcl.createKeyPair()
+        // const msg = hexlify(randomBytes(12)) as `0x${string}`
+        // console.log(hexlify(randomBytes(12)) as `0x${string}`)
+        // 64-bit round number, encoded in big-endian
+        const roundNumber = new Uint8Array(8)
+        roundNumber[7] = 1 // round = 1
+        // const msg = keccak256(roundNumber) as `0x${string}`
+        const msg = "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf6";
+        const dom = "dcipher-randomness-v01-BN254G1_XMD:KECCAK-256_SVDW_RO_0x0000000000000000000000000000000000000000000000000000000000007a69_";
+        const [[msgX, msgY]] = await blsTest.test__hashToPoint(toUtf8Bytes(dom), msg)
+        const M = mcl.g1FromEvm(msgX, msgY)
+        expect(M.isValid()).to.eq(true)
+        // console.log('M', kyberMarshalG1(M))
+        const { signature } = mcl.sign(M, secretKey)
+
+        // Kyber serialised format
+        console.log('pub', kyberMarshalG2(pubKey))
+        console.log('sig', kyberMarshalG1(signature))
+
+        const args = mcl.toArgs(pubKey, M, signature)
+        expect(await blsTest.test__isOnCurveG1(args.signature).then((ret) => ret[0])).to.eq(true) // 400 gas
+        expect(await blsTest.test__isOnCurveG1(args.M).then((ret) => ret[0])).to.eq(true) // 400 gas
+        expect(await blsTest.test__isOnCurveG2(args.pubKey).then((ret) => ret[0])).to.eq(true) // 865k gas
+        const [isValid, callSuccess, verifySingleGasCost] = await blsTest.test__verifySingle(
+            args.signature,
+            args.pubKey,
+            args.M,
+        )
+        console.log(args.pubKey)
+        expect(isValid && callSuccess).to.eq(true)
+        console.log('[verify] gas:', verifySingleGasCost)
+
+        const invalidSig = args.signature.map((v) => v + 1n) as [bigint, bigint]
+        expect(
+            await blsTest.test__verifySingle(invalidSig, args.pubKey, args.M).then((ret) => ret[0]),
+        ).to.eq(false)
+    })
+
+
+
     it('correctly implements SvdW', async () => {
         for (const { u, p } of SVDW_TEST_VECTORS.slice(500, 800)) {
             const [pImpl] = await blsTest.test__mapToPoint(u)
