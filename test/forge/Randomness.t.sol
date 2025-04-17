@@ -174,8 +174,7 @@ contract RandomnessSenderTest is Test {
             address(signatureSender),
             validSignature,
             requestID,
-            requester,
-            bn254SignatureScheme.DST()
+            requester
         );
         assert(passedVerificationCheck);
     }
