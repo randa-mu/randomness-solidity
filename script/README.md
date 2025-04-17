@@ -10,7 +10,7 @@ Deployment is handled by solidity scripts in forge. The network being deployed t
 
 ## Deploy the CREATE2 Factory Contract
 
-If deploying to a network that does not support the [deterministic deployer contract used by Foundry](https://book.getfoundry.sh/guides/deterministic-deployments-using-create2), deploy the [CREATE2 Factory.sol](src/Factory.sol) contract and set the `CREATE2_FACTORY` address in the [Constants.sol library](script/libraries/Constants.sol) for use within the deployment scripts. 
+If deploying to a network that does not support the [deterministic deployer contract used by Foundry](https://book.getfoundry.sh/guides/deterministic-deployments-using-create2), deploy the [CREATE2 Factory.sol](src/factory/Factory.sol) contract and set the `CREATE2_FACTORY` address in the `.env` file with the variable name `RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS` and set the `USE_RANDAMU_FACTORY` `.env` variable to true. 
 
 Note: The wallet address linked to the deployer private key is used as the `ADMIN` address in the core contracts and fetched using the [EnvReader](script/utils/EnvReader.sol).
 

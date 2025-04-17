@@ -23,8 +23,8 @@ contract DeployBN254SignatureScheme is JsonUtils {
         bytes memory code = type(BN254SignatureScheme).creationCode;
 
         vm.broadcast();
-        if (Constants.USE_RANDAMU_FACTORY) {
-            address contractAddress = Factory(Constants.CREATE2_FACTORY).deploy(Constants.SALT, code);
+        if (vm.envBool("USE_RANDAMU_FACTORY")) {
+            address contractAddress = Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
             bn254SignatureScheme = BN254SignatureScheme(contractAddress);
         } else {
             bn254SignatureScheme = new BN254SignatureScheme{salt: Constants.SALT}();
