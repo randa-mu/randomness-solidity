@@ -75,6 +75,8 @@ After setting the required variables, run the deployment command only for the sp
 forge script script/single-deployment/DeploySignatureSender.s.sol:DeploySignatureSender --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --slow
 ```
 
+When upgrading `RandomnessSender` implementation or signature scheme contract, ensure that the new signature scheme address provider contract is set in `RandomnessSender`.
+
 
 ## Deployment addresses
 
