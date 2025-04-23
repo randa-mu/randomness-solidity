@@ -317,6 +317,24 @@ library BLS {
         }
     }
 
+    /// @notice Check if `signature` is a valid signature
+    /// @param signature Signature to check
+    function isValidSignature(uint256[2] memory signature) internal pure returns (bool) {
+        if ((signature[0] >= N) || (signature[1] >= N)) {
+            return false;
+        }
+        return isOnCurveG1(PointG1({x: signature[0], y: signature[1]}));
+    }
+
+    /// @notice Check if `publicKey` is a valid public key
+    /// @param publicKey PK to check
+    function isValidPublicKey(uint256[4] memory publicKey) internal pure returns (bool) {
+        if ((publicKey[0] >= N) || (publicKey[1] >= N) || (publicKey[2] >= N || (publicKey[3] >= N))) {
+            return false;
+        }
+        return isOnCurveG2(PointG2({x: [publicKey[0], publicKey[1]], y: [publicKey[2], publicKey[3]]}));
+    }
+
     /// @notice Unmarshals a point on G1 from bytes in an uncompressed form.
     function g1Unmarshal(bytes memory m) internal pure returns (PointG1 memory) {
         require(m.length == 64, "Invalid G1 bytes length");

@@ -29,8 +29,9 @@ contract DeployRandomnessReceiver is JsonUtils {
             abi.encodePacked(type(MockRandomnessReceiver).creationCode, abi.encode(randomnessSenderAddr));
 
         vm.broadcast();
-        if (Constants.USE_RANDAMU_FACTORY) {
-            address contractAddress = Factory(Constants.CREATE2_FACTORY).deploy(Constants.SALT, code);
+        if (vm.envBool("USE_RANDAMU_FACTORY")) {
+            address contractAddress =
+                Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
 
             mockRandomnessReceiver = MockRandomnessReceiver(contractAddress);
         } else {
