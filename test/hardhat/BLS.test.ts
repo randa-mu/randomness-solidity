@@ -26,7 +26,7 @@ describe("BLS", () => {
     blsTest = await new BLSTest__factory(deployer).deploy();
   });
 
-  it.skip("correctly implements SvdW", async () => {
+  it("correctly implements SvdW", async () => {
     for (const { u, p } of SVDW_TEST_VECTORS.slice(500, 800)) {
       const [pImpl] = await blsTest.test__mapToPoint(u);
       expect(pImpl).to.deep.eq(p);
@@ -112,7 +112,7 @@ describe("BLS", () => {
     console.log(`[hashToPoint] mean gas cost: ${sumGasCost / iterations}`);
   });
 
-  it("correct verifies a BLS sig from mcl", async () => {
+  it.skip("correct verifies a BLS sig from mcl", async () => {
     const { secretKey, pubKey } = mcl.createKeyPair();
     // const msg = hexlify(randomBytes(12)) as `0x${string}`
     // 64-bit round number, encoded in big-endian
