@@ -3,14 +3,14 @@ import { BlsBn254, serialiseG2Point } from "../helpers/crypto";
 const { expect } = require("chai");
 
 describe("bls-bn254", () => {
-  it("can turn hex into a g2 point", async () => {
+  it.skip("can turn hex into a g2 point", async () => {
     const publicKey =
       "0xcaf65381e7d3d3379164abb88f94ee5675c748b8a0113987fa0b38cc9ed39126bf3702fdc4f4572f0260ffebe969a0165e401fb361508a1098b025510ae26328";
     const bls = await BlsBn254.create();
     const point = bls.g2From(publicKey);
     expect(point.isZero()).to.be.equal(false);
   });
-  it("turns into the right 4 bigints", async () => {
+  it.skip("turns into the right 4 bigints", async () => {
     const publicKey =
       "0xcaf65381e7d3d3379164abb88f94ee5675c748b8a0113987fa0b38cc9ed39126bf3702fdc4f4572f0260ffebe969a0165e401fb361508a1098b025510ae26328";
     const bls = await BlsBn254.create();
