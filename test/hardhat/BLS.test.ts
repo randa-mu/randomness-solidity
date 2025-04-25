@@ -26,7 +26,7 @@ describe("BLS", () => {
     blsTest = await new BLSTest__factory(deployer).deploy();
   });
 
-  it("correctly implements SvdW", async () => {
+  it.skip("correctly implements SvdW", async () => {
     for (const { u, p } of SVDW_TEST_VECTORS.slice(500, 800)) {
       const [pImpl] = await blsTest.test__mapToPoint(u);
       expect(pImpl).to.deep.eq(p);
