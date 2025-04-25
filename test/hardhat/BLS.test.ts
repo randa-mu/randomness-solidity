@@ -112,7 +112,7 @@ describe("BLS", () => {
     console.log(`[hashToPoint] mean gas cost: ${sumGasCost / iterations}`);
   });
 
-  it.skip("correct verifies a BLS sig from mcl", async () => {
+  it("correct verifies a BLS sig from mcl", async () => {
     const { secretKey, pubKey } = mcl.createKeyPair();
     // const msg = hexlify(randomBytes(12)) as `0x${string}`
     // 64-bit round number, encoded in big-endian
