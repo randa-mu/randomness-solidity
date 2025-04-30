@@ -12,7 +12,7 @@ import {BN254SignatureScheme} from "src/signature-schemes/BN254SignatureScheme.s
 import {SignatureSchemeAddressProvider} from "src/signature-schemes/SignatureSchemeAddressProvider.sol";
 import {Factory} from "src/factory/Factory.sol";
 
-/// @title DeploySignatureSchemeAddressProvider
+/// @title DeployBN254SignatureScheme
 /// @dev Script for deploying BN254SignatureScheme contract.
 contract DeployBN254SignatureScheme is JsonUtils {
     function run() public virtual {
