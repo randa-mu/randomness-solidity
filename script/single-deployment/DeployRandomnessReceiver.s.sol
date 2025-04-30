@@ -11,7 +11,7 @@ import {JsonUtils} from "../utils/JsonUtils.sol";
 import {MockRandomnessReceiver} from "src/mocks/MockRandomnessReceiver.sol";
 import {Factory} from "src/factory/Factory.sol";
 
-/// @title DeploySignatureSchemeAddressProvider
+/// @title DeployRandomnessReceiver
 /// @dev Script for deploying MockRandomnessReceiver contract.
 contract DeployRandomnessReceiver is JsonUtils {
     function run() public virtual {
