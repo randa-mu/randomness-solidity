@@ -5,8 +5,14 @@ pragma solidity ^0.8;
 /// @author Randamu
 /// @notice Interface for signature schemes, e.g., BN254, BLS, etc.
 interface ISignatureScheme {
-    /// @notice Returns the scheme identifier as a string, e.g., "BN254", "BLS12-381", "TESS"
-    function SCHEME_ID() external returns (string memory);
+    /// @notice Returns the scheme identifier as a string, e.g., "Barreto-Naehrig Curve" or "BN254"
+    /// BN254 is an elliptic curve that belongs to the pairing-friendly curves family,
+    /// designed for efficient computation of pairing-based cryptographic
+    /// protocols (such as zk-SNARKs, zero-knowledge proofs, and other cryptographic constructions)
+    function SCHEME_ID() external view returns (string memory);
+
+    /// @notice returns the DST used in message hashing to BLS point
+    function DST() external view returns (bytes memory);
 
     /// @notice Verifies a signature using the given signature scheme.
     /// @param message The message that was signed. Message is a G1 point represented as bytes.
@@ -27,6 +33,16 @@ interface ISignatureScheme {
     /// @param message The message to be hashed.
     /// @return bytes A point on the elliptic curve in G1, represented as bytes.
     function hashToBytes(bytes calldata message) external view returns (bytes memory);
+
+    /// @notice Retrieves the public key associated with the decryption process.
+    /// @dev Returns the public key as two elliptic curve points.
+    /// @return Two pairs of coordinates representing the public key points on the elliptic curve.
+    function getPublicKey() external view returns (uint256[2] memory, uint256[2] memory);
+
+    /// @notice Retrieves the public key associated with the decryption process.
+    /// @dev Returns the public key as bytes.
+    /// @return Bytes string representing the public key points on the elliptic curve.
+    function getPublicKeyBytes() external view returns (bytes memory);
 
     /// @notice Returns the current blockchain chain ID.
     /// @dev Uses inline assembly to retrieve the `chainid` opcode.

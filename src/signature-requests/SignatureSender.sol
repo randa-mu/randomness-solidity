@@ -41,9 +41,6 @@ contract SignatureSender is
     /// @notice Last used request ID.
     uint256 public lastRequestID = 0;
 
-    /// @notice Public key used for BLS verification.
-    BLS.PointG2 private publicKey = BLS.PointG2({x: [uint256(0), uint256(0)], y: [uint256(0), uint256(0)]});
-
     /// @notice Mapping from request IDs to signature request structs.
     mapping(uint256 => TypesLib.SignatureRequest) public requests;
 
@@ -86,16 +83,10 @@ contract SignatureSender is
     }
 
     /// @notice Initializes the contract with the given parameters.
-    function initialize(
-        uint256[2] memory x,
-        uint256[2] memory y,
-        address owner,
-        address _signatureSchemeAddressProvider
-    ) public initializer {
+    function initialize(address owner, address _signatureSchemeAddressProvider) public initializer {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
 
-        publicKey = BLS.PointG2({x: x, y: y});
         require(_grantRole(ADMIN_ROLE, owner), "Grant role failed");
         require(_grantRole(DEFAULT_ADMIN_ROLE, owner), "Grant role reverts");
         require(
@@ -159,8 +150,8 @@ contract SignatureSender is
     }
 
     /// @notice Fulfils a unique signature request.
-    /// @dev See {ISignatureSender-fulfilSignatureRequest}.
-    function fulfilSignatureRequest(uint256 requestID, bytes calldata signature) external onlyAdmin {
+    /// @dev See {ISignatureSender-fulfillSignatureRequest}.
+    function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external {
         require(isInFlight(requestID), "No request with specified requestID");
         TypesLib.SignatureRequest memory request = requests[requestID];
 
@@ -170,7 +161,7 @@ contract SignatureSender is
         ISignatureScheme sigScheme = ISignatureScheme(schemeContractAddress);
 
         require(
-            sigScheme.verifySignature(request.messageHash, signature, getPublicKeyBytes()),
+            sigScheme.verifySignature(request.messageHash, signature, sigScheme.getPublicKeyBytes()),
             "Signature verification failed"
         );
 
@@ -214,18 +205,6 @@ contract SignatureSender is
     function setSignatureSchemeAddressProvider(address newSignatureSchemeAddressProvider) external onlyAdmin {
         signatureSchemeAddressProvider = ISignatureSchemeAddressProvider(newSignatureSchemeAddressProvider);
         emit SignatureSchemeAddressProviderUpdated(newSignatureSchemeAddressProvider);
-    }
-
-    /// @notice Returns the public key.
-    /// @dev See {ISignatureSender-getPublicKey}.
-    function getPublicKey() public view returns (uint256[2] memory, uint256[2] memory) {
-        return (publicKey.x, publicKey.y);
-    }
-
-    /// @notice Returns the public key as bytes.
-    /// @dev See {ISignatureSender-getPublicKeyBytes}.
-    function getPublicKeyBytes() public view returns (bytes memory) {
-        return BLS.g2Marshal(publicKey);
     }
 
     /// @notice Checks if a request is in flight.

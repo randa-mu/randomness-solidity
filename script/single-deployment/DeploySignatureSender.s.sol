@@ -64,9 +64,7 @@ contract DeploySignatureSender is JsonUtils, EnvReader {
             );
 
             vm.broadcast();
-            signatureSenderInstance.initialize(
-                getBLSPublicKey().x, getBLSPublicKey().y, getSignerAddress(), signatureSchemeAddressProviderAddress
-            );
+            signatureSenderInstance.initialize(getSignerAddress(), signatureSchemeAddressProviderAddress);
 
             console.log("SignatureSender proxy contract deployed at: ", contractAddress);
         }
