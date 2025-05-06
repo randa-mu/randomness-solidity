@@ -41,6 +41,9 @@ contract DeployRandomnessSender is JsonUtils, EnvReader {
             RandomnessSender(proxyAddress).upgradeToAndCall(implementation, "");
             console.log("RandomnessSender contract upgraded to new implementation at: ", implementation);
             randomnessSenderInstance = RandomnessSender(proxyAddress);
+
+            vm.broadcast();
+            randomnessSenderInstance.setSignatureSender(signatureSenderProxyAddress);
         } else {
             // Deploy a new proxy if it's a full deployment
             bytes memory code = abi.encodePacked(type(UUPSProxy).creationCode, abi.encode(implementation, ""));
