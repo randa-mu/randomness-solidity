@@ -71,7 +71,7 @@ library Randomness {
         address randomnessContract,
         address signatureContract,
         bytes calldata signature,
-        uint256 requestID,
+        uint64 requestID,
         address requester,
         string calldata schemeID
     ) public view returns (bool) {
@@ -83,7 +83,9 @@ library Randomness {
 
         BLS.PointG1 memory messageHash = BLS.hashToPoint(
             signatureScheme.DST(),
-            IRandomnessSender(randomnessContract).messageFrom(TypesLib.RandomnessRequest(requestID, requester))
+            IRandomnessSender(randomnessContract).messageFrom(
+                TypesLib.RandomnessRequestCreationParams(requestID, requester)
+            )
         );
         BLS.PointG1 memory _signature = BLS.g1Unmarshal(signature);
 

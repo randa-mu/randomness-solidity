@@ -30,4 +30,9 @@ library TypesLib {
         uint256 nonce;
         address callback;
     }
+
+    struct RandomnessRequestCreationParams {
+        uint256 nonce;
+        address callback;
+    }
 }
