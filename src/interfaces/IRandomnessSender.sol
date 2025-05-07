@@ -32,6 +32,20 @@ interface IRandomnessSender {
     /// @return requestID The unique identifier assigned to this randomness request.
     function requestRandomnessWithSubscription(uint32 callbackGasLimit, uint256 subId) external returns (uint64 requestID);
 
+    /// @notice Calculates the estimated price in native tokens for a request based on the provided gas limit
+    /// @param _callbackGasLimit The gas limit for the callback execution
+    /// @return The estimated request price in native token (e.g., ETH)
+    function calculateRequestPriceNative(uint32 _callbackGasLimit) external view returns (uint256);
+
+    /// @notice Estimates the request price in native tokens using a specified gas price
+    /// @param _callbackGasLimit The gas limit for the callback execution
+    /// @param _requestGasPriceWei The gas price (in wei) to use for the estimation
+    /// @return The estimated total request price in native token (e.g., ETH)
+    function estimateRequestPriceNative(uint32 _callbackGasLimit, uint256 _requestGasPriceWei)
+        external
+        view
+        returns (uint256);
+        
     /// @notice Retrieves a specific request by its ID.
     /// @dev This function returns the Request struct associated with the given requestId.
     /// @param requestId The ID of the request to retrieve.
