@@ -7,12 +7,14 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
+import {CallWithExactGas} from "../libraries/CallWithExactGas.sol";
 
 import {IRandomnessReceiver} from "../interfaces/IRandomnessReceiver.sol";
 import {IRandomnessSender} from "../interfaces/IRandomnessSender.sol";
 import {ISignatureSender} from "../interfaces/ISignatureSender.sol";
 
 import {SignatureReceiverBase} from "../signature-requests/SignatureReceiverBase.sol";
+import {FeeCollector} from "../fee-collector/FeeCollector.sol";
 
 /// @title RandomnessSender contract
 /// @author Randamu
@@ -21,10 +23,13 @@ import {SignatureReceiverBase} from "../signature-requests/SignatureReceiverBase
 contract RandomnessSender is
     IRandomnessSender,
     SignatureReceiverBase,
+    FeeCollector,
     Initializable,
     UUPSUpgradeable,
     AccessControlEnumerableUpgradeable
 {
+    using CallWithExactGas for bytes;
+
     /// @notice The identifier for the signature scheme used.
     string public constant SCHEME_ID = "BN254";
     /// @notice Role identifier for the contract administrator.
@@ -76,8 +81,12 @@ contract RandomnessSender is
     /// @notice Authorizes contract upgrades.
     function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
 
+    function requestRandomness(uint32 callbackGasLimit) external returns (uint256 requestID) {
+        requestID = 
+    }
+
     /// @notice Requests randomness and returns a request ID.
-    function requestRandomness() external returns (uint256 requestID) {
+    function requestRandomnessWithSubscription(uint32 callbackGasLimit, uint256 subId) external returns (uint256 requestID) {
         nonce += 1;
 
         TypesLib.RandomnessRequest memory r = TypesLib.RandomnessRequest({nonce: nonce, callback: msg.sender});
