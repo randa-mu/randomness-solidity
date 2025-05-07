@@ -36,6 +36,28 @@ Because randomness is derived from conditional threshold signatures produced by 
 
 > 💡 **Note:** You only need to extend `RandomnessReceiverBase.sol` to customize randomness requests. All other required contracts are already deployed on supported networks.
 
+
+
+## Quick Start
+
+### Installation
+To get started, install the randomness-solidity library in your smart contract project using your preferred development tool.
+
+#### Hardhat (npm)
+
+```bash
+npm install randomness-solidity
+```  
+
+#### Foundry 
+
+```bash
+forge install randa-mu/randomness-solidity
+```
+
+
+
+
 ### Supported Networks
 
 #### Filecoin Calibnet
@@ -73,25 +95,6 @@ Because randomness is derived from conditional threshold signatures produced by 
 | BN254SignatureScheme            | The BN254 signature scheme contract. Contains signature verification logic using pairing checks. |  [0x9eE627D4591E57d40D72CfCcDb79751040862C18](https://polygonscan.com/address/0x9eE627D4591E57d40D72CfCcDb79751040862C18) |
 
 
-## Quick Start
-
-### Installation
-To get started, install the randomness-solidity library in your smart contract project using your preferred development tool.
-
-#### Hardhat (npm)
-
-```bash
-npm install randomness-solidity
-```  
-
-#### Foundry 
-
-```bash
-forge install randa-mu/randomness-solidity
-```
-
-
-
 ### How to use the Solidity interaface
 
 1. **Import the library**
@@ -105,7 +108,7 @@ forge install randa-mu/randomness-solidity
 
 2. **Extend the  `RandomnessReceiverBase` contract**
 
-   To use the library, your contract must inherit from `RandomnessReceiverBase` and specify the deployed `RandomnessSender` contract address from your desired [network](#support-network) in the constructor. 
+   To use the library, your contract must inherit from `RandomnessReceiverBase` and specify the deployed `RandomnessSender` (proxy) contract address from your desired [network](#supported-networks) in the constructor. 
 
     ```solidity
     contract DiceRoller is RandomnessReceiverBase {
