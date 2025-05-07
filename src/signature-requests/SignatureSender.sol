@@ -11,6 +11,7 @@ import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet
 import {BLS} from "../libraries/BLS.sol";
 import {TypesLib} from "../libraries/TypesLib.sol";
 import {BytesLib} from "../libraries/BytesLib.sol";
+import {CallWithExactGas} from "../libraries/CallWithExactGas.sol";
 
 import {Multicall} from "@openzeppelin/contracts/utils/Multicall.sol";
 import {Context} from "@openzeppelin/contracts/utils/Context.sol";
@@ -21,6 +22,8 @@ import {ISignatureSender} from "../interfaces/ISignatureSender.sol";
 import {ISignatureScheme} from "../interfaces/ISignatureScheme.sol";
 import {ISignatureSchemeAddressProvider} from "../interfaces/ISignatureSchemeAddressProvider.sol";
 
+import {FeeCollector} from "../fee-collector/FeeCollector.sol";
+
 /// @title SignatureSender contract
 /// @author Randamu
 /// @notice Smart Contract for Conditional Threshold Signing of messages sent within signature requests.
@@ -28,11 +31,13 @@ import {ISignatureSchemeAddressProvider} from "../interfaces/ISignatureSchemeAdd
 contract SignatureSender is
     ISignatureSender,
     Multicall,
+    FeeCollector,
     Initializable,
     UUPSUpgradeable,
     AccessControlEnumerableUpgradeable
 {
     using BytesLib for bytes;
+    using CallWithExactGas for bytes;
     using EnumerableSet for EnumerableSet.UintSet;
 
     /// @notice Role identifier for the admin role.
@@ -99,15 +104,15 @@ contract SignatureSender is
     // OVERRIDDEN UPGRADE FUNCTIONS
     function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
 
-    function _msgSender() internal view override(Context, ContextUpgradeable) returns (address) {
+    function _msgSender() internal view override (Context, ContextUpgradeable) returns (address) {
         return msg.sender;
     }
 
-    function _msgData() internal pure override(Context, ContextUpgradeable) returns (bytes calldata) {
+    function _msgData() internal pure override (Context, ContextUpgradeable) returns (bytes calldata) {
         return msg.data;
     }
 
-    function _contextSuffixLength() internal pure override(Context, ContextUpgradeable) returns (uint256) {
+    function _contextSuffixLength() internal pure override (Context, ContextUpgradeable) returns (uint256) {
         return 0;
     }
 
