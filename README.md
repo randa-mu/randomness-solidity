@@ -32,7 +32,7 @@ Provides functionality to generate and verify randomness based on conditional th
 Because randomness is derived from conditional threshold signatures produced by the dcipher network, this library also includes contracts for requesting and processing signature requests using a defined schema. 
 - `SignatureSchemeAddressProvider.sol` - Maintains the list of supported signature schemes (e.g., BLS).
 - `SignatureReceiverBase.sol` - An abstract contract for requesting and receiving threshold signatures from the dcipher network. 
-- `SignatureRequest.sol` - Core contract for managing conditional threshold signing of messages using the dcipher network.
+- `SignatureSender.sol` - Core contract for managing conditional threshold signing of messages using the dcipher network.
 
 > 💡 **Note:** You only need to extend `RandomnessReceiverBase.sol` to customize randomness requests. All other required contracts are already deployed on supported networks.
 
@@ -78,16 +78,21 @@ Because randomness is derived from conditional threshold signatures produced by 
 ### Installation
 To get started, install the randomness-solidity library in your smart contract project using your preferred development tool.
 
-**Hardhat (npm)**
+#### Hardhat (npm)
+
 ```bash
 npm install randomness-solidity
 ```  
-**Foundry**
+
+#### Foundry 
+
 ```bash
 forge install randa-mu/randomness-solidity
 ```
 
-### How to use
+
+
+### How to use the Solidity interaface
 
 1. **Import the library**
 
