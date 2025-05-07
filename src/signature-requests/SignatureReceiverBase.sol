@@ -24,7 +24,7 @@ abstract contract SignatureReceiverBase is ISignatureReceiver {
     /// @param message The message to be signed, provided as a byte array.
     /// @param condition Additional conditions that must be satisfied for the signature request, provided as a byte array.
     /// @return requestID The unique identifier assigned to the initiated signature request.
-    function requestSignature(string calldata schemeID, bytes calldata message, bytes calldata condition)
+    function _requestSignature(string memory schemeID, bytes memory message, bytes memory condition)
         internal
         returns (uint256)
     {

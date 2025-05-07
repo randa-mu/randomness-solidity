@@ -84,7 +84,7 @@ contract RandomnessSender is
         bytes memory m = messageFrom(r);
         bytes memory conditions = hex"";
 
-        requestID = signatureSender.requestSignature(SCHEME_ID, m, conditions);
+        requestID = _requestSignature(SCHEME_ID, m, conditions);
 
         callbacks[requestID] = r;
         allRequests.push(r);
