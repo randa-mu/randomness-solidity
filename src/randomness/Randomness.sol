@@ -16,56 +16,6 @@ import {FeistelShuffleOptimised} from "./FeistelShuffleOptimised.sol";
 /// @author Randamu
 /// @notice Helper functions for randomness verification and usage.
 library Randomness {
-    /// @notice Request for randomness.
-    function request(IRandomnessSender randomnessContract) public returns (uint256) {
-        return randomnessContract.requestRandomness();
-    }
-
-    // /// @notice Verify randomness received from offchain threshold network.
-    // function verify(
-    //     address randomnessContract,
-    //     address signatureContract,
-    //     bytes calldata signature,
-    //     uint256 requestID,
-    //     address requester,
-    //     bytes calldata DST
-    // ) public view returns (bool) {
-    //     (uint256[2] memory x, uint256[2] memory y) = ISignatureSender(signatureContract).getPublicKey();
-    //     BLS.PointG2 memory pk = BLS.PointG2({x: x, y: y});
-    //     BLS.PointG1 memory _message = BLS.hashToPoint(
-    //         DST, IRandomnessSender(randomnessContract).messageFrom(TypesLib.RandomnessRequest(requestID, requester))
-    //     );
-    //     BLS.PointG1 memory _signature = BLS.g1Unmarshal(signature);
-    //     (bool pairingSuccess, bool callSuccess) = BLS.verifySingle(_signature, pk, _message);
-    //     return pairingSuccess && callSuccess;
-    // }
-
-    // /// @notice Verify randomness received from offchain threshold network.
-    // function verify(
-    //     address randomnessContract,
-    //     address signatureContract,
-    //     bytes calldata signature,
-    //     uint256 requestID,
-    //     address requester
-    // ) public view returns (bool) {
-    //     ISignatureSender sigSender = ISignatureSender(signatureContract);
-
-    //     // Fetch request data and public key
-    //     string memory schemeID = sigSender.getRequest(requestID).schemeID;
-    //     ISignatureScheme sigScheme = _getSignatureScheme(sigSender, schemeID);
-    //     BLS.PointG2 memory pk = _getPublicKey(sigScheme);
-
-    //     // Prepare message and signature
-    //     bytes memory messageData = IRandomnessSender(randomnessContract).messageFrom(
-    //         TypesLib.RandomnessRequest(requestID, requester)
-    //     );
-    //     BLS.PointG1 memory _message = BLS.hashToPoint(sigScheme.DST(), messageData);
-    //     BLS.PointG1 memory _signature = BLS.g1Unmarshal(signature);
-
-    //     // Verify signature
-    //     (bool pairingSuccess, bool callSuccess) = BLS.verifySingle(_signature, pk, _message);
-    //     return pairingSuccess && callSuccess;
-    // }
     /// @notice Verify randomness received from offchain threshold network.
     function verify(
         address randomnessContract,

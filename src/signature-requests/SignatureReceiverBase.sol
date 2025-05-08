@@ -26,7 +26,7 @@ abstract contract SignatureReceiverBase is ISignatureReceiver {
     /// @return requestID The unique identifier assigned to the initiated signature request.
     function _requestSignature(string memory schemeID, bytes memory message, bytes memory condition)
         internal
-        returns (uint256)
+        returns (uint64)
     {
         return signatureSender.requestSignature(schemeID, message, condition);
     }
@@ -35,7 +35,7 @@ abstract contract SignatureReceiverBase is ISignatureReceiver {
     /// @dev Implements {ISignatureReceiver-receiveSignature}. Ensures only the signature sender can call this function.
     /// @param requestID The unique identifier of the signature request.
     /// @param signature The cryptographic signature of the message, provided as a byte array.
-    function receiveSignature(uint256 requestID, bytes calldata signature) external onlySignatureSender {
+    function receiveSignature(uint64 requestID, bytes calldata signature) external onlySignatureSender {
         onSignatureReceived(requestID, signature);
     }
 
@@ -44,5 +44,5 @@ abstract contract SignatureReceiverBase is ISignatureReceiver {
     /// It is intended to be overridden by derived contracts to implement custom behavior upon receipt of a signature.
     /// @param requestID The unique identifier of the signature request associated with the received signature.
     /// @param signature The cryptographic signature of the message, provided as a byte array.
-    function onSignatureReceived(uint256 requestID, bytes calldata signature) internal virtual;
+    function onSignatureReceived(uint64 requestID, bytes calldata signature) internal virtual;
 }

@@ -11,7 +11,7 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
     bytes32 public randomness;
 
     /// @notice Stores the request ID of the latest randomness request
-    uint256 public requestId;
+    uint64 public requestId;
 
     /// @notice Initializes the contract with the address of the randomness sender
     /// @param randomnessSender The address of the randomness provider
@@ -19,8 +19,24 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Requests randomness from the oracle
     /// @dev Calls `requestRandomness` to get a random value, updating `requestId` with the request ID
-    function rollDice() external {
-        requestId = requestRandomness();
+    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external returns (uint64, uint256) {
+        (uint64 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
+        requestId = requestID;
+        return (requestID, requestPrice);
+    }
+
+    function rollDiceWithSubscription(
+        uint32 callbackGasLimit
+    ) external payable returns (uint64) {
+        // create timelock request
+        uint64 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return requestID;
+    }
+
+    function cancelSubscription(address to) external onlyOwner {
+        _cancelSubscription(to);
     }
 
     /// @notice Callback function that processes received randomness

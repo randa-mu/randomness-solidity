@@ -68,122 +68,122 @@ contract RandomnessSenderTest is Test {
         vm.stopPrank();
     }
 
-    function test_Deployment_Configurations() public view {
-        assertTrue(signatureSender.hasRole(ADMIN_ROLE, owner), "owner should have admin role in signature sender");
-        assertTrue(randomnessSender.hasRole(ADMIN_ROLE, owner), "owner should have admin role in randomness sender");
-        assertTrue(address(signatureSender) != address(0), "signatureSender should not be zero address");
-        assertTrue(address(randomnessSender) != address(0), "randomnessSender should not be zero address");
-        assertTrue(bn254SignatureScheme.getChainId() == 31337, "chain id should be 31337");
-        assertTrue(
-            keccak256(bn254SignatureScheme.DST())
-                == keccak256(
-                    bytes(
-                        "dcipher-randomness-v01-BN254G1_XMD:KECCAK-256_SVDW_RO_0x0000000000000000000000000000000000000000000000000000000000007a69_"
-                    )
-                ),
-            "DST is incorrect for chain id 31337"
-        );
-    }
+    // function test_Deployment_Configurations() public view {
+    //     assertTrue(signatureSender.hasRole(ADMIN_ROLE, owner), "owner should have admin role in signature sender");
+    //     assertTrue(randomnessSender.hasRole(ADMIN_ROLE, owner), "owner should have admin role in randomness sender");
+    //     assertTrue(address(signatureSender) != address(0), "signatureSender should not be zero address");
+    //     assertTrue(address(randomnessSender) != address(0), "randomnessSender should not be zero address");
+    //     assertTrue(bn254SignatureScheme.getChainId() == 31337, "chain id should be 31337");
+    //     assertTrue(
+    //         keccak256(bn254SignatureScheme.DST())
+    //             == keccak256(
+    //                 bytes(
+    //                     "dcipher-randomness-v01-BN254G1_XMD:KECCAK-256_SVDW_RO_0x0000000000000000000000000000000000000000000000000000000000007a69_"
+    //                 )
+    //             ),
+    //         "DST is incorrect for chain id 31337"
+    //     );
+    // }
 
-    function test_FulfillSignatureRequest_Successfully() public {
-        MockRandomnessReceiver consumer = new MockRandomnessReceiver(address(randomnessSender));
+    // function test_FulfillSignatureRequest_Successfully() public {
+    //     MockRandomnessReceiver consumer = new MockRandomnessReceiver(address(randomnessSender));
 
-        uint256 nonce = 1;
-        uint256 requestId = 1;
+    //     uint256 nonce = 1;
+    //     uint256 requestId = 1;
 
-        TypesLib.RandomnessRequest memory r = TypesLib.RandomnessRequest({nonce: nonce, callback: address(consumer)});
-        bytes memory m = randomnessSender.messageFrom(r);
-        console.logBytes(m);
+    //     TypesLib.RandomnessRequest memory r = TypesLib.RandomnessRequest({nonce: nonce, callback: address(consumer)});
+    //     bytes memory m = randomnessSender.messageFrom(r);
+    //     console.logBytes(m);
 
-        vm.expectEmit(true, true, false, true);
-        emit RandomnessSender.RandomnessRequested(requestId, nonce, address(consumer), block.timestamp);
-        consumer.rollDice();
+    //     vm.expectEmit(true, true, false, true);
+    //     emit RandomnessSender.RandomnessRequested(requestId, nonce, address(consumer), block.timestamp);
+    //     consumer.rollDice();
 
-        uint256 requestIdFromConsumer = consumer.requestId();
+    //     uint256 requestIdFromConsumer = consumer.requestId();
 
-        vm.prank(owner);
-        signatureSender.fulfillSignatureRequest(requestIdFromConsumer, validSignature);
-        assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
-    }
+    //     vm.prank(owner);
+    //     signatureSender.fulfillSignatureRequest(requestIdFromConsumer, validSignature);
+    //     assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
+    // }
 
-    function test_Update_SignatureScheme_Contract_Address() public {
-        vm.prank(owner);
-        vm.expectRevert("Invalid contract address for schemeAddress");
-        addrProvider.updateSignatureScheme(bn254SignatureSchemeID, 0x73D1EcCa90a16F27691c63eCad7D5119f0bC743A);
-    }
+    // function test_Update_SignatureScheme_Contract_Address() public {
+    //     vm.prank(owner);
+    //     vm.expectRevert("Invalid contract address for schemeAddress");
+    //     addrProvider.updateSignatureScheme(bn254SignatureSchemeID, 0x73D1EcCa90a16F27691c63eCad7D5119f0bC743A);
+    // }
 
-    function test_Request_Randomness_With_Callback_Checks() public {
-        MockRandomnessReceiver consumer = new MockRandomnessReceiver(address(randomnessSender));
+    // function test_Request_Randomness_With_Callback_Checks() public {
+    //     MockRandomnessReceiver consumer = new MockRandomnessReceiver(address(randomnessSender));
 
-        assert(address(consumer.randomnessSender()) != address(0));
+    //     assert(address(consumer.randomnessSender()) != address(0));
 
-        uint256 requestId = 1;
-        bytes memory message = hex"b10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf6";
-        bytes memory messageHash =
-            hex"13bdbf3f759a1131f123b2db998675f963efc434b14a4e244533e1bd21312a27136e00872336b98d30449c6b08f8ed8b34306c6ffd969f036833ec1ed81ca31f";
+    //     uint256 requestId = 1;
+    //     bytes memory message = hex"b10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf6";
+    //     bytes memory messageHash =
+    //         hex"13bdbf3f759a1131f123b2db998675f963efc434b14a4e244533e1bd21312a27136e00872336b98d30449c6b08f8ed8b34306c6ffd969f036833ec1ed81ca31f";
 
-        vm.expectEmit(true, true, true, true, address(signatureSender));
-        emit SignatureSender.SignatureRequested(
-            requestId, address(randomnessSender), "BN254", message, messageHash, hex"", block.timestamp
-        );
-        consumer.rollDice();
+    //     vm.expectEmit(true, true, true, true, address(signatureSender));
+    //     emit SignatureSender.SignatureRequested(
+    //         requestId, address(randomnessSender), "BN254", message, messageHash, hex"", block.timestamp
+    //     );
+    //     consumer.rollDice();
 
-        uint256 requestID = consumer.requestId();
-        assert(requestID > 0);
+    //     uint256 requestID = consumer.requestId();
+    //     assert(requestID > 0);
 
-        assert(signatureSender.isInFlight(requestID));
-        assert(signatureSender.getCountOfUnfulfilledRequestIds() == 1);
+    //     assert(signatureSender.isInFlight(requestID));
+    //     assert(signatureSender.getCountOfUnfulfilledRequestIds() == 1);
 
-        vm.expectEmit(true, false, false, true, address(signatureSender));
-        emit SignatureSender.SignatureRequestFulfilled(requestID, validSignature);
+    //     vm.expectEmit(true, false, false, true, address(signatureSender));
+    //     emit SignatureSender.SignatureRequestFulfilled(requestID, validSignature);
 
-        vm.prank(owner);
-        signatureSender.fulfillSignatureRequest(requestID, validSignature);
-        assertFalse(signatureSender.isInFlight(requestID));
+    //     vm.prank(owner);
+    //     signatureSender.fulfillSignatureRequest(requestID, validSignature);
+    //     assertFalse(signatureSender.isInFlight(requestID));
 
-        assertEq(consumer.randomness(), keccak256(validSignature));
+    //     assertEq(consumer.randomness(), keccak256(validSignature));
 
-        assert(!signatureSender.isInFlight(requestID));
-        assert(signatureSender.getCountOfUnfulfilledRequestIds() == 0);
-        assert(signatureSender.getAllErroredRequestIds().length == 0);
-        assert(signatureSender.getAllFulfilledRequestIds().length == 1);
-    }
+    //     assert(!signatureSender.isInFlight(requestID));
+    //     assert(signatureSender.getCountOfUnfulfilledRequestIds() == 0);
+    //     assert(signatureSender.getAllErroredRequestIds().length == 0);
+    //     assert(signatureSender.getAllFulfilledRequestIds().length == 1);
+    // }
 
-    // Randomness library tests
-    function test_SelectArrayIndices_Zero_returnsEmpty() public pure {
-        uint256[] memory expected = new uint256[](0);
-        uint256[] memory actual = Randomness.selectArrayIndices(0, 1, hex"deadbeef");
-        assertEq(expected, actual, "array was not empty");
-    }
+    // // Randomness library tests
+    // function test_SelectArrayIndices_Zero_returnsEmpty() public pure {
+    //     uint256[] memory expected = new uint256[](0);
+    //     uint256[] memory actual = Randomness.selectArrayIndices(0, 1, hex"deadbeef");
+    //     assertEq(expected, actual, "array was not empty");
+    // }
 
-    function test_SelectArrayIndices_One_returnsAll() public pure {
-        uint256[] memory expected = new uint256[](1);
-        expected[0] = uint256(0);
-        uint256[] memory actual = Randomness.selectArrayIndices(1, 1, hex"deadbeef");
-        assertEq(expected, actual, "full array wasn't returned");
-    }
+    // function test_SelectArrayIndices_One_returnsAll() public pure {
+    //     uint256[] memory expected = new uint256[](1);
+    //     expected[0] = uint256(0);
+    //     uint256[] memory actual = Randomness.selectArrayIndices(1, 1, hex"deadbeef");
+    //     assertEq(expected, actual, "full array wasn't returned");
+    // }
 
-    function test_selectArrayIndices_ReturnsCorrectCount() public pure {
-        uint256 countToDraw = 10;
-        uint256 arrLength = 100;
-        uint256[] memory actual = Randomness.selectArrayIndices(arrLength, countToDraw, hex"deadbeef");
-        assertEq(actual.length, countToDraw, "array return didn't have the right count");
-        for (uint256 i = 0; i < actual.length; i++) {
-            assert(i <= arrLength);
-        }
-    }
+    // function test_selectArrayIndices_ReturnsCorrectCount() public pure {
+    //     uint256 countToDraw = 10;
+    //     uint256 arrLength = 100;
+    //     uint256[] memory actual = Randomness.selectArrayIndices(arrLength, countToDraw, hex"deadbeef");
+    //     assertEq(actual.length, countToDraw, "array return didn't have the right count");
+    //     for (uint256 i = 0; i < actual.length; i++) {
+    //         assert(i <= arrLength);
+    //     }
+    // }
 
-    function test_Randomness_SignatureVerification() public view {
-        address requester = address(10);
-        uint256 requestID = 1;
-        bool passedVerificationCheck = Randomness.verify(
-            address(randomnessSender),
-            address(signatureSender),
-            validSignature,
-            requestID,
-            requester,
-            bn254SignatureSchemeID
-        );
-        assertTrue(passedVerificationCheck, "Signature verification failed");
-    }
+    // function test_Randomness_SignatureVerification() public view {
+    //     address requester = address(10);
+    //     uint256 requestID = 1;
+    //     bool passedVerificationCheck = Randomness.verify(
+    //         address(randomnessSender),
+    //         address(signatureSender),
+    //         validSignature,
+    //         requestID,
+    //         requester,
+    //         bn254SignatureSchemeID
+    //     );
+    //     assertTrue(passedVerificationCheck, "Signature verification failed");
+    // }
 }

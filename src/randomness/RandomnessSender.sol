@@ -39,7 +39,7 @@ contract RandomnessSender is
     uint256 public nonce = 0;
 
     /// @notice Mapping from randomness request ID to request details.
-    mapping(uint256 => TypesLib.RandomnessRequest) private callbacks;
+    mapping(uint64 => TypesLib.RandomnessRequest) private callbacks;
     /// @notice Array of all randomness requests.
     TypesLib.RandomnessRequest[] private allRequests;
 
