@@ -110,16 +110,15 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
         return address(this).balance;
     }
 
-    function _requestRandomnessPayInNative(
-        uint32 callbackGasLimit
-    ) internal returns (uint64 requestId, uint256 requestPrice) {
+    function _requestRandomnessPayInNative(uint32 callbackGasLimit)
+        internal
+        returns (uint64 requestId, uint256 requestPrice)
+    {
         requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
         return (randomnessSender.requestRandomness{value: requestPrice}(callbackGasLimit), requestPrice);
     }
 
-    function _requestRandomnessWithSubscription(
-        uint32 callbackGasLimit
-    ) internal returns (uint64 requestId) {
+    function _requestRandomnessWithSubscription(uint32 callbackGasLimit) internal returns (uint64 requestId) {
         return randomnessSender.requestRandomnessWithSubscription(callbackGasLimit, subscriptionId);
     }
 

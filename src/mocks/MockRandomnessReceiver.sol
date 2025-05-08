@@ -25,9 +25,7 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
         return (requestID, requestPrice);
     }
 
-    function rollDiceWithSubscription(
-        uint32 callbackGasLimit
-    ) external payable returns (uint64) {
+    function rollDiceWithSubscription(uint32 callbackGasLimit) external payable returns (uint64) {
         // create timelock request
         uint64 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
         // store request id

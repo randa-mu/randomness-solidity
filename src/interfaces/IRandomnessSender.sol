@@ -32,7 +32,10 @@ interface IRandomnessSender is ISubscription {
     /// [0, maxGasLimit]
     /// @param subId The subscription ID associated with the request
     /// @return requestID The unique identifier assigned to this randomness request.
-    function requestRandomnessWithSubscription(uint32 callbackGasLimit, uint256 subId) external payable returns (uint64 requestID);
+    function requestRandomnessWithSubscription(uint32 callbackGasLimit, uint256 subId)
+        external
+        payable
+        returns (uint64 requestID);
 
     /// @notice Calculates the estimated price in native tokens for a request based on the provided gas limit
     /// @param _callbackGasLimit The gas limit for the callback execution
