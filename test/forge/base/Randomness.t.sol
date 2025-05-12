@@ -81,6 +81,30 @@ contract RandomnessTest is Deployment {
         signatureSchemeAddressProvider.updateSignatureScheme(bn254_schemeID, address(0));
     }
 
+    // Randomness library tests
+    function test_SelectArrayIndices_Zero_returnsEmpty() public pure {
+        uint256[] memory expected = new uint256[](0);
+        uint256[] memory actual = Randomness.selectArrayIndices(0, 1, hex"deadbeef");
+        assertEq(expected, actual, "array was not empty");
+    }
+
+    function test_SelectArrayIndices_One_returnsAll() public pure {
+        uint256[] memory expected = new uint256[](1);
+        expected[0] = uint256(0);
+        uint256[] memory actual = Randomness.selectArrayIndices(1, 1, hex"deadbeef");
+        assertEq(expected, actual, "full array wasn't returned");
+    }
+
+    function test_selectArrayIndices_ReturnsCorrectCount() public pure {
+        uint256 countToDraw = 10;
+        uint256 arrLength = 100;
+        uint256[] memory actual = Randomness.selectArrayIndices(arrLength, countToDraw, hex"deadbeef");
+        assertEq(actual.length, countToDraw, "array return didn't have the right count");
+        for (uint256 i = 0; i < actual.length; i++) {
+            assert(i <= arrLength);
+        }
+    }
+
     function test_Randomness_SignatureVerification() public view {
         address requester = address(10);
         uint64 requestID = 1;
