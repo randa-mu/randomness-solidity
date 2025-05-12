@@ -5,6 +5,8 @@ import {console} from "forge-std/Test.sol";
 
 import {TypesLib, BLS} from "./Deployment.t.sol";
 
+import {Randomness} from "../../../src/randomness/Randomness.sol";
+
 import {
     Deployment,
     SignatureSchemeAddressProvider,
@@ -77,5 +79,20 @@ contract RandomnessTest is Deployment {
         vm.prank(admin);
         vm.expectRevert("Invalid contract address for schemeAddress");
         signatureSchemeAddressProvider.updateSignatureScheme(bn254_schemeID, address(0));
+    }
+
+    function test_Randomness_SignatureVerification() public view {
+        address requester = address(10);
+        uint64 requestID = 1;
+        bool passedVerificationCheck = Randomness.verify(
+            address(randomnessSender),
+            address(signatureSender),
+            validSignature,
+            requestID,
+            requester,
+            bn254SignatureSchemeID
+        );
+        assertTrue(passedVerificationCheck, "Signature verification failed");
+        console.logBool(passedVerificationCheck);
     }
 }
