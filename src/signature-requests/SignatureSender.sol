@@ -78,7 +78,7 @@ contract SignatureSender is
     event SignatureRequestFulfilled(uint64 indexed requestID, bytes signature);
 
     /// @notice Emitted when a signature callback fails.
-    event SignatureCallbackFailed(uint64 requestID);
+    event SignatureCallbackFailed(uint64 indexed requestID);
 
     /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
     modifier onlyAdmin() {

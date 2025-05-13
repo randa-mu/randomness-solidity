@@ -52,7 +52,7 @@ contract RandomnessSender is
     /// @notice Emitted when the signature sender address is updated.
     event SignatureSenderUpdated(address indexed signatureSender);
     /// @notice Emitted when a randomness callback fails.
-    event RandomnessCallbackFailed(uint64 requestID);
+    event RandomnessCallbackFailed(uint64 indexed requestID);
 
     /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
     modifier onlyAdmin() {
