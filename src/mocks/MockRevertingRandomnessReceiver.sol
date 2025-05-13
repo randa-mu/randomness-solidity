@@ -39,7 +39,7 @@ contract MockRevertingRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Callback function that processes received randomness
     /// @dev Ensures the received request ID matches the stored one before updating state
-    function onRandomnessReceived(uint64 /*requestID*/, bytes32 /*randomness*/) internal pure override {
+    function onRandomnessReceived(uint64, /*requestID*/ bytes32 /*randomness*/ ) internal pure override {
         revert();
     }
 }
