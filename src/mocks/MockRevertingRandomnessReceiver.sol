@@ -3,10 +3,10 @@ pragma solidity ^0.8;
 
 import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
 
-/// @title MockRandomnessReceiver contract
+/// @title MockRevertingRandomnessReceiver contract
 /// @author Randamu
 /// @notice A contract that requests and consumes randomness
-contract MockRandomnessReceiver is RandomnessReceiverBase {
+contract MockRevertingRandomnessReceiver is RandomnessReceiverBase {
     /// @notice Stores the latest received randomness value
     bytes32 public randomness;
 
@@ -39,10 +39,7 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Callback function that processes received randomness
     /// @dev Ensures the received request ID matches the stored one before updating state
-    /// @param requestID The ID of the randomness request
-    /// @param _randomness The random value received from the oracle
-    function onRandomnessReceived(uint64 requestID, bytes32 _randomness) internal override {
-        require(requestId == requestID, "Request ID mismatch");
-        randomness = _randomness;
+    function onRandomnessReceived(uint64 /*requestID*/, bytes32 /*randomness*/) internal pure override {
+        revert();
     }
 }

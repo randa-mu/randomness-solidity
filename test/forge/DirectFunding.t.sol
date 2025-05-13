@@ -14,8 +14,10 @@ import {
     MockRandomnessReceiver
 } from "./base/Randomness.t.sol";
 
+import {MockRevertingRandomnessReceiver} from "../../src/mocks/MockRevertingRandomnessReceiver.sol";
+
 contract DirectFundingTest is RandomnessTest {
-    function test_FulfillSignature_DirectFunding_Request_Successfully() public {
+    function test_FulfillSignatureRequest_WithDirectFunding_Successfully() public {
         uint256 contractFundBuffer = 1 ether;
 
         mockRandomnessReceiver =
@@ -131,5 +133,139 @@ contract DirectFundingTest is RandomnessTest {
             admin.balance + randomnessRequest.directFundingFeePaid > adminBalance,
             "Admin balance should be higher after withdrawing fees"
         );
+    }
+
+    function test_CallbackShouldNotRevert_IfInterfaceIsNotImplemented() public {
+        assertTrue(randomnessSender.s_configured(), "BlocklockSender not configured");
+        assertFalse(randomnessSender.s_disabled(), "BlocklockSender is paused");
+
+        // get request price
+        uint32 callbackGasLimit = 500_000;
+        uint256 requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
+
+        // make randomness request
+        vm.prank(alice);
+        uint32 requestCallbackGasLimit = callbackGasLimit;
+        uint64 requestId = randomnessSender.requestRandomness{value: requestPrice}(requestCallbackGasLimit);
+
+        vm.txGasPrice(100_000);
+        vm.prank(admin);
+        signatureSender.fulfillSignatureRequest(requestId, validSignature);
+
+        assertFalse(signatureSender.isInFlight(requestId));
+        // fetch request information from randomness sender
+        TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
+        assertEq(keccak256(randomnessRequest.signature), keccak256(validSignature));
+    }
+
+    function test_FulfillDecryptionRequest_WithLowCallbackGasLimit() public {
+        uint256 contractFundBuffer = 1 ether;
+
+        mockRandomnessReceiver =
+            deployAndFundReceiverWithDirectFunding(admin, address(randomnessSender), contractFundBuffer);
+        assertEq(mockRandomnessReceiver.randomness(), 0x0);
+
+        uint64 requestId = 1;
+
+        // get request price
+        uint32 callbackGasLimit = 1000;
+        uint256 requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
+
+        vm.prank(alice);
+        mockRandomnessReceiver.fundContractNative{value: requestPrice}();
+
+        // create randomness request
+        mockRandomnessReceiver.rollDiceWithDirectFunding(callbackGasLimit);
+
+        // fetch request information from randomness sender
+        TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
+        assertEq(randomnessRequest.callbackGasLimit, callbackGasLimit);
+        assertGt(randomnessRequest.directFundingFeePaid, 0);
+
+        // fulfill request
+        vm.prank(admin);
+        signatureSender.fulfillSignatureRequest(requestId, validSignature);
+
+        // fetch request information from randomness sender
+        randomnessRequest = randomnessSender.getRequest(requestId);
+
+        uint64 requestIdFromConsumer = mockRandomnessReceiver.requestId();
+
+        assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
+        // if callback gas limit is too low, callback to receiver contract will not work
+        // but user will be charged for gas overhead
+        assertEq(mockRandomnessReceiver.randomness(), 0x0);
+    }
+
+    function test_FulfillDecryptionRequest_WithZeroCallbackGasLimit() public {
+        uint256 contractFundBuffer = 1 ether;
+
+        mockRandomnessReceiver =
+            deployAndFundReceiverWithDirectFunding(admin, address(randomnessSender), contractFundBuffer);
+        assertEq(mockRandomnessReceiver.randomness(), 0x0);
+
+        uint64 requestId = 1;
+
+        // get request price
+        uint32 callbackGasLimit = 0;
+        uint256 requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
+
+        vm.prank(alice);
+        mockRandomnessReceiver.fundContractNative{value: requestPrice}();
+
+        // create randomness request
+        mockRandomnessReceiver.rollDiceWithDirectFunding(callbackGasLimit);
+
+        // fetch request information from randomness sender
+        TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
+        assertEq(randomnessRequest.callbackGasLimit, callbackGasLimit);
+        assertGt(randomnessRequest.directFundingFeePaid, 0);
+
+        // fulfill request
+        vm.prank(admin);
+        signatureSender.fulfillSignatureRequest(requestId, validSignature);
+
+        // fetch request information from randomness sender
+        randomnessRequest = randomnessSender.getRequest(requestId);
+
+        uint64 requestIdFromConsumer = mockRandomnessReceiver.requestId();
+
+        assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
+        assertEq(mockRandomnessReceiver.randomness(), 0x0);
+    }
+
+    function test_FulfillDecryptionRequest_WithRevertingReceiver() public {
+        MockRevertingRandomnessReceiver mockRandomnessReceiver = new MockRevertingRandomnessReceiver(address(randomnessSender));
+
+        uint64 requestId = 1;
+
+        // get request price
+        uint32 callbackGasLimit = 200_000;
+        uint256 requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
+
+        vm.prank(alice);
+        mockRandomnessReceiver.fundContractNative{value: requestPrice}();
+
+        // create randomness request
+        mockRandomnessReceiver.rollDiceWithDirectFunding(callbackGasLimit);
+
+        // fetch request information from randomness sender
+        TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
+        assertEq(randomnessRequest.callbackGasLimit, callbackGasLimit);
+        assertGt(randomnessRequest.directFundingFeePaid, 0);
+
+        // fulfill request
+        vm.prank(admin);
+        vm.expectEmit(address(randomnessSender));
+        emit RandomnessSender.RandomnessCallbackFailed(requestId);
+        signatureSender.fulfillSignatureRequest(requestId, validSignature);
+
+        // fetch request information from randomness sender
+        randomnessRequest = randomnessSender.getRequest(requestId);
+
+        uint64 requestIdFromConsumer = mockRandomnessReceiver.requestId();
+
+        assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
+        assertEq(mockRandomnessReceiver.randomness(), 0x0);
     }
 }

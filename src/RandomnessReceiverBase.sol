@@ -126,7 +126,7 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
     /// @dev This function is restricted to calls from the designated randomness sender.
     /// @param requestID The unique identifier of the randomness request.
     /// @param randomness The generated random value as a `bytes32` type.
-    function receiveRandomness(uint256 requestID, bytes32 randomness) external onlyRandomnessSender {
+    function receiveRandomness(uint64 requestID, bytes32 randomness) external onlyRandomnessSender {
         onRandomnessReceived(requestID, randomness);
     }
 
@@ -134,7 +134,7 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
     /// @dev This internal function is intended to be overridden by derived contracts to implement custom behavior.
     /// @param requestID The unique identifier of the randomness request.
     /// @param randomness The generated random value, provided as a `bytes32` type.
-    function onRandomnessReceived(uint256 requestID, bytes32 randomness) internal virtual;
+    function onRandomnessReceived(uint64 requestID, bytes32 randomness) internal virtual;
 
     /// @notice Creates a new Randamu subscription if none exists and registers this contract as a consumer.
     /// @dev Internal helper that initializes the subscription only once.
