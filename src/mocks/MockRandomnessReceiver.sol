@@ -20,7 +20,9 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
     /// @notice Requests randomness using the direct funding option
     /// @dev Calls `_requestRandomnessPayInNative` to get a random value, updating `requestId` with the request ID
     function rollDiceWithDirectFunding(uint32 callbackGasLimit) external returns (uint64, uint256) {
+        // create randomness request
         (uint64 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
+        // store request id
         requestId = requestID;
         return (requestID, requestPrice);
     }
@@ -28,7 +30,7 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
     /// @notice Requests randomness using the subscription option
     /// @dev Calls `_requestRandomnessWithSubscription` to get a random value, updating `requestId` with the request ID
     function rollDiceWithSubscription(uint32 callbackGasLimit) external payable returns (uint64) {
-        // create timelock request
+        // create randomness request
         uint64 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
         // store request id
         requestId = requestID;
