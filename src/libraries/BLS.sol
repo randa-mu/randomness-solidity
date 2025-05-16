@@ -458,7 +458,7 @@ library BLS {
     ///     in rfc9380 section 5.3.1, using H = keccak256.
     /// @param DST Domain separation tag
     /// @param message The message to expand
-    /// @param n_bytes The number of bytes to extend to    
+    /// @param n_bytes The number of bytes to extend to
     function expandMsg(bytes memory DST, bytes memory message, uint8 n_bytes) internal pure returns (bytes memory) {
         uint256 domainLen = DST.length;
         if (domainLen > 255) {
