@@ -441,7 +441,7 @@ contract SubscriptionFundingTest is RandomnessTest {
 
         // check for fee deductions from subscription account
         // subId should be charged at this point, and request count for subId should be increased
-        (uint96 nativeBalance, uint64 reqCount,,) = randomnessSender.getSubscription(randomnessRequest.subId);
+        (uint96 nativeBalance,,,) = randomnessSender.getSubscription(randomnessRequest.subId);
 
         uint256 totalSubBalanceBeforeRequest = requestPrice;
         uint256 exactFeePaid = totalSubBalanceBeforeRequest - nativeBalance;
