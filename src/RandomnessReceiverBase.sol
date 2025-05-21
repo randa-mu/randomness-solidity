@@ -112,13 +112,13 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
 
     function _requestRandomnessPayInNative(uint32 callbackGasLimit)
         internal
-        returns (uint64 requestId, uint256 requestPrice)
+        returns (uint256 requestId, uint256 requestPrice)
     {
         requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
         return (randomnessSender.requestRandomness{value: requestPrice}(callbackGasLimit), requestPrice);
     }
 
-    function _requestRandomnessWithSubscription(uint32 callbackGasLimit) internal returns (uint64 requestId) {
+    function _requestRandomnessWithSubscription(uint32 callbackGasLimit) internal returns (uint256 requestId) {
         return randomnessSender.requestRandomnessWithSubscription(callbackGasLimit, subscriptionId);
     }
 
@@ -126,7 +126,7 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
     /// @dev This function is restricted to calls from the designated randomness sender.
     /// @param requestID The unique identifier of the randomness request.
     /// @param randomness The generated random value as a `bytes32` type.
-    function receiveRandomness(uint64 requestID, bytes32 randomness) external onlyRandomnessSender {
+    function receiveRandomness(uint256 requestID, bytes32 randomness) external onlyRandomnessSender {
         onRandomnessReceived(requestID, randomness);
     }
 
@@ -134,7 +134,7 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
     /// @dev This internal function is intended to be overridden by derived contracts to implement custom behavior.
     /// @param requestID The unique identifier of the randomness request.
     /// @param randomness The generated random value, provided as a `bytes32` type.
-    function onRandomnessReceived(uint64 requestID, bytes32 randomness) internal virtual;
+    function onRandomnessReceived(uint256 requestID, bytes32 randomness) internal virtual;
 
     /// @notice Creates a new Randamu subscription if none exists and registers this contract as a consumer.
     /// @dev Internal helper that initializes the subscription only once.

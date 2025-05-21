@@ -20,13 +20,13 @@ interface ISignatureSender {
     /// @return The unique request ID assigned to this signature request.
     function requestSignature(string calldata schemeID, bytes calldata message, bytes calldata condition)
         external
-        returns (uint64);
+        returns (uint256);
 
     /// @notice Fulfills a signature request by providing the corresponding signature.
     /// @dev Completes the signing process for the request identified by `requestID`.
     /// @param requestID The unique identifier of the signature request being fulfilled.
     /// @param signature The generated signature, provided as a byte array.
-    function fulfillSignatureRequest(uint64 requestID, bytes calldata signature) external;
+    function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external;
 
     /// @notice Updates the signature scheme address provider contract address.
     /// @param newSignatureSchemeAddressProvider The signature address provider address to set.
@@ -36,17 +36,17 @@ interface ISignatureSender {
     /// @dev Determines whether the specified `requestID` is still pending.
     /// @param requestID The unique identifier of the signature request.
     /// @return True if the request is still in flight, otherwise false.
-    function isInFlight(uint64 requestID) external view returns (bool);
+    function isInFlight(uint256 requestID) external view returns (bool);
 
     /// @notice Returns request data.
     /// @param requestID The unique identifier of the signature request.
     /// @return The corresponding SignatureRequest struct for the request ID.
-    function getRequest(uint64 requestID) external view returns (TypesLib.SignatureRequest memory);
+    function getRequest(uint256 requestID) external view returns (TypesLib.SignatureRequest memory);
 
     /// @notice Returns whether a specific request errored during callback or not.
     /// @param requestID The ID of the request to check.
     /// @return Boolean indicating whether the request has errored or not.
-    function hasErrored(uint64 requestID) external view returns (bool);
+    function hasErrored(uint256 requestID) external view returns (bool);
 
     /// @notice Returns all the fulfilled request IDs.
     /// @return A uint array representing a set containing all fulfilled request IDs.

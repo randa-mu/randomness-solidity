@@ -19,7 +19,7 @@ interface IRandomnessSender is ISubscription {
     /// to have inside receiveBlocklock. The acceptable range is
     /// [0, maxGasLimit]
     /// @return requestID The unique identifier assigned to this randomness request.
-    function requestRandomness(uint32 callbackGasLimit) external payable returns (uint64 requestID);
+    function requestRandomness(uint32 callbackGasLimit) external payable returns (uint256 requestID);
 
     /// @notice Requests the generation of a random value.
     /// @dev Initiates a randomness request.
@@ -35,7 +35,7 @@ interface IRandomnessSender is ISubscription {
     function requestRandomnessWithSubscription(uint32 callbackGasLimit, uint256 subId)
         external
         payable
-        returns (uint64 requestID);
+        returns (uint256 requestID);
 
     /// @notice Calculates the estimated price in native tokens for a request based on the provided gas limit
     /// @param _callbackGasLimit The gas limit for the callback execution
@@ -55,7 +55,7 @@ interface IRandomnessSender is ISubscription {
     /// @dev This function returns the Request struct associated with the given requestId.
     /// @param requestId The ID of the request to retrieve.
     /// @return The Request struct corresponding to the given requestId.
-    function getRequest(uint64 requestId) external view returns (TypesLib.RandomnessRequest memory);
+    function getRequest(uint256 requestId) external view returns (TypesLib.RandomnessRequest memory);
 
     /// @notice Sets signatureSender contract address.
     /// @param newSignatureSender The new address to set.

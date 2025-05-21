@@ -39,20 +39,20 @@ contract RandomnessSender is
     uint256 public nonce = 0;
 
     /// @notice Mapping from randomness request ID to request details.
-    mapping(uint64 => TypesLib.RandomnessRequest) private callbacks;
+    mapping(uint256 => TypesLib.RandomnessRequest) private callbacks;
     /// @notice Array of all randomness requests.
     TypesLib.RandomnessRequest[] private allRequests;
 
     /// @notice Emitted when a randomness request is initiated.
     event RandomnessRequested(
-        uint64 indexed requestID, uint256 indexed nonce, address indexed requester, uint256 requestedAt
+        uint256 indexed requestID, uint256 indexed nonce, address indexed requester, uint256 requestedAt
     );
     /// @notice Emitted when a randomness callback is successfully processed.
-    event RandomnessCallbackSuccess(uint64 indexed requestID, bytes32 randomness, bytes signature);
+    event RandomnessCallbackSuccess(uint256 indexed requestID, bytes32 randomness, bytes signature);
     /// @notice Emitted when the signature sender address is updated.
     event SignatureSenderUpdated(address indexed signatureSender);
     /// @notice Emitted when a randomness callback fails.
-    event RandomnessCallbackFailed(uint64 indexed requestID);
+    event RandomnessCallbackFailed(uint256 indexed requestID);
 
     /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
     modifier onlyAdmin() {
@@ -86,7 +86,7 @@ contract RandomnessSender is
         external
         payable
         onlyConfiguredNotDisabled
-        returns (uint64 requestID)
+        returns (uint256 requestID)
     {
         requestID = requestRandomnessWithSubscription(callbackGasLimit, 0);
     }
@@ -96,7 +96,7 @@ contract RandomnessSender is
         public
         payable
         onlyConfiguredNotDisabled
-        returns (uint64 requestID)
+        returns (uint256 requestID)
     {
         require(subId != 0 || msg.value > 0, "Direct funding required for request fulfillment callback");
 
@@ -167,7 +167,7 @@ contract RandomnessSender is
     }
 
     /// @notice Processes a received signature and invokes the callback.
-    function onSignatureReceived(uint64 requestID, bytes calldata signature) internal override {
+    function onSignatureReceived(uint256 requestID, bytes calldata signature) internal override {
         uint256 startGas = gasleft();
 
         TypesLib.RandomnessRequest storage request = callbacks[requestID];
@@ -228,7 +228,7 @@ contract RandomnessSender is
     /// @param requestId The ID of the request to handle payment for.
     /// @param startGas The amount of gas used at the start of the transaction,
     ///     used for calculating payment based on gas consumption.
-    function _handlePaymentAndCharge(uint64 requestId, uint256 startGas) internal override {
+    function _handlePaymentAndCharge(uint256 requestId, uint256 startGas) internal override {
         TypesLib.RandomnessRequest memory request = getRequest(requestId);
 
         if (request.subId > 0) {
@@ -376,7 +376,7 @@ contract RandomnessSender is
     }
 
     /// @notice Checks if a request is still in flight.
-    function isInFlight(uint64 requestID) external view returns (bool) {
+    function isInFlight(uint256 requestID) external view returns (bool) {
         return signatureSender.isInFlight(requestID);
     }
 
@@ -386,7 +386,7 @@ contract RandomnessSender is
     }
 
     /// @notice Retrieves a randomness request by ID.
-    function getRequest(uint64 requestId) public view returns (TypesLib.RandomnessRequest memory) {
+    function getRequest(uint256 requestId) public view returns (TypesLib.RandomnessRequest memory) {
         return callbacks[requestId];
     }
 
