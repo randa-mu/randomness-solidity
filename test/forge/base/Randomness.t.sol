@@ -107,7 +107,7 @@ contract RandomnessTest is Deployment {
 
     function test_Randomness_SignatureVerification() public view {
         address requester = address(10);
-        uint64 requestID = 1;
+        uint256 requestID = 1;
         bool passedVerificationCheck = Randomness.verify(
             address(randomnessSender),
             address(signatureSender),

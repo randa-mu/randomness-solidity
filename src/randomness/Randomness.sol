@@ -21,7 +21,7 @@ library Randomness {
         address randomnessContract,
         address signatureContract,
         bytes calldata signature,
-        uint64 requestID,
+        uint256 requestID,
         address requester,
         string calldata schemeID
     ) public view returns (bool) {

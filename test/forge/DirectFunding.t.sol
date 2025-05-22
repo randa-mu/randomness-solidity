@@ -25,7 +25,7 @@ contract DirectFundingTest is RandomnessTest {
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
         uint256 nonce = 1;
-        uint64 requestId = 1;
+        uint256 requestId = 1;
 
         TypesLib.RandomnessRequestCreationParams memory r =
             TypesLib.RandomnessRequestCreationParams({nonce: nonce, callback: address(mockRandomnessReceiver)});
@@ -54,7 +54,7 @@ contract DirectFundingTest is RandomnessTest {
         emit RandomnessSender.RandomnessRequested(requestId, nonce, address(mockRandomnessReceiver), block.timestamp);
         mockRandomnessReceiver.rollDiceWithDirectFunding(callbackGasLimit);
 
-        uint64 requestIdFromConsumer = mockRandomnessReceiver.requestId();
+        uint256 requestIdFromConsumer = mockRandomnessReceiver.requestId();
 
         // fetch request information including callbackGasLimit from signature sender
         TypesLib.SignatureRequest memory signatureRequest = signatureSender.getRequest(requestId);
@@ -146,7 +146,7 @@ contract DirectFundingTest is RandomnessTest {
         // make randomness request
         vm.prank(alice);
         uint32 requestCallbackGasLimit = callbackGasLimit;
-        uint64 requestId = randomnessSender.requestRandomness{value: requestPrice}(requestCallbackGasLimit);
+        uint256 requestId = randomnessSender.requestRandomness{value: requestPrice}(requestCallbackGasLimit);
 
         vm.txGasPrice(100_000);
         vm.prank(admin);
@@ -165,7 +165,7 @@ contract DirectFundingTest is RandomnessTest {
             deployAndFundReceiverWithDirectFunding(admin, address(randomnessSender), contractFundBuffer);
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
-        uint64 requestId = 1;
+        uint256 requestId = 1;
 
         // get request price
         uint32 callbackGasLimit = 1000;
@@ -189,7 +189,7 @@ contract DirectFundingTest is RandomnessTest {
         // fetch request information from randomness sender
         randomnessRequest = randomnessSender.getRequest(requestId);
 
-        uint64 requestIdFromConsumer = mockRandomnessReceiver.requestId();
+        uint256 requestIdFromConsumer = mockRandomnessReceiver.requestId();
 
         assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
         // if callback gas limit is too low, callback to receiver contract will not work
@@ -204,7 +204,7 @@ contract DirectFundingTest is RandomnessTest {
             deployAndFundReceiverWithDirectFunding(admin, address(randomnessSender), contractFundBuffer);
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
-        uint64 requestId = 1;
+        uint256 requestId = 1;
 
         // get request price
         uint32 callbackGasLimit = 0;
@@ -228,7 +228,7 @@ contract DirectFundingTest is RandomnessTest {
         // fetch request information from randomness sender
         randomnessRequest = randomnessSender.getRequest(requestId);
 
-        uint64 requestIdFromConsumer = mockRandomnessReceiver.requestId();
+        uint256 requestIdFromConsumer = mockRandomnessReceiver.requestId();
 
         assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
@@ -238,7 +238,7 @@ contract DirectFundingTest is RandomnessTest {
         MockRevertingRandomnessReceiver mockRandomnessReceiver =
             new MockRevertingRandomnessReceiver(address(randomnessSender));
 
-        uint64 requestId = 1;
+        uint256 requestId = 1;
 
         // get request price
         uint32 callbackGasLimit = 200_000;
@@ -264,7 +264,7 @@ contract DirectFundingTest is RandomnessTest {
         // fetch request information from randomness sender
         randomnessRequest = randomnessSender.getRequest(requestId);
 
-        uint64 requestIdFromConsumer = mockRandomnessReceiver.requestId();
+        uint256 requestIdFromConsumer = mockRandomnessReceiver.requestId();
 
         assertFalse(signatureSender.isInFlight(requestIdFromConsumer));
         assertEq(mockRandomnessReceiver.randomness(), 0x0);

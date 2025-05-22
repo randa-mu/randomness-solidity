@@ -43,7 +43,7 @@ contract SubscriptionFundingTest is RandomnessTest {
         assertTrue(requestPrice > 0, "Invalid request price");
 
         vm.prank(alice);
-        uint64 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
+        uint256 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
@@ -154,7 +154,7 @@ contract SubscriptionFundingTest is RandomnessTest {
         assertTrue(requestPrice > 0, "Invalid request price");
 
         vm.prank(alice);
-        uint64 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
+        uint256 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
@@ -195,7 +195,7 @@ contract SubscriptionFundingTest is RandomnessTest {
         assertTrue(requestPrice > 0, "Invalid request price");
 
         vm.prank(alice);
-        uint64 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
+        uint256 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
@@ -305,7 +305,7 @@ contract SubscriptionFundingTest is RandomnessTest {
         assertTrue(requestPrice > 0, "Invalid request price");
 
         vm.prank(alice);
-        uint64 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
+        uint256 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
@@ -399,7 +399,7 @@ contract SubscriptionFundingTest is RandomnessTest {
         mockRandomnessReceiver = deployAndFundReceiverWithSubscription(alice, address(randomnessSender), requestPrice);
 
         vm.prank(alice);
-        uint64 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
+        uint256 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
@@ -516,7 +516,7 @@ contract SubscriptionFundingTest is RandomnessTest {
         // make blocklock request
         vm.prank(alice);
         uint32 requestCallbackGasLimit = callbackGasLimit;
-        uint64 requestId = mockRandomnessReceiver.rollDiceWithSubscription(requestCallbackGasLimit);
+        uint256 requestId = mockRandomnessReceiver.rollDiceWithSubscription(requestCallbackGasLimit);
 
         // fetch request information from blocklock sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
@@ -568,7 +568,7 @@ contract SubscriptionFundingTest is RandomnessTest {
         assertTrue(requestPrice > 0, "Invalid request price");
 
         vm.prank(alice);
-        uint64 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
+        uint256 requestId = mockRandomnessReceiver.rollDiceWithSubscription(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);

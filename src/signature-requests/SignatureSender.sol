@@ -39,10 +39,10 @@ contract SignatureSender is
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     /// @notice Last used request ID.
-    uint64 public lastRequestID = 0;
+    uint256 public lastRequestID = 0;
 
     /// @notice Mapping from request IDs to signature request structs.
-    mapping(uint64 => TypesLib.SignatureRequest) public requests;
+    mapping(uint256 => TypesLib.SignatureRequest) public requests;
 
     /// @notice Address provider for signature schemes.
     ISignatureSchemeAddressProvider public signatureSchemeAddressProvider;
@@ -65,7 +65,7 @@ contract SignatureSender is
 
     /// @notice Emitted when a new signature request is created.
     event SignatureRequested(
-        uint64 indexed requestID,
+        uint256 indexed requestID,
         address indexed callback,
         string schemeID,
         bytes message,
@@ -75,10 +75,10 @@ contract SignatureSender is
     );
 
     /// @notice Emitted when a signature request is fulfilled.
-    event SignatureRequestFulfilled(uint64 indexed requestID, bytes signature);
+    event SignatureRequestFulfilled(uint256 indexed requestID, bytes signature);
 
     /// @notice Emitted when a signature callback fails.
-    event SignatureCallbackFailed(uint64 indexed requestID);
+    event SignatureCallbackFailed(uint256 indexed requestID);
 
     /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
     modifier onlyAdmin() {
@@ -120,7 +120,7 @@ contract SignatureSender is
     /// @dev See {ISignatureSender-requestSignature}.
     function requestSignature(string calldata schemeID, bytes calldata message, bytes calldata condition)
         external
-        returns (uint64)
+        returns (uint256)
     {
         lastRequestID += 1;
 
@@ -156,7 +156,7 @@ contract SignatureSender is
 
     /// @notice Fulfils a unique signature request.
     /// @dev See {ISignatureSender-fulfillSignatureRequest}.
-    function fulfillSignatureRequest(uint64 requestID, bytes calldata signature) external {
+    function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external {
         require(isInFlight(requestID), "No request with specified requestID");
         TypesLib.SignatureRequest memory request = requests[requestID];
 
@@ -196,18 +196,18 @@ contract SignatureSender is
 
     /// @notice Checks if a request is in flight.
     /// @dev See {ISignatureSender-isInFlight}.
-    function isInFlight(uint64 requestID) public view returns (bool) {
+    function isInFlight(uint256 requestID) public view returns (bool) {
         return unfulfilledRequestIds.contains(requestID) || erroredRequestIds.contains(requestID);
     }
 
     /// @notice Checks if a callback for a request id reverted
-    function hasErrored(uint64 requestID) public view returns (bool) {
+    function hasErrored(uint256 requestID) public view returns (bool) {
         return erroredRequestIds.contains(requestID);
     }
 
     /// @notice Returns a request given a request id.
     /// @dev See {ISignatureSender-getRequestInFlight}.
-    function getRequest(uint64 requestID) external view returns (TypesLib.SignatureRequest memory) {
+    function getRequest(uint256 requestID) external view returns (TypesLib.SignatureRequest memory) {
         return requests[requestID];
     }
 

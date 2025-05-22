@@ -11,7 +11,7 @@ contract MockRevertingRandomnessReceiver is RandomnessReceiverBase {
     bytes32 public randomness;
 
     /// @notice Stores the request ID of the latest randomness request
-    uint64 public requestId;
+    uint256 public requestId;
 
     /// @notice Initializes the contract with the address of the randomness sender
     /// @param randomnessSender The address of the randomness provider
@@ -19,9 +19,9 @@ contract MockRevertingRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Requests randomness from the oracle
     /// @dev Calls `_requestRandomnessPayInNative` to get a random value, updating `requestId` with the request ID using the direct funding option.
-    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external returns (uint64, uint256) {
+    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external returns (uint256, uint256) {
         // create randomness request
-        (uint64 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
+        (uint256 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
         // store request id
         requestId = requestID;
         return (requestID, requestPrice);
@@ -29,9 +29,9 @@ contract MockRevertingRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Requests randomness from the oracle
     /// @dev Calls `_requestRandomnessWithSubscription` to get a random value, updating `requestId` with the request ID using the subscription option.
-    function rollDiceWithSubscription(uint32 callbackGasLimit) external payable returns (uint64) {
+    function rollDiceWithSubscription(uint32 callbackGasLimit) external payable returns (uint256) {
         // create randomness request
-        uint64 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
+        uint256 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
         // store request id
         requestId = requestID;
         return requestID;
@@ -43,7 +43,7 @@ contract MockRevertingRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Callback function that processes received randomness
     /// @dev Ensures the received request ID matches the stored one before updating state
-    function onRandomnessReceived(uint64, /*requestID*/ bytes32 /*randomness*/ ) internal pure override {
+    function onRandomnessReceived(uint256, /*requestID*/ bytes32 /*randomness*/ ) internal pure override {
         revert();
     }
 }
