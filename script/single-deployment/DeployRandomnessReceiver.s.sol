@@ -33,7 +33,7 @@ contract DeployRandomnessReceiver is JsonUtils {
             address contractAddress =
                 Factory(vm.envAddress("RANDAMU_CREATE2_FACTORY_CONTRACT_ADDRESS")).deploy(Constants.SALT, code);
 
-            mockRandomnessReceiver = MockRandomnessReceiver(contractAddress);
+            mockRandomnessReceiver = MockRandomnessReceiver(payable(contractAddress));
         } else {
             mockRandomnessReceiver = new MockRandomnessReceiver{salt: Constants.SALT}(randomnessSenderAddr);
         }

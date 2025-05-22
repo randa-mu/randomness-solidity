@@ -18,15 +18,20 @@ library TypesLib {
         bool isFulfilled;
     }
 
-    /// @notice  Ciphertext representing data encrypted off-chain
-    struct Ciphertext {
-        BLS.PointG2 u;
-        bytes v;
-        bytes w;
-    }
-
     /// @notice  Randomness request stores details needed to verify the signature
     struct RandomnessRequest {
+        uint256 subId; // must be 0 for direct funding
+        uint256 directFundingFeePaid; // must be > 0 for direct funding and if subId == 0
+        uint32 callbackGasLimit; // must be between 0 and maxGasLimit
+        uint256 requestId;
+        bytes message;
+        bytes condition;
+        bytes signature;
+        uint256 nonce;
+        address callback;
+    }
+
+    struct RandomnessRequestCreationParams {
         uint256 nonce;
         address callback;
     }

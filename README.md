@@ -32,9 +32,73 @@ Provides functionality to generate and verify randomness based on conditional th
 Because randomness is derived from conditional threshold signatures produced by the dcipher network, this library also includes contracts for requesting and processing signature requests using a defined schema. 
 - `SignatureSchemeAddressProvider.sol` - Maintains the list of supported signature schemes (e.g., BLS).
 - `SignatureReceiverBase.sol` - An abstract contract for requesting and receiving threshold signatures from the dcipher network. 
-- `SignatureRequest.sol` - Core contract for managing conditional threshold signing of messages using the dcipher network.
+- `SignatureSender.sol` - Core contract for managing conditional threshold signing of messages using the dcipher network.
 
 > 💡 **Note:** You only need to extend `RandomnessReceiverBase.sol` to customize randomness requests. All other required contracts are already deployed on supported networks.
+
+
+
+## Quick Start
+
+### Installation
+To get started, install the randomness-solidity library in your smart contract project using your preferred development tool.
+
+#### Hardhat (npm)
+
+```bash
+npm install randomness-solidity
+```  
+
+#### Foundry 
+
+```bash
+forge install randa-mu/randomness-solidity
+```
+
+### Usage 
+
+#### Build
+```sh
+npm run build
+```
+
+#### Test
+```sh
+npm run test
+```
+
+#### Linting
+```sh
+npm run lint:fix
+```
+
+#### Code Coverage
+
+To run foundry coverage:
+
+```sh
+FOUNDRY_PROFILE=coverage forge coverage --report summary
+```
+
+This project also includes a [coverage.sh](utils/coverage.sh) script to generate and view test coverage reports using lcov. After the script runs, it generates and opens an html coverage report. If lcov is not installed, the script will attempt to install it automatically using Homebrew (macOS) or apt (Linux).
+
+To make the script executable:
+
+```sh
+chmod +x dev/coverage.sh
+```
+
+To run the script:
+
+```sh
+./utils/coverage.sh
+```
+
+
+### Deployment 
+
+For deployment steps, please see [deployment documentation](script/README.md).
+
 
 ### Supported Networks
 
@@ -73,21 +137,7 @@ Because randomness is derived from conditional threshold signatures produced by 
 | BN254SignatureScheme            | The BN254 signature scheme contract. Contains signature verification logic using pairing checks. |  [0x9eE627D4591E57d40D72CfCcDb79751040862C18](https://polygonscan.com/address/0x9eE627D4591E57d40D72CfCcDb79751040862C18) |
 
 
-## Quick Start
-
-### Installation
-To get started, install the randomness-solidity library in your smart contract project using your preferred development tool.
-
-**Hardhat (npm)**
-```bash
-npm install randomness-solidity
-```  
-**Foundry**
-```bash
-forge install randa-mu/randomness-solidity
-```
-
-### How to use
+### How to use the Solidity interaface
 
 1. **Import the library**
 
@@ -100,7 +150,7 @@ forge install randa-mu/randomness-solidity
 
 2. **Extend the  `RandomnessReceiverBase` contract**
 
-   To use the library, your contract must inherit from `RandomnessReceiverBase` and specify the deployed `RandomnessSender` contract address from your desired [network](#support-network) in the constructor. 
+   To use the library, your contract must inherit from `RandomnessReceiverBase` and specify the deployed `RandomnessSender` (proxy) contract address from your desired [network](#supported-networks) in the constructor. 
 
     ```solidity
     contract DiceRoller is RandomnessReceiverBase {
@@ -141,7 +191,7 @@ forge install randa-mu/randomness-solidity
      * was previously stored. If they match, it updates the `randomness` state variable
      * with the newly received random value.
      */
-    function onRandomnessReceived(uint256 requestID, bytes32 _randomness) internal override {
+    function onRandomnessReceived(uint64 requestID, bytes32 _randomness) internal override {
         require(requestId == requestID, "Request ID mismatch");
         randomness = _randomness;
     }
@@ -164,7 +214,7 @@ contract DiceRoller is RandomnessReceiverBase {
         requestId = requestRandomness();
     }
 
-    function onRandomnessReceived(uint256 requestID, bytes32 _randomness) internal override {
+    function onRandomnessReceived(uint64 requestID, bytes32 _randomness) internal override {
         require(requestId == requestID, "Request ID mismatch");
         diceNumber = _randomness;
     }
@@ -176,27 +226,27 @@ contract DiceRoller is RandomnessReceiverBase {
 ### RandomnessReceiverBase.sol
 | Function  | Return | Description |
 |----------|------------|------------|
-| `requestRandomness()` | `uint256 requestID` |Requests the generation of a random value from the dcipher network | 
-| `onRandomnessReceived(uint256 requestID, bytes32 randomness)` | n/a |	Callback function to be implemented by the inheriting contract. Called when the randomness is delivered.  |
+| `requestRandomness()` | `uint64 requestID` |Requests the generation of a random value from the dcipher network | 
+| `onRandomnessReceived(uint64 requestID, bytes32 randomness)` | n/a |	Callback function to be implemented by the inheriting contract. Called when the randomness is delivered.  |
  
 ### RandomnessSender.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-| `isInFlight(uint256 requestID)` | `bool` | Returns `true` if the specified randomness request is still pending. |
-| `getRequest(uint256 requestId)` | `TypesLib.RandomnessRequest`  | Returns the details of the randomness request associated with the given request ID.  |
+| `isInFlight(uint64 requestID)` | `bool` | Returns `true` if the specified randomness request is still pending. |
+| `getRequest(uint64 requestId)` | `TypesLib.RandomnessRequest`  | Returns the details of the randomness request associated with the given request ID.  |
 | `getAllRequests()` | `TypesLib.RandomnessRequest[]` | Retrieves all randomness requests submitted to the contract.|
 
 ### SignatureSender.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-| `isInFlight(uint256 requestID)` | `bool` | Returns true if the specified signature request is still pending.|
-| `getRequest(uint256 requestID)` | `TypesLib.SignatureRequest` | Returns the details of the signature request associated with the given request ID.|
+| `isInFlight(uint64 requestID)` | `bool` | Returns true if the specified signature request is still pending.|
+| `getRequest(uint64 requestID)` | `TypesLib.SignatureRequest` | Returns the details of the signature request associated with the given request ID.|
 | `getPublicKey()` | `uint256[2] memory, uint256[2] memory` | Returns the public key components used in the signature verification process.|
 
 ### SignatureSender.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-|`function verify(address randomnessContract, address signatureContract, bytes calldata signature uint256 requestID, address requester)`  | `bool` | Verifies that the provided randomness is valid and was properly generated by the dcipher network for the given request.|
+|`function verify(address randomnessContract, address signatureContract, bytes calldata signature uint64 requestID, address requester)`  | `bool` | Verifies that the provided randomness is valid and was properly generated by the dcipher network for the given request.|
 
 ## License
 This library is licensed under the MIT License which can be accessed [here](./LICENSE).
