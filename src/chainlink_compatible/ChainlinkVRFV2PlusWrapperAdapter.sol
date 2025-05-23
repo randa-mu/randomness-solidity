@@ -19,11 +19,7 @@ import {VRFV2PlusWrapperConsumerBase} from "@chainlink/contracts/src/v0.8/vrf/de
  * @notice requests for randomness.
  */
 // solhint-disable-next-line max-states-count
-contract ChainlinkVRFV2PlusWrapperAdapter is
-    RandomnessReceiverBase,
-    ITypeAndVersion,
-    IVRFV2PlusWrapper
-{
+contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVersion, IVRFV2PlusWrapper {
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
 
     // solhint-disable-next-line chainlink-solidity/prefix-immutable-variables-with-i
@@ -136,7 +132,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         view
         override
         returns (uint256)
-    {   
+    {
         uint256 wrapperCostWei = tx.gasPrice * s_wrapperGasOverhead;
         return wrapperCostWei + randomessSender.calculateRequestPriceNative(_callbackGasLimit);
     }
@@ -154,11 +150,11 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
     // todo check overrides are actually overriding something
     function requestRandomWordsInNative(
         uint32 _callbackGasLimit,
-        uint16 /*_requestConfirmations*/,
-        uint32 /*_numWords*/,
+        uint16, /*_requestConfirmations*/
+        uint32, /*_numWords*/
         bytes calldata extraArgs
     ) external payable override returns (uint256 requestId) {
-        // todo ensure request price is passed as msg.value 
+        // todo ensure request price is passed as msg.value
         (requestId,) = _requestRandomnessPayInNative(_callbackGasLimit + s_wrapperGasOverhead);
 
         s_callbacks[requestId] = Callback({
@@ -170,23 +166,35 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         return requestId;
     }
 
-    // // solhint-disable-next-line chainlink-solidity/prefix-internal-functions-with-underscore
-    // function fulfillRandomWords(uint256 _requestId, uint256[] calldata _randomWords) internal override {
-    //     Callback memory callback = s_callbacks[_requestId];
-    //     delete s_callbacks[_requestId];
+    function convertBytes32ToUint256Array(bytes32 randomness, uint256 count) internal pure returns (uint256[] memory) {
+        uint256[] memory randomWords = new uint256[](count);
+        for (uint256 i = 0; i < count; i++) {
+            randomWords[i] = uint256(keccak256(abi.encodePacked(randomness, i)));
+        }
+        return randomWords;
+    }
 
-    //     address callbackAddress = callback.callbackAddress;
-    //     // solhint-disable-next-line gas-custom-errors
-    //     require(callbackAddress != address(0), "request not found"); // This should never happen
+    function onRandomnessReceived(uint256 requestID, bytes32 randomness) internal override {
+        fulfillRandomWords(requestID, convertBytes32ToUint256Array(randomness, 1));
+    }
 
-    //     VRFV2PlusWrapperConsumerBase c;
-    //     bytes memory resp = abi.encodeWithSelector(c.rawFulfillRandomWords.selector, _requestId, _randomWords);
+    // solhint-disable-next-line chainlink-solidity/prefix-internal-functions-with-underscore
+    function fulfillRandomWords(uint256 _requestId, uint256[] calldata _randomWords) internal override {
+        Callback memory callback = s_callbacks[_requestId];
+        delete s_callbacks[_requestId];
 
-    //     bool success = _callWithExactGas(callback.callbackGasLimit, callbackAddress, resp);
-    //     if (!success) {
-    //         emit WrapperFulfillmentFailed(_requestId, callbackAddress);
-    //     }
-    // }
+        address callbackAddress = callback.callbackAddress;
+        // solhint-disable-next-line gas-custom-errors
+        require(callbackAddress != address(0), "request not found"); // This should never happen
+
+        VRFV2PlusWrapperConsumerBase c;
+        bytes memory resp = abi.encodeWithSelector(c.rawFulfillRandomWords.selector, _requestId, _randomWords);
+
+        (bool success,) = callbackAddress.call{gas: callback.callbackGasLimit}(resp);
+        if (!success) {
+            emit WrapperFulfillmentFailed(_requestId, callbackAddress);
+        }
+    }
 
     function typeAndVersion() external pure virtual override returns (string memory) {
         return "VRFV2PlusWrapper 1.0.0";
