@@ -25,7 +25,7 @@ contract DirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerBaseStub, Con
         VRFV2PlusWrapperConsumerBase(wrapperAddress) ///// ONLY PASS IN WRAPPER ADDRESS /////
     {}
 
-    function requestRandomWords(bool /*enableNativePayment*/) external onlyOwner returns (uint256) {
+    function requestRandomWords(bool /*enableNativePayment*/ ) external onlyOwner returns (uint256) {
         /// @notice Request parameters
         uint16 requestConfirmations = 3;
         uint32 callbackGasLimit = 300_000;
@@ -45,7 +45,7 @@ contract DirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerBaseStub, Con
             numWords,
             extraArgs ///// PASS IN EXTRA ARGS /////
         );
-        
+
         requestId = _requestId;
         return _requestId;
     }
