@@ -6,12 +6,9 @@ import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
-import {BlockhashStoreInterface} from "@chainlink/contracts/src/v0.8/vrf/interfaces/BlockhashStoreInterface.sol";
 import {
-    VRFConsumerBaseV2Plus,
-    IVRFMigratableConsumerV2Plus
+    VRFConsumerBaseV2Plus
 } from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
-import {SubscriptionAPI} from "@chainlink/contracts/src/v0.8/vrf/dev/SubscriptionAPI.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 // solhint-disable-next-line no-unused-import
 import {
