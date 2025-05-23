@@ -28,10 +28,6 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
     // s_maxNumWords is the max number of words that can be requested in a single wrapped VRF request.
     uint8 internal constant s_maxNumWords = 1;
 
-    // lastRequestId is the request ID of the most recent VRF V2 request made by this wrapper. This
-    // should only be relied on within the same transaction the request was made.
-    uint256 public override lastRequestId;
-
     // todo set overhead constant for this wrappers fulfillRandomWords logic
     // The cost for this gas is billed to the callback contract / caller, and must therefor be included
     // in the pricing for wrapped requests.
@@ -134,7 +130,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
         returns (uint256)
     {
         uint256 wrapperCostWei = tx.gasPrice * s_wrapperGasOverhead;
-        return wrapperCostWei + randomessSender.calculateRequestPriceNative(_callbackGasLimit);
+        return wrapperCostWei + randomnessSender.calculateRequestPriceNative(_callbackGasLimit);
     }
 
     function estimateRequestPriceNative(uint32 _callbackGasLimit, uint32 _numWords, uint256 _requestGasPriceWei)
@@ -179,7 +175,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
     }
 
     // solhint-disable-next-line chainlink-solidity/prefix-internal-functions-with-underscore
-    function fulfillRandomWords(uint256 _requestId, uint256[] calldata _randomWords) internal override {
+    function fulfillRandomWords(uint256 _requestId, uint256[] calldata _randomWords) internal /*override*/ {
         Callback memory callback = s_callbacks[_requestId];
         delete s_callbacks[_requestId];
 
