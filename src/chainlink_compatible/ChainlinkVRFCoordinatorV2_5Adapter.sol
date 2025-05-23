@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import "../RandomnessReceiverBase.sol";
+import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
+
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {BlockhashStoreInterface} from "@chainlink/contracts/src/v0.8/vrf/interfaces/BlockhashStoreInterface.sol";
@@ -22,12 +24,14 @@ import {
  */
 
 // solhint-disable-next-line contract-name-camelcase
-contract ChainlinkVRFCoordinatorV2_5Adapter is RandomnessReceiverBase, IVRFCoordinatorV2Plus {
+contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiverBase, IVRFCoordinatorV2Plus {
     uint16 public constant MAX_REQUEST_CONFIRMATIONS = 200;
     uint32 public constant MAX_NUM_WORDS = 1;
     uint8 private constant PREMIUM_PERCENTAGE_MAX = 155;
 
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
+
+    uint256 public lastRequestId;
 
     // todo set overhead constant for this wrappers fulfillRandomWords logic
     // The cost for this gas is billed to the callback contract / caller, and must therefor be included
@@ -120,7 +124,13 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is RandomnessReceiverBase, IVRFCoord
     //         // BLOCKHASH_STORE = BlockhashStoreInterface(blockhashStore);
     //     }
 
-    constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
+    constructor(address randomnessSender, uint32 _s_wrapperGasOverhead) RandomnessReceiverBase(randomnessSender) {
+        s_wrapperGasOverhead = _s_wrapperGasOverhead;
+    }
+
+    function setWrapperGasOverhead(uint32 _s_wrapperGasOverhead) external onlyOwner {
+        s_wrapperGasOverhead = _s_wrapperGasOverhead;
+    }
 
     /**
      * @notice Request a set of random words.
@@ -151,10 +161,8 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is RandomnessReceiverBase, IVRFCoord
     function requestRandomWords(VRFV2PlusClient.RandomWordsRequest calldata req)
         external
         override
-        returns (
-            // nonReentrant
-            uint256 requestId
-        )
+        nonReentrant
+        returns (uint256 requestId)
     {
         requestId = _requestRandomnessWithSubscription(req.callbackGasLimit);
 
@@ -163,6 +171,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is RandomnessReceiverBase, IVRFCoord
             callbackGasLimit: req.callbackGasLimit,
             requestGasPrice: uint64(tx.gasprice)
         });
+        lastRequestId = requestId;
 
         return requestId;
     }
@@ -199,19 +208,133 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is RandomnessReceiverBase, IVRFCoord
 
     // todo add overhead for adapter wrapper here with higher callback gas limit??
 
-    function calculateRequestPriceNative(uint32 _callbackGasLimit, uint32 _numWords) external view returns (uint256) {
-        return randomnessSender.calculateRequestPriceNative(_callbackGasLimit);
-    }
-
-    function estimateRequestPriceNative(uint32 _callbackGasLimit, uint32 _numWords, uint256 _requestGasPriceWei)
+    function calculateRequestPriceNative(uint32 _callbackGasLimit, uint32 /*_numWords*/ )
         external
         view
         returns (uint256)
     {
-        return randomnessSender.estimateRequestPriceNative(_callbackGasLimit, _requestGasPriceWei);
+        uint256 wrapperCostWei = tx.gasprice * s_wrapperGasOverhead;
+        return wrapperCostWei + randomnessSender.calculateRequestPriceNative(_callbackGasLimit);
+    }
+
+    function estimateRequestPriceNative(uint32 _callbackGasLimit, uint32, /*_numWords*/ uint256 _requestGasPriceWei)
+        external
+        view
+        returns (uint256)
+    {
+        uint256 wrapperCostWei = _requestGasPriceWei * s_wrapperGasOverhead;
+        return wrapperCostWei + randomnessSender.estimateRequestPriceNative(_callbackGasLimit, _requestGasPriceWei);
     }
 
     function pendingRequestExists(uint256 subId) public view override returns (bool) {
         return randomnessSender.pendingRequestExists(subId);
+    }
+
+    /**
+     * @notice Add a consumer to a VRF subscription.
+     * @param subId - ID of the subscription
+     * @param consumer - New consumer which can use the subscription
+     */
+    function addConsumer(uint256 subId, address consumer) external override {
+        randomnessSender.addConsumer(subId, consumer);
+    }
+
+    /**
+     * @notice Remove a consumer from a VRF subscription.
+     * @param subId - ID of the subscription
+     * @param consumer - Consumer to remove from the subscription
+     */
+    function removeConsumer(uint256 subId, address consumer) external override {
+        randomnessSender.removeConsumer(subId, consumer);
+    }
+
+    /**
+     * @notice Cancel a subscription
+     * @param subId - ID of the subscription
+     * @param to - Where to send the remaining LINK to
+     */
+    function cancelSubscription(uint256 subId, address to) external override {
+        randomnessSender.cancelSubscription(subId, to);
+    }
+
+    /**
+     * @notice Accept subscription owner transfer.
+     * @param subId - ID of the subscription
+     * @dev will revert if original owner of subId has
+     * not requested that msg.sender become the new owner.
+     */
+    function acceptSubscriptionOwnerTransfer(uint256 subId) external override {
+        randomnessSender.acceptSubscriptionOwnerTransfer(subId);
+    }
+
+    /**
+     * @notice Request subscription owner transfer.
+     * @param subId - ID of the subscription
+     * @param newOwner - proposed new owner of the subscription
+     */
+    function requestSubscriptionOwnerTransfer(uint256 subId, address newOwner) external override {
+        randomnessSender.requestSubscriptionOwnerTransfer(subId, newOwner);
+    }
+
+    /**
+     * @notice Create a VRF subscription.
+     * @return subId - A unique subscription id.
+     * @dev You can manage the consumer set dynamically with addConsumer/removeConsumer.
+     * @dev Note to fund the subscription with LINK, use transferAndCall. For example
+     * @dev  LINKTOKEN.transferAndCall(
+     * @dev    address(COORDINATOR),
+     * @dev    amount,
+     * @dev    abi.encode(subId));
+     * @dev Note to fund the subscription with Native, use fundSubscriptionWithNative. Be sure
+     * @dev  to send Native with the call, for example:
+     * @dev COORDINATOR.fundSubscriptionWithNative{value: amount}(subId);
+     */
+    function createSubscription() external override returns (uint256 subId) {
+        subscriptionId = randomnessSender.createSubscription();
+        subId = subscriptionId;
+    }
+
+    /**
+     * @notice Get a VRF subscription.
+     * @param subId - ID of the subscription
+     * @return balance - LINK balance of the subscription in juels.
+     * @return nativeBalance - native balance of the subscription in wei.
+     * @return reqCount - Requests count of subscription.
+     * @return owner - owner of the subscription.
+     * @return consumers - list of consumer address which are able to use this subscription.
+     */
+    function getSubscription(uint256 subId)
+        external
+        view
+        override
+        returns (uint96 balance, uint96 nativeBalance, uint64 reqCount, address owner, address[] memory consumers)
+    {
+        balance = 0;
+        (nativeBalance, reqCount, owner, consumers) = randomnessSender.getSubscription(subId);
+    }
+
+    /**
+     * @notice Paginate through all active VRF subscriptions.
+     * @param startIndex index of the subscription to start from
+     * @param maxCount maximum number of subscriptions to return, 0 to return all
+     * @dev the order of IDs in the list is **not guaranteed**, therefore, if making successive calls, one
+     * @dev should consider keeping the blockheight constant to ensure a holistic picture of the contract state
+     */
+    function getActiveSubscriptionIds(uint256 startIndex, uint256 maxCount)
+        external
+        view
+        override
+        returns (uint256[] memory)
+    {
+        return randomnessSender.getActiveSubscriptionIds(startIndex, maxCount);
+    }
+
+    /**
+     * @notice Fund a subscription with native.
+     * @param subId - ID of the subscription
+     * @notice This method expects msg.value to be greater than or equal to 0.
+     */
+    function fundSubscriptionWithNative(uint256 subId) external payable override {
+        randomnessSender.fundSubscriptionWithNative(subId);
     }
 }

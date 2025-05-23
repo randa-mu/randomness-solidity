@@ -153,6 +153,11 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
         randomnessSender.cancelSubscription(subscriptionId, to);
     }
 
+    function _removeConsumer(address consumer) internal {
+        require(subscriptionId != 0, "SubscriptionId is zero");
+        randomnessSender.removeConsumer(subscriptionId, consumer);
+    }
+
     /// @notice The receive function is executed on a call to the contract with empty calldata.
     /// This is the function that is executed on plain Ether transfers (e.g. via .send() or .transfer()).
     receive() external payable {

@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import "../RandomnessReceiverBase.sol";
+import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
 
-// import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
+import {IVRFV2PlusWrapper} from "./internal/IVRFV2PlusWrapper.sol";
+
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 import {ITypeAndVersion} from "@chainlink/contracts/src/v0.8/shared/interfaces/ITypeAndVersion.sol";
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
-import {IVRFV2PlusWrapper} from "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFV2PlusWrapper.sol";
 import {VRFV2PlusWrapperConsumerBase} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFV2PlusWrapperConsumerBase.sol";
 
 /**
@@ -19,7 +21,12 @@ import {VRFV2PlusWrapperConsumerBase} from "@chainlink/contracts/src/v0.8/vrf/de
  * @notice requests for randomness.
  */
 // solhint-disable-next-line max-states-count
-contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVersion, IVRFV2PlusWrapper {
+contract ChainlinkVRFV2PlusWrapperAdapter is
+    ReentrancyGuard,
+    RandomnessReceiverBase,
+    ITypeAndVersion,
+    IVRFV2PlusWrapper
+{
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
 
     // solhint-disable-next-line chainlink-solidity/prefix-immutable-variables-with-i
@@ -28,12 +35,13 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
     // s_maxNumWords is the max number of words that can be requested in a single wrapped VRF request.
     uint8 internal constant s_maxNumWords = 1;
 
-    // todo set overhead constant for this wrappers fulfillRandomWords logic
     // The cost for this gas is billed to the callback contract / caller, and must therefor be included
     // in the pricing for wrapped requests.
     // s_wrapperGasOverhead reflects the gas overhead of the wrapper's fulfillRandomWords
     // function. The cost for this gas is passed to the user.
     uint32 private s_wrapperGasOverhead;
+
+    uint256 public lastRequestId;
 
     struct Callback {
         address callbackAddress;
@@ -47,7 +55,9 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
 
     mapping(uint256 => Callback) /* requestID */ /* callback */ public s_callbacks;
 
-    constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
+    constructor(address randomnessSender, uint32 _s_wrapperGasOverhead) RandomnessReceiverBase(randomnessSender) {
+        s_wrapperGasOverhead = _s_wrapperGasOverhead;
+    }
 
     /**
      * @notice getConfig returns the current VRFV2Wrapper configuration.
@@ -123,7 +133,11 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
         );
     }
 
-    function calculateRequestPriceNative(uint32 _callbackGasLimit, uint32 _numWords)
+    function setWrapperGasOverhead(uint32 _s_wrapperGasOverhead) external onlyOwner {
+        s_wrapperGasOverhead = _s_wrapperGasOverhead;
+    }
+
+    function calculateRequestPriceNative(uint32 _callbackGasLimit, uint32 /*_numWords*/ )
         external
         view
         override
@@ -133,7 +147,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
         return wrapperCostWei + randomnessSender.calculateRequestPriceNative(_callbackGasLimit);
     }
 
-    function estimateRequestPriceNative(uint32 _callbackGasLimit, uint32 _numWords, uint256 _requestGasPriceWei)
+    function estimateRequestPriceNative(uint32 _callbackGasLimit, uint32, /*_numWords*/ uint256 _requestGasPriceWei)
         external
         view
         override
@@ -143,14 +157,12 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
         return wrapperCostWei + randomnessSender.estimateRequestPriceNative(_callbackGasLimit, _requestGasPriceWei);
     }
 
-    // todo check overrides are actually overriding something
     function requestRandomWordsInNative(
         uint32 _callbackGasLimit,
         uint16, /*_requestConfirmations*/
         uint32, /*_numWords*/
-        bytes calldata extraArgs
-    ) external payable override returns (uint256 requestId) {
-        // todo ensure request price is passed as msg.value
+        bytes calldata /*extraArgs*/
+    ) external payable override nonReentrant returns (uint256 requestId) {
         (requestId,) = _requestRandomnessPayInNative(_callbackGasLimit + s_wrapperGasOverhead);
 
         s_callbacks[requestId] = Callback({
@@ -158,6 +170,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is RandomnessReceiverBase, ITypeAndVer
             callbackGasLimit: _callbackGasLimit,
             requestGasPrice: uint64(tx.gasprice)
         });
+        lastRequestId = requestId;
 
         return requestId;
     }
