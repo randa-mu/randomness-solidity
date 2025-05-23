@@ -28,25 +28,18 @@ contract SubscriptionConsumer is VRFConsumerBaseV2Plus {
     ///// USE NEW KEYHASH FOR VRF 2.5 GAS LANE /////
     // For a list of available gas lanes on each network,
     // see https://docs.chain.link/docs/vrf/v2-5/supported-networks
-    bytes32 keyHash =
-        0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae;
+    bytes32 keyHash = 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae;
 
     ///// USE NEW CONSUMER BASE CONSTRUCTOR /////
     constructor(
         ///// UPDATE TO UINT256 /////
         uint256 subscriptionId,
         address _vrfCoordinator
-    )
-        VRFConsumerBaseV2Plus(_vrfCoordinator)
-    {
+    ) VRFConsumerBaseV2Plus(_vrfCoordinator) {
         s_subscriptionId = subscriptionId;
     }
 
-    function requestRandomWords()
-        external
-        onlyOwner
-        returns (uint256 _requestId)
-    {
+    function requestRandomWords() external onlyOwner returns (uint256 _requestId) {
         uint16 requestConfirmations = 3;
         uint32 callbackGasLimit = 300_000;
         uint32 numWords = 1;
@@ -61,9 +54,7 @@ contract SubscriptionConsumer is VRFConsumerBaseV2Plus {
                 requestConfirmations: requestConfirmations,
                 callbackGasLimit: callbackGasLimit,
                 numWords: numWords,
-                extraArgs: VRFV2PlusClient._argsToBytes(
-                    VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
-                )
+                extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: false}))
             })
         );
         requestId = _requestId;
