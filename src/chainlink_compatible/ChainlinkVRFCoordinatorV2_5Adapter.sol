@@ -33,7 +33,6 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
 
     uint256 public lastRequestId;
 
-    // todo set overhead constant for this wrappers fulfillRandomWords logic
     // The cost for this gas is billed to the callback contract / caller, and must therefor be included
     // in the pricing for wrapped requests.
     // s_wrapperGasOverhead reflects the gas overhead of the wrapper's fulfillRandomWords
@@ -205,8 +204,6 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
             emit WrapperFulfillmentFailed(_requestId, callbackAddress);
         }
     }
-
-    // todo add overhead for adapter wrapper here with higher callback gas limit??
 
     function calculateRequestPriceNative(uint32 _callbackGasLimit, uint32 /*_numWords*/ )
         external
