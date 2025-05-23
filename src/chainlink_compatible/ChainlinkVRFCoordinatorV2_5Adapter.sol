@@ -6,9 +6,7 @@ import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
-import {
-    VRFConsumerBaseV2Plus
-} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 // solhint-disable-next-line no-unused-import
 import {
@@ -148,7 +146,12 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
         return wrapperCostWei + randomnessSender.estimateRequestPriceNative(_callbackGasLimit, _requestGasPriceWei);
     }
 
-    function pendingRequestExists(uint256 subId) public view override(IVRFSubscriptionV2Plus, RandomnessReceiverBase) returns (bool) {
+    function pendingRequestExists(uint256 subId)
+        public
+        view
+        override (IVRFSubscriptionV2Plus, RandomnessReceiverBase)
+        returns (bool)
+    {
         return randomnessSender.pendingRequestExists(subId);
     }
 

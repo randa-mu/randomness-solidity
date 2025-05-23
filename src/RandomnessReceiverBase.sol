@@ -162,7 +162,7 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
         return randomnessSender.isInFlight(requestId);
     }
 
-    function pendingRequestExists(uint256 subId) public virtual view returns (bool) {
+    function pendingRequestExists(uint256 subId) public view virtual returns (bool) {
         return randomnessSender.pendingRequestExists(subId);
     }
 
