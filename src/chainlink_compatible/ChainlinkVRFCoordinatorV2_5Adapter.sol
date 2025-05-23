@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
+import "../RandomnessReceiverBase.sol";
+
 import {BlockhashStoreInterface} from "@chainlink/contracts/src/v0.8/vrf/interfaces/BlockhashStoreInterface.sol";
-import {VRF} from "@chainlink/contracts/src/v0.8/vrf/VRF.sol";
-import {VRFTypes} from "@chainlink/contracts/src/v0.8/vrf/VRFTypes.sol";
 import {
     VRFConsumerBaseV2Plus,
     IVRFMigratableConsumerV2Plus
 } from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {SubscriptionAPI} from "@chainlink/contracts/src/v0.8/vrf/dev/SubscriptionAPI.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
-import {IVRFCoordinatorV2PlusMigration} from
-    "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2PlusMigration.sol";
 // solhint-disable-next-line no-unused-import
 import {
     IVRFCoordinatorV2Plus,
@@ -22,21 +20,11 @@ import {
  * @dev Partial implementation of Chainlink's `VRFCoordinatorV2_5` with no-ops and dummy values for the methods RandamuVRF does not need.
  */
 
-// // solhint-disable-next-line contract-name-camelcase
-// contract ChainlinkVRFCoordinatorV2_5Adapter is VRF, IVRFCoordinatorV2Plus {
-//     /// @dev should always be available
-//     // solhint-disable-next-line chainlink-solidity/prefix-immutable-variables-with-i
-//     BlockhashStoreInterface public immutable BLOCKHASH_STORE;
-
-//     // Set this maximum to 200 to give us a 56 block window to fulfill
-//     // the request before requiring the block hash feeder.
-//     uint16 public constant MAX_REQUEST_CONFIRMATIONS = 200;
-//     uint32 public constant MAX_NUM_WORDS = 500;
-//     // 5k is plenty for an EXTCODESIZE call (2600) + warm CALL (100)
-//     // and some arithmetic operations.
-//     uint256 private constant GAS_FOR_CALL_EXACT_CHECK = 5_000;
-//     // upper bound limit for premium percentages to make sure fee calculations don't overflow
-//     uint8 private constant PREMIUM_PERCENTAGE_MAX = 155;
+// solhint-disable-next-line contract-name-camelcase
+contract ChainlinkVRFCoordinatorV2_5Adapter is RandomnessReceiverBase, IVRFCoordinatorV2Plus {
+    uint16 public constant MAX_REQUEST_CONFIRMATIONS = 200;
+    uint32 public constant MAX_NUM_WORDS = 1;
+    uint8 private constant PREMIUM_PERCENTAGE_MAX = 155;
 
 //     error InvalidRequestConfirmations(uint16 have, uint16 min, uint16 max);
 //     error GasLimitTooBig(uint32 have, uint32 want);
@@ -616,14 +604,4 @@ import {
 //         s_consumers[consumer][subId].active = false;
 //         emit SubscriptionConsumerRemoved(subId, consumer);
 //     }
-
-//     /**
-//      * @inheritdoc IVRFSubscriptionV2Plus
-//      */
-//     function cancelSubscription(uint256 subId, address to) external override onlySubOwner(subId) nonReentrant {
-//         if (pendingRequestExists(subId)) {
-//             revert PendingRequestExists();
-//         }
-//         _cancelSubscriptionHelper(subId, to);
-//     }
-// }
+}
