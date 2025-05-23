@@ -5,7 +5,6 @@ pragma solidity ^0.8;
 ///// UPDATE IMPORTS TO V2.5 /////
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import {VRFV2PlusWrapperConsumerBase} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFV2PlusWrapperConsumerBase.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 
 /**
@@ -25,33 +24,27 @@ contract DirectFundingConsumer is VRFV2PlusWrapperConsumerBase, ConfirmedOwner {
         VRFV2PlusWrapperConsumerBase(wrapperAddress) ///// ONLY PASS IN WRAPPER ADDRESS /////
     {}
 
-    function requestRandomWords(bool enableNativePayment) external onlyOwner returns (uint256) {
+    function requestRandomWords(bool /*enableNativePayment*/) external onlyOwner returns (uint256) {
+        /// @notice Request parameters
         uint16 requestConfirmations = 3;
         uint32 callbackGasLimit = 300_000;
         uint32 numWords = 1;
+        bool enableNativePayment = true; // Randamu only accepts native payment
 
         ///// UPDATE TO NEW V2.5 REQUEST FORMAT: ADD EXTRA ARGS /////
         bytes memory extraArgs =
             VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: enableNativePayment}));
         uint256 _requestId;
         uint256 reqPrice;
-        if (enableNativePayment) {
-            ///// USE THIS FUNCTION TO PAY IN NATIVE TOKENS /////
-            (_requestId, reqPrice) = requestRandomnessPayInNative(
-                callbackGasLimit,
-                requestConfirmations,
-                numWords,
-                extraArgs ///// PASS IN EXTRA ARGS /////
-            );
-        } else {
-            ///// USE THIS FUNCTION TO PAY IN LINK /////
-            (_requestId, reqPrice) = requestRandomness(
-                callbackGasLimit,
-                requestConfirmations,
-                numWords,
-                extraArgs ///// PASS IN EXTRA ARGS /////
-            );
-        }
+
+        ///// USE THIS FUNCTION TO PAY IN NATIVE TOKENS /////
+        (_requestId, reqPrice) = requestRandomnessPayInNative(
+            callbackGasLimit,
+            requestConfirmations,
+            numWords,
+            extraArgs ///// PASS IN EXTRA ARGS /////
+        );
+        
         requestId = _requestId;
         return _requestId;
     }

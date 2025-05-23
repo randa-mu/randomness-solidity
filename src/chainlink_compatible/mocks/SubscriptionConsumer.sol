@@ -45,7 +45,7 @@ contract SubscriptionConsumer is VRFConsumerBaseV2Plus {
         uint32 numWords = 1;
 
         ///// UPDATE TO NEW V2.5 REQUEST FORMAT /////
-        // To enable payment in native tokens, set nativePayment to true.
+        // To enable payment in native tokens, nativePayment is set to true.
         // Use the `s_vrfCoordinator` from VRFConsumerBaseV2Plus.sol
         _requestId = s_vrfCoordinator.requestRandomWords(
             VRFV2PlusClient.RandomWordsRequest({
@@ -54,7 +54,7 @@ contract SubscriptionConsumer is VRFConsumerBaseV2Plus {
                 requestConfirmations: requestConfirmations,
                 callbackGasLimit: callbackGasLimit,
                 numWords: numWords,
-                extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: false}))
+                extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: true}))
             })
         );
         requestId = _requestId;
