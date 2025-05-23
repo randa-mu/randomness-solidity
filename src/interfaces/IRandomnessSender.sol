@@ -73,6 +73,8 @@ interface IRandomnessSender is ISubscription {
     /// @return A byte array representing the hashed and encoded message.
     function messageFrom(TypesLib.RandomnessRequestCreationParams memory r) external pure returns (bytes memory);
 
+    function isInFlight(uint256 requestId) external view returns (bool);
+
     function getConfig()
         external
         view
