@@ -22,7 +22,7 @@ contract DirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerBaseStub, Con
     ///// USE NEW WRAPPER CONSUMER BASE CONSTRUCTOR /////
     constructor(address wrapperAddress)
         ConfirmedOwner(msg.sender)
-        VRFV2PlusWrapperConsumerBase(wrapperAddress) ///// ONLY PASS IN WRAPPER ADDRESS /////
+        ChainlinkVRFV2PlusWrapperConsumerBaseStub(wrapperAddress) ///// ONLY PASS IN WRAPPER ADDRESS /////
     {}
 
     function requestRandomWords(bool /*enableNativePayment*/ ) external onlyOwner returns (uint256) {
