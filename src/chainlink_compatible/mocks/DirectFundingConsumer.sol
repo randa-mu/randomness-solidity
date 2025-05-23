@@ -4,8 +4,9 @@ pragma solidity ^0.8;
 
 ///// UPDATE IMPORTS TO V2.5 /////
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
-import {VRFV2PlusWrapperConsumerBase} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFV2PlusWrapperConsumerBase.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+
+import {ChainlinkVRFV2PlusWrapperConsumerBaseStub} from "../internal/ChainlinkVRFV2PlusWrapperConsumerBaseStub.sol";
 
 /**
  * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
@@ -14,7 +15,7 @@ import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/V
  */
 
 ///// INHERIT NEW WRAPPER CONSUMER BASE CONTRACT /////
-contract DirectFundingConsumer is VRFV2PlusWrapperConsumerBase, ConfirmedOwner {
+contract DirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerBaseStub, ConfirmedOwner {
     uint256 public requestId;
     mapping(uint256 => uint256[]) public randomWordsOf;
 
