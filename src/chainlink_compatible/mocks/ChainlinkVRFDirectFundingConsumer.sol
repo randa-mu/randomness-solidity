@@ -15,7 +15,7 @@ import {ChainlinkVRFV2PlusWrapperConsumerBaseStub} from "../internal/ChainlinkVR
  */
 
 ///// INHERIT NEW WRAPPER CONSUMER BASE CONTRACT /////
-contract DirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerBaseStub, ConfirmedOwner {
+contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerBaseStub, ConfirmedOwner {
     uint256 public requestId;
     mapping(uint256 => uint256[]) public randomWordsOf;
 

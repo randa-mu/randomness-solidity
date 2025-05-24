@@ -15,7 +15,7 @@ import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/V
 */
 
 ///// INHERIT NEW CONSUMER BASE CONTRACT /////
-contract SubscriptionConsumer is VRFConsumerBaseV2Plus {
+contract ChainlinkVRFSubscriptionConsumer is VRFConsumerBaseV2Plus {
     uint256 public requestId;
     mapping(uint256 => uint256[]) public randomWordsOf;
 
