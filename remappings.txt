@@ -6,3 +6,4 @@ config/=config/
 @ds-test/=lib/forge-std/lib/ds-test/src/
 
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+@chainlink/contracts/=lib/chainlink/contracts/

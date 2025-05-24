@@ -72,4 +72,19 @@ interface IRandomnessSender is ISubscription {
     /// @param r The `Request` struct containing the data for generating the message.
     /// @return A byte array representing the hashed and encoded message.
     function messageFrom(TypesLib.RandomnessRequestCreationParams memory r) external pure returns (bytes memory);
+
+    function isInFlight(uint256 requestId) external view returns (bool);
+
+    function getConfig()
+        external
+        view
+        returns (
+            uint32 maxGasLimit,
+            uint32 gasAfterPaymentCalculation,
+            uint32 fulfillmentFlatFeeNativePPM,
+            uint32 weiPerUnitGas,
+            uint32 blsPairingCheckOverhead,
+            uint8 nativePremiumPercentage,
+            uint32 gasForCallExactCheck
+        );
 }
