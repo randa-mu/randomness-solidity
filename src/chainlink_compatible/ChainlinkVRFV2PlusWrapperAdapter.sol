@@ -26,6 +26,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
     IVRFV2PlusWrapper
 {
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
+    event WrapperGasOverheadUpdated(uint32 newWrapperGasOverhead);
 
     // solhint-disable-next-line chainlink-solidity/prefix-immutable-variables-with-i
     uint256 public constant SUBSCRIPTION_ID = 0;
@@ -133,6 +134,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
 
     function setWrapperGasOverhead(uint32 _s_wrapperGasOverhead) external onlyOwner {
         s_wrapperGasOverhead = _s_wrapperGasOverhead;
+        emit WrapperGasOverheadUpdated(s_wrapperGasOverhead);
     }
 
     function calculateRequestPriceNative(uint32 _callbackGasLimit, uint32 /*_numWords*/ )

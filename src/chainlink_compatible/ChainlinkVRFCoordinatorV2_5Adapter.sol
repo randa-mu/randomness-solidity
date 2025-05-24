@@ -25,6 +25,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
     uint8 private constant PREMIUM_PERCENTAGE_MAX = 155;
 
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
+    event WrapperGasOverheadUpdated(uint32 newWrapperGasOverhead);
 
     uint256 public lastRequestId;
 
@@ -48,6 +49,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
 
     constructor(address randomnessSender, uint32 _s_wrapperGasOverhead) RandomnessReceiverBase(randomnessSender) {
         s_wrapperGasOverhead = _s_wrapperGasOverhead;
+        emit WrapperGasOverheadUpdated(s_wrapperGasOverhead);
     }
 
     function setWrapperGasOverhead(uint32 _s_wrapperGasOverhead) external onlyOwner {
