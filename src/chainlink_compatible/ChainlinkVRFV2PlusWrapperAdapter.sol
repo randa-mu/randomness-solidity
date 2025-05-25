@@ -159,8 +159,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         override
         returns (uint256)
     {
-        uint256 wrapperCostWei = tx.gasprice * s_wrapperGasOverhead;
-        return wrapperCostWei + randomnessSender.calculateRequestPriceNative(_callbackGasLimit);
+        return randomnessSender.calculateRequestPriceNative(_callbackGasLimit + s_wrapperGasOverhead);
     }
 
     function estimateRequestPriceNative(uint32 _callbackGasLimit, uint32, /*_numWords*/ uint256 _requestGasPriceWei)
@@ -169,8 +168,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         override
         returns (uint256)
     {
-        uint256 wrapperCostWei = _requestGasPriceWei * s_wrapperGasOverhead;
-        return wrapperCostWei + randomnessSender.estimateRequestPriceNative(_callbackGasLimit, _requestGasPriceWei);
+        return randomnessSender.estimateRequestPriceNative(_callbackGasLimit + s_wrapperGasOverhead, _requestGasPriceWei);
     }
 
     function requestRandomWordsInNative(
@@ -178,8 +176,8 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         uint16, /*_requestConfirmations*/
         uint32, /*_numWords*/
         bytes calldata /*extraArgs*/
-    ) external payable override nonReentrant returns (uint256 requestId) {
-        requestId = randomnessSender.requestRandomness(_callbackGasLimit + s_wrapperGasOverhead);
+    ) external payable override nonReentrant returns (uint256 requestId) { 
+        requestId = randomnessSender.requestRandomness{value: msg.value}(_callbackGasLimit + s_wrapperGasOverhead);
 
         s_callbacks[requestId] = Callback({
             callbackAddress: msg.sender,

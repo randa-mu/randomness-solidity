@@ -16,6 +16,15 @@ import {ChainlinkVRFV2PlusWrapperConsumerBaseStub} from "../internal/ChainlinkVR
 
 ///// INHERIT NEW WRAPPER CONSUMER BASE CONTRACT /////
 contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerBaseStub, ConfirmedOwner {
+    /// @notice Event to log direct transfer of native tokens to the contract
+    event Received(address, uint256);
+
+    /// @notice Event to log deposits of native tokens
+    event Funded(address indexed sender, uint256 amount);
+
+    /// @notice Event to log withdrawals of native tokens
+    event Withdrawn(address indexed recipient, uint256 amount);
+
     uint256 public requestId;
     mapping(uint256 => uint256[]) public randomWordsOf;
 
@@ -25,10 +34,13 @@ contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerB
         ChainlinkVRFV2PlusWrapperConsumerBaseStub(wrapperAddress) ///// ONLY PASS IN WRAPPER ADDRESS /////
     {}
 
-    function requestRandomWords(bool /*enableNativePayment*/ ) external onlyOwner returns (uint256) {
+    function requestRandomWords(uint32 callbackGasLimit, bool /*enableNativePayment*/ )
+        external
+        onlyOwner
+        returns (uint256)
+    {
         /// @notice Request parameters
         uint16 requestConfirmations = 3;
-        uint32 callbackGasLimit = 300_000;
         uint32 numWords = 1;
         bool enableNativePayment = true; // Randamu only accepts native payment
 
@@ -53,5 +65,27 @@ contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerB
 
     function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {
         randomWordsOf[_requestId] = _randomWords;
+    }
+
+    /// @notice Function to fund the contract with native tokens for direct funding requests.
+    function fundContractNative() external payable {
+        require(msg.value > 0, "You must send some ETH");
+        emit Funded(msg.sender, msg.value);
+    }
+
+    /// @notice Function to withdraw native tokens from the contract.
+    /// @dev Only callable by contract owner.
+    /// @param amount The amount to withdraw.
+    /// @param recipient The address to send the tokens to.
+    function withdrawNative(uint256 amount, address recipient) external onlyOwner {
+        require(getBalance() >= amount, "Insufficient funds in contract");
+        payable(recipient).transfer(amount);
+        emit Withdrawn(recipient, amount);
+    }
+
+    /// @notice The receive function is executed on a call to the contract with empty calldata.
+    /// This is the function that is executed on plain Ether transfers (e.g. via .send() or .transfer()).
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
     }
 }

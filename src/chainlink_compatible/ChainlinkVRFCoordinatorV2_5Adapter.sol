@@ -41,6 +41,8 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
 
     uint256 public lastRequestId;
 
+    mapping(uint256 => address) private subscriptionOwners;
+
     // The cost for this gas is billed to the callback contract / caller, and must therefor be included
     // in the pricing for wrapped requests.
     // s_wrapperGasOverhead reflects the gas overhead of the wrapper's fulfillRandomWords
@@ -65,10 +67,33 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         _;
     }
 
+    modifier onlySubscriptionOwnerOrConsumer(uint256 subId) {
+        (,,, address[] memory consumers) = randomnessSender.getSubscription(subId);
+        require(
+            subscriptionOwners[subId] == msg.sender || _isConsumer(msg.sender, consumers),
+            "Caller is not subscription owner or approved consumer"
+        );
+        _;
+    }
+
+    modifier onlySubscriptionOwner(uint256 subId) {
+        require(subscriptionOwners[subId] == msg.sender, "Caller is not subscription owner");
+        _;
+    }
+
     constructor(address owner, address _randomnessSender, uint32 _s_wrapperGasOverhead) ConfirmedOwner(owner) {
         randomnessSender = IRandomnessSender(_randomnessSender);
         s_wrapperGasOverhead = _s_wrapperGasOverhead;
         emit WrapperGasOverheadUpdated(s_wrapperGasOverhead);
+    }
+
+    function _isConsumer(address sender, address[] memory consumers) internal pure returns (bool) {
+        for (uint256 i = 0; i < consumers.length; i++) {
+            if (consumers[i] == sender) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function setWrapperGasOverhead(uint32 _s_wrapperGasOverhead) external onlyOwner {
@@ -105,9 +130,10 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         external
         override
         nonReentrant
+        onlySubscriptionOwnerOrConsumer(req.subId)
         returns (uint256 requestId)
     {
-        requestId = randomnessSender.requestRandomnessWithSubscription(req.callbackGasLimit, req.subId);
+        requestId = randomnessSender.requestRandomnessWithSubscription(req.callbackGasLimit + s_wrapperGasOverhead, req.subId);
 
         s_callbacks[requestId] = Callback({
             callbackAddress: msg.sender,
@@ -158,8 +184,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         view
         returns (uint256)
     {
-        uint256 wrapperCostWei = tx.gasprice * s_wrapperGasOverhead;
-        return wrapperCostWei + randomnessSender.calculateRequestPriceNative(_callbackGasLimit);
+        return randomnessSender.calculateRequestPriceNative(_callbackGasLimit + s_wrapperGasOverhead);
     }
 
     function estimateRequestPriceNative(uint32 _callbackGasLimit, uint32, /*_numWords*/ uint256 _requestGasPriceWei)
@@ -167,8 +192,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         view
         returns (uint256)
     {
-        uint256 wrapperCostWei = _requestGasPriceWei * s_wrapperGasOverhead;
-        return wrapperCostWei + randomnessSender.estimateRequestPriceNative(_callbackGasLimit, _requestGasPriceWei);
+        return randomnessSender.estimateRequestPriceNative(_callbackGasLimit + s_wrapperGasOverhead, _requestGasPriceWei);
     }
 
     function pendingRequestExists(uint256 subId) public view override (IVRFSubscriptionV2Plus) returns (bool) {
@@ -180,7 +204,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
      * @param subId - ID of the subscription
      * @param consumer - New consumer which can use the subscription
      */
-    function addConsumer(uint256 subId, address consumer) external override {
+    function addConsumer(uint256 subId, address consumer) external override onlySubscriptionOwner(subId) {
         randomnessSender.addConsumer(subId, consumer);
     }
 
@@ -189,7 +213,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
      * @param subId - ID of the subscription
      * @param consumer - Consumer to remove from the subscription
      */
-    function removeConsumer(uint256 subId, address consumer) external override {
+    function removeConsumer(uint256 subId, address consumer) external override onlySubscriptionOwner(subId) {
         randomnessSender.removeConsumer(subId, consumer);
     }
 
@@ -198,7 +222,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
      * @param subId - ID of the subscription
      * @param to - Where to send the remaining LINK to
      */
-    function cancelSubscription(uint256 subId, address to) external override {
+    function cancelSubscription(uint256 subId, address to) external override onlySubscriptionOwner(subId) {
         randomnessSender.cancelSubscription(subId, to);
     }
 
@@ -208,7 +232,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
      * @dev will revert if original owner of subId has
      * not requested that msg.sender become the new owner.
      */
-    function acceptSubscriptionOwnerTransfer(uint256 subId) external override {
+    function acceptSubscriptionOwnerTransfer(uint256 subId) external override onlySubscriptionOwner(subId) {
         randomnessSender.acceptSubscriptionOwnerTransfer(subId);
     }
 
@@ -236,6 +260,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
      */
     function createSubscription() external override returns (uint256 subId) {
         subId = randomnessSender.createSubscription();
+        subscriptionOwners[subId] = msg.sender;
     }
 
     /**
@@ -274,7 +299,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     }
 
     /**
-     * @notice Fund a subscription with native.
+     * @notice Fund a subscription with native. Anyone can fund.
      * @param subId - ID of the subscription
      * @notice This method expects msg.value to be greater than or equal to 0.
      */
