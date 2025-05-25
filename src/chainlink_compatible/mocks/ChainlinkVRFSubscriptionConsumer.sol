@@ -39,6 +39,19 @@ contract ChainlinkVRFSubscriptionConsumer is VRFConsumerBaseV2Plus {
         s_subscriptionId = subscriptionId;
     }
 
+    function createSubscription() external returns (uint256) {
+        s_subscriptionId = s_vrfCoordinator.createSubscription();
+        return s_subscriptionId;
+    }
+
+    function setSubscription(uint256 subId) external {
+        s_subscriptionId = subId;
+    }
+
+    function fundSubscriptionWithNative(uint256 subId) external payable {
+        s_vrfCoordinator.fundSubscriptionWithNative(subId);
+    }
+
     function requestRandomWords() external onlyOwner returns (uint256 _requestId) {
         uint16 requestConfirmations = 3;
         uint32 callbackGasLimit = 300_000;

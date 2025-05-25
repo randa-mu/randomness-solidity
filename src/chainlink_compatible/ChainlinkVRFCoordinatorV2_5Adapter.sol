@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
+import {IRandomnessReceiver} from "../interfaces/IRandomnessReceiver.sol";
+import {IRandomnessSender} from "../interfaces/IRandomnessSender.sol";
+
+import {ConfirmedOwner} from "../access/ConfirmedOwner.sol";
 
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
@@ -19,7 +22,16 @@ import {
  */
 
 // solhint-disable-next-line contract-name-camelcase
-contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiverBase, IVRFCoordinatorV2Plus {
+contract ChainlinkVRFCoordinatorV2_5Adapter is
+    ReentrancyGuard,
+    IRandomnessReceiver,
+    IVRFCoordinatorV2Plus,
+    ConfirmedOwner
+{
+    /// @notice The contract responsible for providing randomness.
+    /// @dev This is an immutable reference set at deployment.
+    IRandomnessSender public randomnessSender;
+
     uint16 public constant MAX_REQUEST_CONFIRMATIONS = 200;
     uint32 public constant MAX_NUM_WORDS = 1;
     uint8 private constant PREMIUM_PERCENTAGE_MAX = 155;
@@ -47,7 +59,14 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
 
     mapping(uint256 => Callback) /* requestID */ /* callback */ public s_callbacks;
 
-    constructor(address randomnessSender, uint32 _s_wrapperGasOverhead) RandomnessReceiverBase(randomnessSender) {
+    /// @notice Ensures that only the designated randomness sender can call the function.
+    modifier onlyRandomnessSender() {
+        require(msg.sender == address(randomnessSender), "Only randomnessSender can call");
+        _;
+    }
+
+    constructor(address owner, address _randomnessSender, uint32 _s_wrapperGasOverhead) ConfirmedOwner(owner) {
+        randomnessSender = IRandomnessSender(_randomnessSender);
         s_wrapperGasOverhead = _s_wrapperGasOverhead;
         emit WrapperGasOverheadUpdated(s_wrapperGasOverhead);
     }
@@ -88,7 +107,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
         nonReentrant
         returns (uint256 requestId)
     {
-        requestId = _requestRandomnessWithSubscription(req.callbackGasLimit);
+        requestId = randomnessSender.requestRandomnessWithSubscription(req.callbackGasLimit, req.subId);
 
         s_callbacks[requestId] = Callback({
             callbackAddress: msg.sender,
@@ -108,7 +127,11 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
         return randomWords;
     }
 
-    function onRandomnessReceived(uint256 requestID, bytes32 randomness) internal override {
+    /// @notice Receives randomness for a specific request ID from the designated sender.
+    /// @dev This function is restricted to calls from the designated randomness sender.
+    /// @param requestID The unique identifier of the randomness request.
+    /// @param randomness The generated random value as a `bytes32` type.
+    function receiveRandomness(uint256 requestID, bytes32 randomness) external onlyRandomnessSender {
         fulfillRandomWords(requestID, convertBytes32ToUint256Array(randomness, 1));
     }
 
@@ -148,12 +171,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
         return wrapperCostWei + randomnessSender.estimateRequestPriceNative(_callbackGasLimit, _requestGasPriceWei);
     }
 
-    function pendingRequestExists(uint256 subId)
-        public
-        view
-        override (IVRFSubscriptionV2Plus, RandomnessReceiverBase)
-        returns (bool)
-    {
+    function pendingRequestExists(uint256 subId) public view override (IVRFSubscriptionV2Plus) returns (bool) {
         return randomnessSender.pendingRequestExists(subId);
     }
 
@@ -217,8 +235,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is ReentrancyGuard, RandomnessReceiv
      * @dev COORDINATOR.fundSubscriptionWithNative{value: amount}(subId);
      */
     function createSubscription() external override returns (uint256 subId) {
-        subscriptionId = randomnessSender.createSubscription();
-        subId = subscriptionId;
+        subId = randomnessSender.createSubscription();
     }
 
     /**

@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
+import {IRandomnessReceiver} from "../interfaces/IRandomnessReceiver.sol";
+import {IRandomnessSender} from "../interfaces/IRandomnessSender.sol";
+
+import {ConfirmedOwner} from "../access/ConfirmedOwner.sol";
 
 import {IVRFV2PlusWrapper} from "./internal/IVRFV2PlusWrapper.sol";
 
@@ -21,10 +24,15 @@ import {VRFV2PlusWrapperConsumerBase} from "@chainlink/contracts/src/v0.8/vrf/de
 // solhint-disable-next-line max-states-count
 contract ChainlinkVRFV2PlusWrapperAdapter is
     ReentrancyGuard,
-    RandomnessReceiverBase,
+    IRandomnessReceiver,
     ITypeAndVersion,
-    IVRFV2PlusWrapper
+    IVRFV2PlusWrapper,
+    ConfirmedOwner
 {
+    /// @notice The contract responsible for providing randomness.
+    /// @dev This is an immutable reference set at deployment.
+    IRandomnessSender public randomnessSender;
+
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
     event WrapperGasOverheadUpdated(uint32 newWrapperGasOverhead);
 
@@ -54,8 +62,16 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
 
     mapping(uint256 => Callback) /* requestID */ /* callback */ public s_callbacks;
 
-    constructor(address randomnessSender, uint32 _s_wrapperGasOverhead) RandomnessReceiverBase(randomnessSender) {
+    /// @notice Ensures that only the designated randomness sender can call the function.
+    modifier onlyRandomnessSender() {
+        require(msg.sender == address(randomnessSender), "Only randomnessSender can call");
+        _;
+    }
+
+    constructor(address owner, address _randomnessSender, uint32 _s_wrapperGasOverhead) ConfirmedOwner(owner) {
+        randomnessSender = IRandomnessSender(_randomnessSender);
         s_wrapperGasOverhead = _s_wrapperGasOverhead;
+        emit WrapperGasOverheadUpdated(s_wrapperGasOverhead);
     }
 
     /**
@@ -163,7 +179,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         uint32, /*_numWords*/
         bytes calldata /*extraArgs*/
     ) external payable override nonReentrant returns (uint256 requestId) {
-        (requestId,) = _requestRandomnessPayInNative(_callbackGasLimit + s_wrapperGasOverhead);
+        requestId = randomnessSender.requestRandomness(_callbackGasLimit + s_wrapperGasOverhead);
 
         s_callbacks[requestId] = Callback({
             callbackAddress: msg.sender,
@@ -183,7 +199,11 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         return randomWords;
     }
 
-    function onRandomnessReceived(uint256 requestID, bytes32 randomness) internal override {
+    /// @notice Receives randomness for a specific request ID from the designated sender.
+    /// @dev This function is restricted to calls from the designated randomness sender.
+    /// @param requestID The unique identifier of the randomness request.
+    /// @param randomness The generated random value as a `bytes32` type.
+    function receiveRandomness(uint256 requestID, bytes32 randomness) external onlyRandomnessSender {
         fulfillRandomWords(requestID, convertBytes32ToUint256Array(randomness, 1));
     }
 
