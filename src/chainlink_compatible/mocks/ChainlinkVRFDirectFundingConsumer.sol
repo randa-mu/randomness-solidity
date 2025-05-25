@@ -35,6 +35,7 @@ contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerB
         ///// UPDATE TO NEW V2.5 REQUEST FORMAT: ADD EXTRA ARGS /////
         bytes memory extraArgs =
             VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: enableNativePayment}));
+
         uint256 _requestId;
         uint256 reqPrice;
 

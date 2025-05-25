@@ -22,4 +22,6 @@ import {ChainlinkVRFSubscriptionConsumer} from
 import {ChainlinkVRFV2PlusWrapperAdapter} from "../../src/chainlink_compatible/ChainlinkVRFV2PlusWrapperAdapter.sol";
 import {ChainlinkVRFCoordinatorV2_5Adapter} from "../../src/chainlink_compatible/ChainlinkVRFCoordinatorV2_5Adapter.sol";
 
-contract ChainlinkVRFV2_5IntegrationTest is RandomnessTest {}
+contract ChainlinkVRFV2_5IntegrationTest is RandomnessTest {
+    function test_chainlinkFulfillSignatureRequest_WithDirectFunding_Successfully() public {}
+}
