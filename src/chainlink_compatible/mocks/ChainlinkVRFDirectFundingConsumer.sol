@@ -8,12 +8,10 @@ import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/V
 
 import {ChainlinkVRFV2PlusWrapperConsumerBaseStub} from "../internal/ChainlinkVRFV2PlusWrapperConsumerBaseStub.sol";
 
-/**
- * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
- * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
- * DO NOT USE THIS CODE IN PRODUCTION.
- * Adopted from: https://docs.chain.link/vrf/v2-5/migration-from-v2#direct-funding-example-code
- */
+/// @dev THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
+/// @dev THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
+/// @dev DO NOT USE THIS CODE IN PRODUCTION.
+/// @dev Adopted from: https://docs.chain.link/vrf/v2-5/migration-from-v2#direct-funding-example-code
 
 ///// INHERIT NEW WRAPPER CONSUMER BASE CONTRACT /////
 contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerBaseStub, ConfirmedOwner {
@@ -29,7 +27,7 @@ contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerB
     uint256 public requestId;
     mapping(uint256 => uint256[]) public randomWordsOf;
 
-    ///// USE NEW WRAPPER CONSUMER BASE CONSTRUCTOR /////
+    /// @notice USE RANDAMU WRAPPER from src/chainlink_compatible/ChainlinkVRFV2PlusWrapperAdapter.sol IN CONSTRUCTOR
     constructor(address wrapperAddress)
         ConfirmedOwner(msg.sender)
         ChainlinkVRFV2PlusWrapperConsumerBaseStub(wrapperAddress) ///// ONLY PASS IN WRAPPER ADDRESS /////
@@ -89,7 +87,7 @@ contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerB
     }
 
     /// @notice The receive function is executed on a call to the contract with empty calldata.
-    /// This is the function that is executed on plain Ether transfers (e.g. via .send() or .transfer()).
+    /// @dev This is the function that is executed on plain Ether transfers (e.g. via .send() or .transfer()).
     receive() external payable {
         emit Received(msg.sender, msg.value);
     }
