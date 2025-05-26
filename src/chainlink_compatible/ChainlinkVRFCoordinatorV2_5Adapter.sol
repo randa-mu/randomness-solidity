@@ -152,7 +152,11 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// @param randomness The original random seed as bytes32.
     /// @param count The number of pseudorandom uint256 values to generate.
     /// @return An array of pseudorandom uint256 values derived from the seed.
-    function mockConvertBytes32ToUint256Array(bytes32 randomness, uint256 count) internal pure returns (uint256[] memory) {
+    function mockConvertBytes32ToUint256Array(bytes32 randomness, uint256 count)
+        internal
+        pure
+        returns (uint256[] memory)
+    {
         uint256[] memory randomWords = new uint256[](count);
         for (uint256 i = 0; i < count; i++) {
             randomWords[i] = uint256(keccak256(abi.encodePacked(randomness, i)));
