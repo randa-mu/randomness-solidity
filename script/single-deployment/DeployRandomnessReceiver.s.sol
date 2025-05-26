@@ -26,8 +26,9 @@ contract DeployRandomnessReceiver is JsonUtils, EnvReader {
         internal
         returns (MockRandomnessReceiver mockRandomnessReceiver)
     {
-        bytes memory code =
-            abi.encodePacked(type(MockRandomnessReceiver).creationCode, abi.encode(randomnessSenderAddr, getSignerAddress()));
+        bytes memory code = abi.encodePacked(
+            type(MockRandomnessReceiver).creationCode, abi.encode(randomnessSenderAddr, getSignerAddress())
+        );
 
         vm.broadcast();
         if (vm.envBool("USE_RANDAMU_FACTORY")) {
@@ -36,7 +37,8 @@ contract DeployRandomnessReceiver is JsonUtils, EnvReader {
 
             mockRandomnessReceiver = MockRandomnessReceiver(payable(contractAddress));
         } else {
-            mockRandomnessReceiver = new MockRandomnessReceiver{salt: Constants.SALT}(randomnessSenderAddr, getSignerAddress());
+            mockRandomnessReceiver =
+                new MockRandomnessReceiver{salt: Constants.SALT}(randomnessSenderAddr, getSignerAddress());
         }
 
         console.log("MockRandomnessReceiver deployed at: ", address(mockRandomnessReceiver));
