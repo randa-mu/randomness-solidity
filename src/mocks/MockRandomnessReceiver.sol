@@ -19,7 +19,7 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Requests randomness using the direct funding option
     /// @dev Calls `_requestRandomnessPayInNative` to get a random value, updating `requestId` with the request ID
-    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external returns (uint256, uint256) {
+    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external payable returns (uint256, uint256) {
         // create randomness request
         (uint256 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
         // store request id

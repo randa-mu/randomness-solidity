@@ -36,23 +36,13 @@ contract DirectFundingTest is RandomnessTest {
         uint32 callbackGasLimit = 500_000;
         uint256 requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
 
-        uint256 aliceBalance = alice.balance;
-
-        vm.prank(alice);
-        mockRandomnessReceiver.fundContractNative{value: requestPrice}();
-
-        assertTrue(
-            mockRandomnessReceiver.getBalance() == requestPrice + contractFundBuffer,
-            "Incorrect ether balance for randomness receiver contract"
-        );
-        assertTrue(alice.balance == (aliceBalance - requestPrice), "Alice balance not debited");
         assertTrue(requestPrice > 0, "Invalid request price");
         console.log("Estimated request price", requestPrice);
 
         // create randomness request
         vm.expectEmit(true, true, false, true);
         emit RandomnessSender.RandomnessRequested(requestId, nonce, address(mockRandomnessReceiver), block.timestamp);
-        mockRandomnessReceiver.rollDiceWithDirectFunding(callbackGasLimit);
+        mockRandomnessReceiver.rollDiceWithDirectFunding{value: requestPrice}(callbackGasLimit);
 
         uint256 requestIdFromConsumer = mockRandomnessReceiver.requestId();
 
@@ -171,11 +161,8 @@ contract DirectFundingTest is RandomnessTest {
         uint32 callbackGasLimit = 1000;
         uint256 requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
 
-        vm.prank(alice);
-        mockRandomnessReceiver.fundContractNative{value: requestPrice}();
-
         // create randomness request
-        mockRandomnessReceiver.rollDiceWithDirectFunding(callbackGasLimit);
+        mockRandomnessReceiver.rollDiceWithDirectFunding{value: requestPrice}(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
@@ -210,11 +197,8 @@ contract DirectFundingTest is RandomnessTest {
         uint32 callbackGasLimit = 0;
         uint256 requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
 
-        vm.prank(alice);
-        mockRandomnessReceiver.fundContractNative{value: requestPrice}();
-
         // create randomness request
-        mockRandomnessReceiver.rollDiceWithDirectFunding(callbackGasLimit);
+        mockRandomnessReceiver.rollDiceWithDirectFunding{value: requestPrice}(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
@@ -244,11 +228,8 @@ contract DirectFundingTest is RandomnessTest {
         uint32 callbackGasLimit = 200_000;
         uint256 requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
 
-        vm.prank(alice);
-        mockRandomnessReceiver.fundContractNative{value: requestPrice}();
-
         // create randomness request
-        mockRandomnessReceiver.rollDiceWithDirectFunding(callbackGasLimit);
+        mockRandomnessReceiver.rollDiceWithDirectFunding{value: requestPrice}(callbackGasLimit);
 
         // fetch request information from randomness sender
         TypesLib.RandomnessRequest memory randomnessRequest = randomnessSender.getRequest(requestId);
