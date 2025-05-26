@@ -32,9 +32,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// @dev This is an immutable reference set at deployment.
     IRandomnessSender public randomnessSender;
 
-    uint16 public constant MAX_REQUEST_CONFIRMATIONS = 200;
     uint32 public constant MAX_NUM_WORDS = 1;
-    uint8 private constant PREMIUM_PERCENTAGE_MAX = 155;
 
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
     event WrapperGasOverheadUpdated(uint32 newWrapperGasOverhead);
@@ -133,7 +131,8 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         onlySubscriptionOwnerOrConsumer(req.subId)
         returns (uint256 requestId)
     {
-        requestId = randomnessSender.requestRandomnessWithSubscription(req.callbackGasLimit + s_wrapperGasOverhead, req.subId);
+        requestId =
+            randomnessSender.requestRandomnessWithSubscription(req.callbackGasLimit + s_wrapperGasOverhead, req.subId);
 
         s_callbacks[requestId] = Callback({
             callbackAddress: msg.sender,
@@ -192,7 +191,8 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         view
         returns (uint256)
     {
-        return randomnessSender.estimateRequestPriceNative(_callbackGasLimit + s_wrapperGasOverhead, _requestGasPriceWei);
+        return
+            randomnessSender.estimateRequestPriceNative(_callbackGasLimit + s_wrapperGasOverhead, _requestGasPriceWei);
     }
 
     function pendingRequestExists(uint256 subId) public view override (IVRFSubscriptionV2Plus) returns (bool) {
@@ -261,6 +261,9 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     function createSubscription() external override returns (uint256 subId) {
         subId = randomnessSender.createSubscription();
         subscriptionOwners[subId] = msg.sender;
+        // add wrapper contract as a consumer as it will be msg.sender in requests
+        // made to randomnessSender on behalf of chainlink vrf consumer
+        randomnessSender.addConsumer(subId, address(this));
     }
 
     /**
@@ -278,8 +281,14 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         override
         returns (uint96 balance, uint96 nativeBalance, uint64 reqCount, address owner, address[] memory consumers)
     {
+        (uint96 _nativeBalance, uint64 _reqCount, address _owner, address[] memory _consumers) =
+            randomnessSender.getSubscription(subId);
+
         balance = 0;
-        (nativeBalance, reqCount, owner, consumers) = randomnessSender.getSubscription(subId);
+        nativeBalance = _nativeBalance;
+        reqCount = _reqCount;
+        owner = _owner;
+        consumers = _consumers;
     }
 
     /**
@@ -304,6 +313,6 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
      * @notice This method expects msg.value to be greater than or equal to 0.
      */
     function fundSubscriptionWithNative(uint256 subId) external payable override {
-        randomnessSender.fundSubscriptionWithNative(subId);
+        randomnessSender.fundSubscriptionWithNative{value: msg.value}(subId);
     }
 }

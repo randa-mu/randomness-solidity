@@ -36,9 +36,6 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
     event WrapperGasOverheadUpdated(uint32 newWrapperGasOverhead);
 
-    // solhint-disable-next-line chainlink-solidity/prefix-immutable-variables-with-i
-    uint256 public constant SUBSCRIPTION_ID = 0;
-
     // s_maxNumWords is the max number of words that can be requested in a single wrapped VRF request.
     uint8 internal constant s_maxNumWords = 1;
 
@@ -168,7 +165,8 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         override
         returns (uint256)
     {
-        return randomnessSender.estimateRequestPriceNative(_callbackGasLimit + s_wrapperGasOverhead, _requestGasPriceWei);
+        return
+            randomnessSender.estimateRequestPriceNative(_callbackGasLimit + s_wrapperGasOverhead, _requestGasPriceWei);
     }
 
     function requestRandomWordsInNative(
@@ -176,7 +174,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         uint16, /*_requestConfirmations*/
         uint32, /*_numWords*/
         bytes calldata /*extraArgs*/
-    ) external payable override nonReentrant returns (uint256 requestId) { 
+    ) external payable override nonReentrant returns (uint256 requestId) {
         requestId = randomnessSender.requestRandomness{value: msg.value}(_callbackGasLimit + s_wrapperGasOverhead);
 
         s_callbacks[requestId] = Callback({

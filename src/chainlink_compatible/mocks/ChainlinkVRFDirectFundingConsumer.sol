@@ -12,6 +12,7 @@ import {ChainlinkVRFV2PlusWrapperConsumerBaseStub} from "../internal/ChainlinkVR
  * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
  * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
  * DO NOT USE THIS CODE IN PRODUCTION.
+ * Adopted from: https://docs.chain.link/vrf/v2-5/migration-from-v2#direct-funding-example-code
  */
 
 ///// INHERIT NEW WRAPPER CONSUMER BASE CONTRACT /////
@@ -65,6 +66,10 @@ contract ChainlinkVRFDirectFundingConsumer is ChainlinkVRFV2PlusWrapperConsumerB
 
     function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {
         randomWordsOf[_requestId] = _randomWords;
+    }
+
+    function getRandomWords(uint256 _requestId) external view returns (uint256[] memory) {
+        return randomWordsOf[_requestId];
     }
 
     /// @notice Function to fund the contract with native tokens for direct funding requests.
