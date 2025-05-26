@@ -220,7 +220,7 @@ contract DirectFundingTest is RandomnessTest {
 
     function test_FulfillDecryptionRequest_WithRevertingReceiver() public {
         MockRevertingRandomnessReceiver mockRandomnessReceiver =
-            new MockRevertingRandomnessReceiver(address(randomnessSender));
+            new MockRevertingRandomnessReceiver(address(randomnessSender), admin);
 
         uint256 requestId = 1;
 

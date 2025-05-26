@@ -15,7 +15,7 @@ contract MockRevertingRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Initializes the contract with the address of the randomness sender
     /// @param randomnessSender The address of the randomness provider
-    constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
+    constructor(address randomnessSender, address owner) RandomnessReceiverBase(randomnessSender, owner) {}
 
     /// @notice Requests randomness from the oracle
     /// @dev Calls `_requestRandomnessPayInNative` to get a random value, updating `requestId` with the request ID using the direct funding option.
