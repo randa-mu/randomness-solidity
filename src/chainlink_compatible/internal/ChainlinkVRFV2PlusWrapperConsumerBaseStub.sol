@@ -3,7 +3,8 @@ pragma solidity ^0.8.0;
 
 import {IVRFV2PlusWrapper} from "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFV2PlusWrapper.sol";
 
-/// @dev Partial implementation of Chainlink's `VRFV2PlusWrapperConsumerBase` without option to fund requests with LINK tokens
+/// @dev Partial implementation of Chainlink's `VRFV2PlusWrapperConsumerBase` without the option to fund requests with LINK tokens.
+/// @dev Only native tokens are supported, e.g., Ether.
 /// @notice Interface for contracts using VRF randomness through the VRF V2 wrapper
 /// ********************************************************************************
 /// @dev PURPOSE

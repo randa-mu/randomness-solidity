@@ -124,7 +124,8 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// secure way by the VRFCoordinator from a single random value supplied by the oracle.
     ///
     /// extraArgs - Encoded extra arguments that has a boolean flag for whether payment
-    /// should be made in native or LINK. Payment in LINK is only available if the LINK token is available to this contract.
+    /// should be made in native or LINK. 
+    /// Note: This contract does not support payments in LINK.
     /// @return requestId - A unique identifier of the request. Can be used to match
     /// a request to a response in fulfillRandomWords.
     function requestRandomWords(VRFV2PlusClient.RandomWordsRequest calldata req)
@@ -238,7 +239,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
 
     /// @notice Cancel a subscription
     /// @param subId - ID of the subscription
-    /// @param to - Where to send the remaining LINK to
+    /// @param to - Where to send the remaining native tokens to, e.g., Ether.
     function cancelSubscription(uint256 subId, address to) external override onlySubscriptionOwner(subId) {
         randomnessSender.cancelSubscription(subId, to);
     }
