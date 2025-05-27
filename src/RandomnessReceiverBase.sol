@@ -41,7 +41,7 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
     /// @notice Initializes the contract with a specified randomness sender.
     /// @dev Ensures that the provided sender address is non-zero.
     /// @param _randomnessSender The address of the randomness sender contract.
-    constructor(address _randomnessSender) ConfirmedOwner(msg.sender) {
+    constructor(address _randomnessSender, address owner) ConfirmedOwner(owner) {
         randomnessSender = IRandomnessSender(_randomnessSender);
     }
 
@@ -115,7 +115,10 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
         returns (uint256 requestId, uint256 requestPrice)
     {
         requestPrice = randomnessSender.calculateRequestPriceNative(callbackGasLimit);
-        return (randomnessSender.requestRandomness{value: requestPrice}(callbackGasLimit), requestPrice);
+
+        require(msg.value >= requestPrice, "Insufficient ETH");
+
+        requestId = randomnessSender.requestRandomness{value: msg.value}(callbackGasLimit);
     }
 
     function _requestRandomnessWithSubscription(uint32 callbackGasLimit) internal returns (uint256 requestId) {

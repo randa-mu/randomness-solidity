@@ -7,13 +7,14 @@ import {console} from "forge-std/console.sol";
 import {Constants} from "../libraries/Constants.sol";
 
 import {JsonUtils} from "../utils/JsonUtils.sol";
+import {EnvReader} from "../utils/EnvReader.sol";
 
 import {MockRandomnessReceiver} from "src/mocks/MockRandomnessReceiver.sol";
 import {Factory} from "src/factory/Factory.sol";
 
 /// @title DeployRandomnessReceiver
 /// @dev Script for deploying MockRandomnessReceiver contract.
-contract DeployRandomnessReceiver is JsonUtils {
+contract DeployRandomnessReceiver is JsonUtils, EnvReader {
     function run() public virtual {
         address randomnessSenderAddr =
             _readAddressFromJsonInput(Constants.DEPLOYMENT_INPUT_JSON_PATH, "randomnessSenderProxyAddress");
@@ -25,8 +26,9 @@ contract DeployRandomnessReceiver is JsonUtils {
         internal
         returns (MockRandomnessReceiver mockRandomnessReceiver)
     {
-        bytes memory code =
-            abi.encodePacked(type(MockRandomnessReceiver).creationCode, abi.encode(randomnessSenderAddr));
+        bytes memory code = abi.encodePacked(
+            type(MockRandomnessReceiver).creationCode, abi.encode(randomnessSenderAddr, getSignerAddress())
+        );
 
         vm.broadcast();
         if (vm.envBool("USE_RANDAMU_FACTORY")) {
@@ -35,7 +37,8 @@ contract DeployRandomnessReceiver is JsonUtils {
 
             mockRandomnessReceiver = MockRandomnessReceiver(payable(contractAddress));
         } else {
-            mockRandomnessReceiver = new MockRandomnessReceiver{salt: Constants.SALT}(randomnessSenderAddr);
+            mockRandomnessReceiver =
+                new MockRandomnessReceiver{salt: Constants.SALT}(randomnessSenderAddr, getSignerAddress());
         }
 
         console.log("MockRandomnessReceiver deployed at: ", address(mockRandomnessReceiver));

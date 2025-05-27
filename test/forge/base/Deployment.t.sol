@@ -101,7 +101,7 @@ abstract contract Deployment is Base {
         returns (MockRandomnessReceiver mockRandomnessReceiver)
     {
         vm.prank(owner);
-        mockRandomnessReceiver = new MockRandomnessReceiver(randomnessSenderProxy);
+        mockRandomnessReceiver = new MockRandomnessReceiver(randomnessSenderProxy, owner);
 
         vm.prank(owner);
         mockRandomnessReceiver.createSubscriptionAndFundNative{value: subBalance}();
@@ -112,7 +112,7 @@ abstract contract Deployment is Base {
         returns (MockRandomnessReceiver mockRandomnessReceiver)
     {
         vm.prank(owner);
-        mockRandomnessReceiver = new MockRandomnessReceiver(randomnessSenderProxy);
+        mockRandomnessReceiver = new MockRandomnessReceiver(randomnessSenderProxy, owner);
 
         vm.prank(owner);
         mockRandomnessReceiver.fundContractNative{value: subBalance}();
