@@ -152,11 +152,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// @param randomness The original random seed as bytes32.
     /// @param count The number of pseudorandom uint256 values to generate.
     /// @return An array of pseudorandom uint256 values derived from the seed.
-    function mockConvertBytes32ToUint256Array(bytes32 randomness, uint256 count)
-        internal
-        pure
-        returns (uint256[] memory)
-    {
+    function convertBytes32ToUint256Array(bytes32 randomness, uint256 count) internal pure returns (uint256[] memory) {
         uint256[] memory randomWords = new uint256[](count);
         for (uint256 i = 0; i < count; i++) {
             randomWords[i] = uint256(keccak256(abi.encodePacked(randomness, i)));
@@ -169,7 +165,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// @param requestID The unique identifier of the randomness request.
     /// @param randomness The generated random value as a `bytes32` type.
     function receiveRandomness(uint256 requestID, bytes32 randomness) external onlyRandomnessSender {
-        fulfillRandomWords(requestID, mockConvertBytes32ToUint256Array(randomness, 1));
+        fulfillRandomWords(requestID, convertBytes32ToUint256Array(randomness, 1));
     }
 
     /// @notice Internal function to fulfill random words by calling the consumer's callback.
@@ -265,14 +261,9 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// @notice Create a VRF subscription.
     /// @return subId - A unique subscription id.
     /// @dev You can manage the consumer set dynamically with addConsumer/removeConsumer.
-    /// @dev Note to fund the subscription with LINK, use transferAndCall. For example
-    /// @dev  LINKTOKEN.transferAndCall(
-    /// @dev    address(COORDINATOR),
-    /// @dev    amount,
-    /// @dev    abi.encode(subId));
     /// @dev Note to fund the subscription with Native, use fundSubscriptionWithNative. Be sure
     /// @dev  to send Native with the call, for example:
-    /// @dev COORDINATOR.fundSubscriptionWithNative{value: amount}(subId);
+    /// @dev randomnessSender.fundSubscriptionWithNative{value: amount}(subId);
     function createSubscription() external override returns (uint256 subId) {
         subId = randomnessSender.createSubscription();
         subscriptionOwners[subId] = msg.sender;

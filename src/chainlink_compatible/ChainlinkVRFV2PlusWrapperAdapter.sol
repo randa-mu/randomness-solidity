@@ -193,11 +193,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
     /// @param randomness The original random seed as bytes32.
     /// @param count The number of pseudorandom uint256 values to generate.
     /// @return An array of pseudorandom uint256 values derived from the seed.
-    function mockConvertBytes32ToUint256Array(bytes32 randomness, uint256 count)
-        internal
-        pure
-        returns (uint256[] memory)
-    {
+    function convertBytes32ToUint256Array(bytes32 randomness, uint256 count) internal pure returns (uint256[] memory) {
         uint256[] memory randomWords = new uint256[](count);
         for (uint256 i = 0; i < count; i++) {
             randomWords[i] = uint256(keccak256(abi.encodePacked(randomness, i)));
@@ -210,7 +206,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
     /// @param requestID The unique ID of the randomness request.
     /// @param randomness The random value received, as bytes32.
     function receiveRandomness(uint256 requestID, bytes32 randomness) external onlyRandomnessSender {
-        fulfillRandomWords(requestID, mockConvertBytes32ToUint256Array(randomness, 1));
+        fulfillRandomWords(requestID, convertBytes32ToUint256Array(randomness, 1));
     }
 
     /// @notice Internal function to fulfill randomness requests by calling the consumer's callback.
