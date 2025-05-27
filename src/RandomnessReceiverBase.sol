@@ -153,6 +153,19 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
         randomnessSender.cancelSubscription(subscriptionId, to);
     }
 
+    function _removeConsumer(address consumer) internal {
+        require(subscriptionId != 0, "SubscriptionId is zero");
+        randomnessSender.removeConsumer(subscriptionId, consumer);
+    }
+
+    function isInFlight(uint256 requestId) public view returns (bool) {
+        return randomnessSender.isInFlight(requestId);
+    }
+
+    function pendingRequestExists(uint256 subId) public view virtual returns (bool) {
+        return randomnessSender.pendingRequestExists(subId);
+    }
+
     /// @notice The receive function is executed on a call to the contract with empty calldata.
     /// This is the function that is executed on plain Ether transfers (e.g. via .send() or .transfer()).
     receive() external payable {
