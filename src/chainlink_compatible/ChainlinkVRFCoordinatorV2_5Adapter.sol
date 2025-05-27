@@ -124,7 +124,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// secure way by the VRFCoordinator from a single random value supplied by the oracle.
     ///
     /// extraArgs - Encoded extra arguments that has a boolean flag for whether payment
-    /// should be made in native or LINK. 
+    /// should be made in native or LINK.
     /// Note: This contract does not support payments in LINK.
     /// @return requestId - A unique identifier of the request. Can be used to match
     /// a request to a response in fulfillRandomWords.
