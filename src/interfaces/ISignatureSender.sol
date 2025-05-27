@@ -28,11 +28,6 @@ interface ISignatureSender {
     /// @param signature The generated signature, provided as a byte array.
     function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external;
 
-    /// @notice Retries a request that previously failed during callback.
-    /// @dev This function is called if a signature was generated off-chain but failed to call back into the contract.
-    /// @param requestID The unique identifier for the signature request.
-    function retryCallback(uint256 requestID) external;
-
     /// @notice Updates the signature scheme address provider contract address.
     /// @param newSignatureSchemeAddressProvider The signature address provider address to set.
     function setSignatureSchemeAddressProvider(address newSignatureSchemeAddressProvider) external;

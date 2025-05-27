@@ -47,8 +47,17 @@ contract SignatureSender is
     /// @notice Address provider for signature schemes.
     ISignatureSchemeAddressProvider public signatureSchemeAddressProvider;
 
+    /// @dev Set for storing unique fulfilled request Ids
     EnumerableSet.UintSet private fulfilledRequestIds;
+
+    /// @dev Set for storing unique unfulfilled request Ids
     EnumerableSet.UintSet private unfulfilledRequestIds;
+
+    /// @dev Set for storing unique request Ids with failing callbacks
+    /// @dev Callbacks can fail if collection of request fee from
+    ///      subscription account fails in `_handlePaymentAndCharge` function call.
+    ///      We use `_callWithExactGasEvenIfTargetIsNoContract` function for callback so it works if
+    ///      caller does not implement the interface.
     EnumerableSet.UintSet private erroredRequestIds;
 
     /// @notice Emitted when the signature scheme address provider is updated.
@@ -69,7 +78,7 @@ contract SignatureSender is
     event SignatureRequestFulfilled(uint256 indexed requestID, bytes signature);
 
     /// @notice Emitted when a signature callback fails.
-    event SignatureCallbackFailed(uint256 requestID);
+    event SignatureCallbackFailed(uint256 indexed requestID);
 
     /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
     modifier onlyAdmin() {
@@ -89,25 +98,21 @@ contract SignatureSender is
 
         require(_grantRole(ADMIN_ROLE, owner), "Grant role failed");
         require(_grantRole(DEFAULT_ADMIN_ROLE, owner), "Grant role reverts");
-        require(
-            _signatureSchemeAddressProvider != address(0),
-            "Cannot set zero address as signature scheme address provider"
-        );
         signatureSchemeAddressProvider = ISignatureSchemeAddressProvider(_signatureSchemeAddressProvider);
     }
 
     // OVERRIDDEN UPGRADE FUNCTIONS
     function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
 
-    function _msgSender() internal view override(Context, ContextUpgradeable) returns (address) {
+    function _msgSender() internal view override (Context, ContextUpgradeable) returns (address) {
         return msg.sender;
     }
 
-    function _msgData() internal pure override(Context, ContextUpgradeable) returns (bytes calldata) {
+    function _msgData() internal pure override (Context, ContextUpgradeable) returns (bytes calldata) {
         return msg.data;
     }
 
-    function _contextSuffixLength() internal pure override(Context, ContextUpgradeable) returns (uint256) {
+    function _contextSuffixLength() internal pure override (Context, ContextUpgradeable) returns (uint256) {
         return 0;
     }
 
@@ -156,7 +161,6 @@ contract SignatureSender is
         TypesLib.SignatureRequest memory request = requests[requestID];
 
         string memory schemeID = request.schemeID;
-
         address schemeContractAddress = signatureSchemeAddressProvider.getSignatureSchemeAddress(schemeID);
         ISignatureScheme sigScheme = ISignatureScheme(schemeContractAddress);
 
@@ -169,35 +173,18 @@ contract SignatureSender is
             abi.encodeWithSelector(ISignatureReceiver.receiveSignature.selector, requestID, signature)
         );
 
-        requests[requestID].signature = signature;
         requests[requestID].isFulfilled = true;
-
         unfulfilledRequestIds.remove(requestID);
 
         if (!success) {
             erroredRequestIds.add(requestID);
             emit SignatureCallbackFailed(requestID);
         } else {
+            if (hasErrored(requestID)) {
+                erroredRequestIds.remove(requestID);
+            }
             fulfilledRequestIds.add(requestID);
             emit SignatureRequestFulfilled(requestID, signature);
-        }
-    }
-
-    /// @notice Retries the callback for a request id
-    function retryCallback(uint256 requestID) external {
-        require(hasErrored(requestID), "No request with specified requestID has errored");
-        TypesLib.SignatureRequest memory request = requests[requestID];
-
-        (bool success,) = request.callback.call(
-            abi.encodeWithSelector(ISignatureReceiver.receiveSignature.selector, requestID, request.signature)
-        );
-
-        if (!success) {
-            emit SignatureCallbackFailed(requestID);
-        } else {
-            erroredRequestIds.remove(requestID);
-            fulfilledRequestIds.add(requestID);
-            emit SignatureRequestFulfilled(requestID, request.signature);
         }
     }
 
