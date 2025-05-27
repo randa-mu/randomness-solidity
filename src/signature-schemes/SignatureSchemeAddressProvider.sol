@@ -47,6 +47,7 @@ contract SignatureSchemeAddressProvider is ISignatureSchemeAddressProvider, Acce
             (schemeAddress != address(0) && schemeAddress.code.length != 0),
             "Invalid contract address for schemeAddress"
         );
+        require(schemes[schemeID] == address(0), "Scheme already added for schemeID");
         schemes[schemeID] = schemeAddress;
         emit NewSignatureSchemeAddressAdded(schemeID, schemes[schemeID], block.timestamp);
     }

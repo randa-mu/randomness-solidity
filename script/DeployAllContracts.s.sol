@@ -25,7 +25,7 @@ contract DeployAllContracts is
 {
     function run()
         public
-        override(
+        override (
             DeployRandomnessSender, DeploySignatureSchemeAddressProvider, DeploySignatureSender, DeployBN254SignatureScheme
         )
     {

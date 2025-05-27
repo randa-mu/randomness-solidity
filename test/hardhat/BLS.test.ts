@@ -112,7 +112,7 @@ describe("BLS", () => {
     console.log(`[hashToPoint] mean gas cost: ${sumGasCost / iterations}`);
   });
 
-  it("correct verifies a BLS sig from mcl", async () => {
+  it("correctly verifies a BLS sig from mcl", async () => {
     const { secretKey, pubKey } = mcl.createKeyPair();
     // const msg = hexlify(randomBytes(12)) as `0x${string}`
     // 64-bit round number, encoded in big-endian
@@ -138,6 +138,38 @@ describe("BLS", () => {
       args.pubKey,
       args.M,
     );
+    expect(isValid && callSuccess).to.eq(true);
+    console.log("[verify] gas:", verifySingleGasCost);
+
+    const invalidSig = args.signature.map((v) => v + 1n) as [bigint, bigint];
+    expect(await blsTest.test__verifySingle(invalidSig, args.pubKey, args.M).then((ret) => ret[0])).to.eq(false);
+  });
+
+  it("correctly verifies a BLS sig from mcl on a RandomnessSender generated message", async () => {
+    const { secretKey, pubKey } = mcl.createKeyPair();
+    const msg = "0xf1340c24d522ebe58dea2f543c1935c1978858405e39cf96c0e37cc82831b483";
+    const dom =
+      "dcipher-randomness-v01-BN254G1_XMD:KECCAK-256_SVDW_RO_0x0000000000000000000000000000000000000000000000000000000000007a69_";
+    const [[msgX, msgY]] = await blsTest.test__hashToPoint(toUtf8Bytes(dom), msg);
+    const M = mcl.g1FromEvm(msgX, msgY);
+    expect(M.isValid()).to.eq(true);
+    // console.log('M', kyberMarshalG1(M))
+    const { signature } = mcl.sign(M, secretKey);
+
+    // Kyber serialised format
+    // console.log("pub", kyberMarshalG2(pubKey));
+    // console.log("sig", kyberMarshalG1(signature));
+
+    const args = mcl.toArgs(pubKey, M, signature);
+    expect(await blsTest.test__isOnCurveG1(args.signature).then((ret) => ret[0])).to.eq(true); // 400 gas
+    expect(await blsTest.test__isOnCurveG1(args.M).then((ret) => ret[0])).to.eq(true); // 400 gas
+    expect(await blsTest.test__isOnCurveG2(args.pubKey).then((ret) => ret[0])).to.eq(true); // 865k gas
+    const [isValid, callSuccess, verifySingleGasCost] = await blsTest.test__verifySingle(
+      args.signature,
+      args.pubKey,
+      args.M,
+    );
+    console.log(args.pubKey);
     expect(isValid && callSuccess).to.eq(true);
     console.log("[verify] gas:", verifySingleGasCost);
 

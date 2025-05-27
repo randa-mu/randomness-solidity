@@ -41,17 +41,23 @@ contract SignatureSender is
     /// @notice Last used request ID.
     uint256 public lastRequestID = 0;
 
-    /// @notice Public key used for BLS verification.
-    BLS.PointG2 private publicKey = BLS.PointG2({x: [uint256(0), uint256(0)], y: [uint256(0), uint256(0)]});
-
     /// @notice Mapping from request IDs to signature request structs.
     mapping(uint256 => TypesLib.SignatureRequest) public requests;
 
     /// @notice Address provider for signature schemes.
     ISignatureSchemeAddressProvider public signatureSchemeAddressProvider;
 
+    /// @dev Set for storing unique fulfilled request Ids
     EnumerableSet.UintSet private fulfilledRequestIds;
+
+    /// @dev Set for storing unique unfulfilled request Ids
     EnumerableSet.UintSet private unfulfilledRequestIds;
+
+    /// @dev Set for storing unique request Ids with failing callbacks
+    /// @dev Callbacks can fail if collection of request fee from
+    ///      subscription account fails in `_handlePaymentAndCharge` function call.
+    ///      We use `_callWithExactGasEvenIfTargetIsNoContract` function for callback so it works if
+    ///      caller does not implement the interface.
     EnumerableSet.UintSet private erroredRequestIds;
 
     /// @notice Emitted when the signature scheme address provider is updated.
@@ -72,7 +78,7 @@ contract SignatureSender is
     event SignatureRequestFulfilled(uint256 indexed requestID, bytes signature);
 
     /// @notice Emitted when a signature callback fails.
-    event SignatureCallbackFailed(uint256 requestID);
+    event SignatureCallbackFailed(uint256 indexed requestID);
 
     /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
     modifier onlyAdmin() {
@@ -86,37 +92,27 @@ contract SignatureSender is
     }
 
     /// @notice Initializes the contract with the given parameters.
-    function initialize(
-        uint256[2] memory x,
-        uint256[2] memory y,
-        address owner,
-        address _signatureSchemeAddressProvider
-    ) public initializer {
+    function initialize(address owner, address _signatureSchemeAddressProvider) public initializer {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
 
-        publicKey = BLS.PointG2({x: x, y: y});
         require(_grantRole(ADMIN_ROLE, owner), "Grant role failed");
         require(_grantRole(DEFAULT_ADMIN_ROLE, owner), "Grant role reverts");
-        require(
-            _signatureSchemeAddressProvider != address(0),
-            "Cannot set zero address as signature scheme address provider"
-        );
         signatureSchemeAddressProvider = ISignatureSchemeAddressProvider(_signatureSchemeAddressProvider);
     }
 
     // OVERRIDDEN UPGRADE FUNCTIONS
     function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
 
-    function _msgSender() internal view override(Context, ContextUpgradeable) returns (address) {
+    function _msgSender() internal view override (Context, ContextUpgradeable) returns (address) {
         return msg.sender;
     }
 
-    function _msgData() internal pure override(Context, ContextUpgradeable) returns (bytes calldata) {
+    function _msgData() internal pure override (Context, ContextUpgradeable) returns (bytes calldata) {
         return msg.data;
     }
 
-    function _contextSuffixLength() internal pure override(Context, ContextUpgradeable) returns (uint256) {
+    function _contextSuffixLength() internal pure override (Context, ContextUpgradeable) returns (uint256) {
         return 0;
     }
 
@@ -159,18 +155,17 @@ contract SignatureSender is
     }
 
     /// @notice Fulfils a unique signature request.
-    /// @dev See {ISignatureSender-fulfilSignatureRequest}.
-    function fulfilSignatureRequest(uint256 requestID, bytes calldata signature) external onlyAdmin {
+    /// @dev See {ISignatureSender-fulfillSignatureRequest}.
+    function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external {
         require(isInFlight(requestID), "No request with specified requestID");
         TypesLib.SignatureRequest memory request = requests[requestID];
 
         string memory schemeID = request.schemeID;
-
         address schemeContractAddress = signatureSchemeAddressProvider.getSignatureSchemeAddress(schemeID);
         ISignatureScheme sigScheme = ISignatureScheme(schemeContractAddress);
 
         require(
-            sigScheme.verifySignature(request.messageHash, signature, getPublicKeyBytes()),
+            sigScheme.verifySignature(request.messageHash, signature, sigScheme.getPublicKeyBytes()),
             "Signature verification failed"
         );
 
@@ -178,35 +173,18 @@ contract SignatureSender is
             abi.encodeWithSelector(ISignatureReceiver.receiveSignature.selector, requestID, signature)
         );
 
-        requests[requestID].signature = signature;
         requests[requestID].isFulfilled = true;
-
         unfulfilledRequestIds.remove(requestID);
 
         if (!success) {
             erroredRequestIds.add(requestID);
             emit SignatureCallbackFailed(requestID);
         } else {
+            if (hasErrored(requestID)) {
+                erroredRequestIds.remove(requestID);
+            }
             fulfilledRequestIds.add(requestID);
             emit SignatureRequestFulfilled(requestID, signature);
-        }
-    }
-
-    /// @notice Retries the callback for a request id
-    function retryCallback(uint256 requestID) external {
-        require(hasErrored(requestID), "No request with specified requestID has errored");
-        TypesLib.SignatureRequest memory request = requests[requestID];
-
-        (bool success,) = request.callback.call(
-            abi.encodeWithSelector(ISignatureReceiver.receiveSignature.selector, requestID, request.signature)
-        );
-
-        if (!success) {
-            emit SignatureCallbackFailed(requestID);
-        } else {
-            erroredRequestIds.remove(requestID);
-            fulfilledRequestIds.add(requestID);
-            emit SignatureRequestFulfilled(requestID, request.signature);
         }
     }
 
@@ -214,18 +192,6 @@ contract SignatureSender is
     function setSignatureSchemeAddressProvider(address newSignatureSchemeAddressProvider) external onlyAdmin {
         signatureSchemeAddressProvider = ISignatureSchemeAddressProvider(newSignatureSchemeAddressProvider);
         emit SignatureSchemeAddressProviderUpdated(newSignatureSchemeAddressProvider);
-    }
-
-    /// @notice Returns the public key.
-    /// @dev See {ISignatureSender-getPublicKey}.
-    function getPublicKey() public view returns (uint256[2] memory, uint256[2] memory) {
-        return (publicKey.x, publicKey.y);
-    }
-
-    /// @notice Returns the public key as bytes.
-    /// @dev See {ISignatureSender-getPublicKeyBytes}.
-    function getPublicKeyBytes() public view returns (bytes memory) {
-        return BLS.g2Marshal(publicKey);
     }
 
     /// @notice Checks if a request is in flight.
