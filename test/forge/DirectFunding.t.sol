@@ -18,10 +18,7 @@ import {MockRevertingRandomnessReceiver} from "../../src/mocks/MockRevertingRand
 
 contract DirectFundingTest is RandomnessTest {
     function test_FulfillSignatureRequest_WithDirectFunding_Successfully() public {
-        uint256 contractFundBuffer = 1 ether;
-
-        mockRandomnessReceiver =
-            deployRandomnessReceiver(admin, address(randomnessSender), contractFundBuffer);
+        mockRandomnessReceiver = deployRandomnessReceiver(admin, address(randomnessSender));
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
         uint256 nonce = 1;
@@ -149,10 +146,7 @@ contract DirectFundingTest is RandomnessTest {
     }
 
     function test_FulfillDecryptionRequest_WithLowCallbackGasLimit() public {
-        uint256 contractFundBuffer = 1 ether;
-
-        mockRandomnessReceiver =
-            deployRandomnessReceiver(admin, address(randomnessSender), contractFundBuffer);
+        mockRandomnessReceiver = deployRandomnessReceiver(admin, address(randomnessSender));
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
         uint256 requestId = 1;
@@ -185,10 +179,7 @@ contract DirectFundingTest is RandomnessTest {
     }
 
     function test_FulfillDecryptionRequest_WithZeroCallbackGasLimit() public {
-        uint256 contractFundBuffer = 1 ether;
-
-        mockRandomnessReceiver =
-            deployRandomnessReceiver(admin, address(randomnessSender), contractFundBuffer);
+        mockRandomnessReceiver = deployRandomnessReceiver(admin, address(randomnessSender));
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
         uint256 requestId = 1;

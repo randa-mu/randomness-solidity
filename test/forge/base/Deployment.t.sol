@@ -107,7 +107,7 @@ abstract contract Deployment is Base {
         mockRandomnessReceiver.createSubscriptionAndFundNative{value: subBalance}();
     }
 
-    function deployRandomnessReceiver(address owner, address randomnessSenderProxy, uint256 subBalance)
+    function deployRandomnessReceiver(address owner, address randomnessSenderProxy)
         internal
         returns (MockRandomnessReceiver mockRandomnessReceiver)
     {
