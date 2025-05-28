@@ -44,8 +44,7 @@ contract ChainlinkVRFV2_5Integration_DirectFundingTest is Deployment {
 
         uint32 _s_wrapperGasOverhead = 100_000;
 
-        ChainlinkVRFV2PlusWrapperAdapter wrapper =
-            new ChainlinkVRFV2PlusWrapperAdapter(owner, _randomnessSender);
+        ChainlinkVRFV2PlusWrapperAdapter wrapper = new ChainlinkVRFV2PlusWrapperAdapter(owner, _randomnessSender);
 
         vm.prank(owner);
         vm.expectEmit(address(wrapper));

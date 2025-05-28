@@ -42,11 +42,10 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
         // Deploy wrapper adapter
         address owner = admin;
         address _randomnessSender = address(randomnessSender);
-        
+
         uint32 _s_wrapperGasOverhead = 100_000;
 
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
-            new ChainlinkVRFCoordinatorV2_5Adapter(owner, _randomnessSender);
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(owner, _randomnessSender);
 
         vm.prank(owner);
         vm.expectEmit(address(wrapper));
