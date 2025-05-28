@@ -41,10 +41,16 @@ contract ChainlinkVRFV2_5Integration_DirectFundingTest is Deployment {
         // Deploy VRF wrapper
         address owner = admin;
         address _randomnessSender = address(randomnessSender);
+
         uint32 _s_wrapperGasOverhead = 100_000;
 
         ChainlinkVRFV2PlusWrapperAdapter wrapper =
-            new ChainlinkVRFV2PlusWrapperAdapter(owner, _randomnessSender, _s_wrapperGasOverhead);
+            new ChainlinkVRFV2PlusWrapperAdapter(owner, _randomnessSender);
+
+        vm.prank(owner);
+        vm.expectEmit(address(wrapper));
+        emit ChainlinkVRFV2PlusWrapperAdapter.WrapperGasOverheadUpdated(_s_wrapperGasOverhead);
+        wrapper.setWrapperGasOverhead(_s_wrapperGasOverhead);
 
         // Deploy the direct funding consumer
         ChainlinkVRFDirectFundingConsumer consumer = new ChainlinkVRFDirectFundingConsumer(address(wrapper));

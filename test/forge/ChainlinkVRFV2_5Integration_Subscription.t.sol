@@ -42,9 +42,16 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
         // Deploy wrapper adapter
         address owner = admin;
         address _randomnessSender = address(randomnessSender);
+        
         uint32 _s_wrapperGasOverhead = 100_000;
+
         ChainlinkVRFCoordinatorV2_5Adapter wrapper =
-            new ChainlinkVRFCoordinatorV2_5Adapter(owner, _randomnessSender, _s_wrapperGasOverhead);
+            new ChainlinkVRFCoordinatorV2_5Adapter(owner, _randomnessSender);
+
+        vm.prank(owner);
+        vm.expectEmit(address(wrapper));
+        emit ChainlinkVRFCoordinatorV2_5Adapter.WrapperGasOverheadUpdated(_s_wrapperGasOverhead);
+        wrapper.setWrapperGasOverhead(_s_wrapperGasOverhead);
 
         // Deploy consumer contract as alice
         vm.prank(alice);

@@ -45,7 +45,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     // in the pricing for wrapped requests.
     // s_wrapperGasOverhead reflects the gas overhead of the wrapper's fulfillRandomWords
     // function. The cost for this gas is passed to the user.
-    uint32 private s_wrapperGasOverhead;
+    uint32 private s_wrapperGasOverhead = 100_000;
     uint32 public constant MAX_NUM_WORDS = 1;
     uint256 public lastRequestId;
 
@@ -72,10 +72,8 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         _;
     }
 
-    constructor(address owner, address _randomnessSender, uint32 _s_wrapperGasOverhead) ConfirmedOwner(owner) {
+    constructor(address owner, address _randomnessSender) ConfirmedOwner(owner) {
         randomnessSender = IRandomnessSender(_randomnessSender);
-        s_wrapperGasOverhead = _s_wrapperGasOverhead;
-        emit WrapperGasOverheadUpdated(s_wrapperGasOverhead);
     }
 
     /// @notice Checks if a given address is in the list of approved consumers.
@@ -91,11 +89,13 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         return false;
     }
 
-    /// @notice Updates the wrapper's gas overhead value.
+    /// @notice Sets the gas overhead used by the wrapper for callback fulfillment.
     /// @dev Only callable by the contract owner.
     /// @param _s_wrapperGasOverhead The new gas overhead value to set.
+    /// Emits a {WrapperGasOverheadUpdated} event.
     function setWrapperGasOverhead(uint32 _s_wrapperGasOverhead) external onlyOwner {
         s_wrapperGasOverhead = _s_wrapperGasOverhead;
+        emit WrapperGasOverheadUpdated(s_wrapperGasOverhead);
     }
 
     /// @notice Request a set of random words.
