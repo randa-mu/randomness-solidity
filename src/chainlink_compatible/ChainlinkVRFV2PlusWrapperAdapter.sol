@@ -46,7 +46,7 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
     // in the pricing for wrapped requests.
     // s_wrapperGasOverhead reflects the gas overhead of the wrapper's fulfillRandomWords
     // function. The cost for this gas is passed to the user.
-    uint32 private s_wrapperGasOverhead;
+    uint32 private s_wrapperGasOverhead = 100_000;
     uint256 public lastRequestId;
 
     mapping(uint256 => Callback) /* requestID */ /* callback */ public s_callbacks;
@@ -57,10 +57,8 @@ contract ChainlinkVRFV2PlusWrapperAdapter is
         _;
     }
 
-    constructor(address owner, address _randomnessSender, uint32 _s_wrapperGasOverhead) ConfirmedOwner(owner) {
+    constructor(address owner, address _randomnessSender) ConfirmedOwner(owner) {
         randomnessSender = IRandomnessSender(_randomnessSender);
-        s_wrapperGasOverhead = _s_wrapperGasOverhead;
-        emit WrapperGasOverheadUpdated(s_wrapperGasOverhead);
     }
 
     /// @notice getConfig returns the current VRFV2Wrapper configuration.
