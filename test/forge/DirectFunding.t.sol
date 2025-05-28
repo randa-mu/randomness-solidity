@@ -21,7 +21,7 @@ contract DirectFundingTest is RandomnessTest {
         uint256 contractFundBuffer = 1 ether;
 
         mockRandomnessReceiver =
-            deployAndFundReceiverWithDirectFunding(admin, address(randomnessSender), contractFundBuffer);
+            deployRandomnessReceiver(admin, address(randomnessSender), contractFundBuffer);
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
         uint256 nonce = 1;
@@ -152,7 +152,7 @@ contract DirectFundingTest is RandomnessTest {
         uint256 contractFundBuffer = 1 ether;
 
         mockRandomnessReceiver =
-            deployAndFundReceiverWithDirectFunding(admin, address(randomnessSender), contractFundBuffer);
+            deployRandomnessReceiver(admin, address(randomnessSender), contractFundBuffer);
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
         uint256 requestId = 1;
@@ -188,7 +188,7 @@ contract DirectFundingTest is RandomnessTest {
         uint256 contractFundBuffer = 1 ether;
 
         mockRandomnessReceiver =
-            deployAndFundReceiverWithDirectFunding(admin, address(randomnessSender), contractFundBuffer);
+            deployRandomnessReceiver(admin, address(randomnessSender), contractFundBuffer);
         assertEq(mockRandomnessReceiver.randomness(), 0x0);
 
         uint256 requestId = 1;

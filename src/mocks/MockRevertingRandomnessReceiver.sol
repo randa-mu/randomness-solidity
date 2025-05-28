@@ -29,7 +29,7 @@ contract MockRevertingRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Requests randomness from the oracle
     /// @dev Calls `_requestRandomnessWithSubscription` to get a random value, updating `requestId` with the request ID using the subscription option.
-    function rollDiceWithSubscription(uint32 callbackGasLimit) external payable returns (uint256) {
+    function rollDiceWithSubscription(uint32 callbackGasLimit) external returns (uint256) {
         // create randomness request
         uint256 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
         // store request id

@@ -107,15 +107,12 @@ abstract contract Deployment is Base {
         mockRandomnessReceiver.createSubscriptionAndFundNative{value: subBalance}();
     }
 
-    function deployAndFundReceiverWithDirectFunding(address owner, address randomnessSenderProxy, uint256 subBalance)
+    function deployRandomnessReceiver(address owner, address randomnessSenderProxy, uint256 subBalance)
         internal
         returns (MockRandomnessReceiver mockRandomnessReceiver)
     {
         vm.prank(owner);
         mockRandomnessReceiver = new MockRandomnessReceiver(randomnessSenderProxy, owner);
-
-        vm.prank(owner);
-        mockRandomnessReceiver.fundContractNative{value: subBalance}();
     }
 
     // helper functions
