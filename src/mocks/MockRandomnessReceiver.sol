@@ -29,7 +29,7 @@ contract MockRandomnessReceiver is RandomnessReceiverBase {
 
     /// @notice Requests randomness using the subscription option
     /// @dev Calls `_requestRandomnessWithSubscription` to get a random value, updating `requestId` with the request ID
-    function rollDiceWithSubscription(uint32 callbackGasLimit) external payable returns (uint256) {
+    function rollDiceWithSubscription(uint32 callbackGasLimit) external returns (uint256) {
         // create randomness request
         uint256 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
         // store request id
