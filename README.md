@@ -129,6 +129,14 @@ For deployment steps, please see [deployment documentation](script/README.md).
 
     ```solidity
     contract DiceRoller is RandomnessReceiverBase {
+        /// @notice Stores the latest received randomness value
+        bytes32 public randomness;
+
+        /// @notice Stores the request ID of the latest randomness request
+        uint256 public requestId;
+
+        /// @notice Initializes the contract with the address of the randomness sender
+        /// @param randomnessSender The address of the randomness provider
         constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
         ...
     }
@@ -136,19 +144,48 @@ For deployment steps, please see [deployment documentation](script/README.md).
 
 3. **Request Randomness**
 
-    Use the `requestRandomness()` function to send a randomness request to the dcipher network. This request will be forwarded to the pre-deployed `RandomnessSender` contract.
+    Requests can be paid for in two ways, either direct funding or subscription. 
 
-    The function returns a `requestId`, which should be stored to verify the response when randomness is delivered.
+    For both payment options, the [RandomnessReceiverBase](/src/RandomnessReceiverBase.sol) contract provides two functions for making requests:
+    - Direct Funding: `_requestRandomnessPayInNative(uint32 callbackGasLimit)` 
+    - Subscription: `_requestRandomnessWithSubscription(uint32 callbackGasLimit)`.
+
+    To estimate the price of a randomness request, you can use the `calculateRequestPriceNative()` function in the `RandomnessSender` contract (ensure that a buffer is added to the returned estimate to accomodate network gas price fluctuations between blocks):
 
     ```solidity
-    /**
-     * @dev Requests randomness.
-     *
-     * This function calls the `requestRandomness` method to request a random value.
-     * The `requestId` is updated with the ID returned from the randomness request.
-     */
-    function rollDice() external {
-        requestId = requestRandomness();
+    function calculateRequestPriceNative(uint32 _callbackGasLimit)
+        public
+        view
+        override (FeeCollector, IRandomnessSender)
+        returns (uint256)
+    {
+        return _calculateRequestPriceNative(_callbackGasLimit, tx.gasprice);
+    }
+    ```
+
+    In this example, we will be showing how to use both funding options to roll a dice. Both functions return the request id (and request price for the direct funding option).
+
+    To recap, using the internal `_requestRandomnessPayInNative()` and `_requestRandomnessWithSubscription()` functions derived from `RandomnessReceiverBase`, we can send randomness requests to the dcipher network using the direct funding and subscription payment options respectively. These requests are forwarded through the deployed `RandomnessSender` contract on a supported network. 
+
+    When calling `_requestRandomnessPayInNative()`, we need to fund the request via `msg.value` which should cover the estimated price for the request. It is advised to add a buffer to cover fluctuations in network gas price to avoid delays in processing the request. 
+
+    Both functions return a `requestId`, which should be stored and can be used to verify the response when the randomness is delivered through a callback from `RandomnessSender`. For the subscription payment option, the `_requestRandomnessWithSubscription()` function, uses the `subscriptionId` variable set in `RandomnessReceiverBase`.
+
+    ```solidity
+    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external payable returns (uint256, uint256) {
+        // create randomness request using direct funding
+        (uint256 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return (requestID, requestPrice);
+    }
+
+    function rollDiceWithSubscription(uint32 callbackGasLimit) external payable returns (uint256) {
+        // create randomness request using subscription
+        uint256 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return requestID;
     }
     ```
 
@@ -174,54 +211,117 @@ For deployment steps, please see [deployment documentation](script/README.md).
 
 ### Example Contract
 ```solidity
-// SPDX-License-Identifier: MIT
+/// SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import { RandomnessReceiverBase } from "randomness-solidity/src/RandomnessReceiverBase.sol";
+import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
 
-contract DiceRoller is RandomnessReceiverBase {
-    bytes32 public diceNumber;
+/// @title MockRandomnessReceiver contract
+/// @author Randamu
+/// @notice A contract that requests and consumes randomness
+contract MockRandomnessReceiver is RandomnessReceiverBase {
+    /// @notice Stores the latest received randomness value
+    bytes32 public randomness;
+
+    /// @notice Stores the request ID of the latest randomness request
     uint256 public requestId;
 
-    constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
+    /// @notice Initializes the contract with the address of the randomness sender
+    /// @param randomnessSender The address of the randomness provider
+    constructor(address randomnessSender, address owner) RandomnessReceiverBase(randomnessSender, owner) {}
 
-    function rollDice() external {
-        requestId = requestRandomness();
+    /// @notice Requests randomness using the direct funding option
+    /// @dev Calls `_requestRandomnessPayInNative` to get a random value, updating `requestId` with the request ID
+    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external payable returns (uint256, uint256) {
+        // create randomness request
+        (uint256 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return (requestID, requestPrice);
     }
 
-    function onRandomnessReceived(uint64 requestID, bytes32 _randomness) internal override {
+    /// @notice Requests randomness using the subscription option
+    /// @dev Calls `_requestRandomnessWithSubscription` to get a random value, updating `requestId` with the request ID
+    function rollDiceWithSubscription(uint32 callbackGasLimit) external returns (uint256) {
+        // create randomness request
+        uint256 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return requestID;
+    }
+
+    function cancelSubscription(address to) external onlyOwner {
+        _cancelSubscription(to);
+    }
+
+    /// @notice Callback function that processes received randomness
+    /// @dev Ensures the received request ID matches the stored one before updating state
+    /// @param requestID The ID of the randomness request
+    /// @param _randomness The random value received from the oracle
+    function onRandomnessReceived(uint256 requestID, bytes32 _randomness) internal override {
         require(requestId == requestID, "Request ID mismatch");
-        diceNumber = _randomness;
+        randomness = _randomness;
     }
 }
 ```
+
+#### Sharing Subscription Accounts 
+
+To share a subscription account, the smart contract that owns the subscription must call the `updateSubscription()` function in `RandomnessSender` to approve other contracts to use its created `subscriptionId`.
+
+```solidity
+/// @notice Adds a list of consumer addresses to the Randamu subscription.
+/// @dev Requires the subscription ID to be set before calling.
+/// @param consumers An array of addresses to be added as authorized consumers.
+function updateSubscription(address[] calldata consumers) external onlyOwner {
+    require(subscriptionId != 0, "subID not set");
+    for (uint256 i = 0; i < consumers.length; i++) {
+        randomnessSender.addConsumer(subscriptionId, consumers[i]);
+    }
+```
+
+After calling `updateSubscription` all approved contracts can then call the `setSubId` function and start making subscription conditional encryption requests using the shared (funded) subscription account. 
+
+```solidity
+/// @notice Sets the Randamu subscription ID used for conditional encryption oracle services.
+/// @dev Only callable by the contract owner.
+/// @param subId The new subscription ID to be set.
+function setSubId(uint256 subId) external onlyOwner {
+    subscriptionId = subId;
+    emit NewSubscriptionId(subId);
+}
+```
+
+Please note that all approved contracts must also implement `RandomnessReceiverBase.sol`.
+
 
 ## API Documentation
 
 ### RandomnessReceiverBase.sol
 | Function  | Return | Description |
 |----------|------------|------------|
-| `requestRandomness()` | `uint64 requestID` |Requests the generation of a random value from the dcipher network | 
-| `onRandomnessReceived(uint64 requestID, bytes32 randomness)` | n/a |	Callback function to be implemented by the inheriting contract. Called when the randomness is delivered.  |
- 
+| `_requestRandomnessPayInNative(uint32 callbackGasLimit)` | `uint256 requestID, uint256 requestPrice` |Requests the generation of a random value from the dcipher network |
+| `_requestRandomnessWithSubscription(uint32 callbackGasLimit)` | `uint256 requestID` |Requests the generation of a random value from the dcipher network |
+| `onRandomnessReceived(uint256 requestID, bytes32 randomness)` | n/a |	Callback function to be implemented by the inheriting contract. Called when the randomness is delivered.  |
+
 ### RandomnessSender.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-| `isInFlight(uint64 requestID)` | `bool` | Returns `true` if the specified randomness request is still pending. |
-| `getRequest(uint64 requestId)` | `TypesLib.RandomnessRequest`  | Returns the details of the randomness request associated with the given request ID.  |
-| `getAllRequests()` | `TypesLib.RandomnessRequest[]` | Retrieves all randomness requests submitted to the contract.|
+| `isInFlight(uint256 requestID)` | `bool` | Returns `true` if the specified randomness request is still pending. |
+| `getRequest(uint256 requestID)` | `TypesLib.RandomnessRequest`  | Returns the details of the randomness request associated with the given request ID. The `RandomnessRequest` object (struct) contains the following variables for each request: `uint256 nonce; address callback;` |
+| `getAllRequests()` | `TypesLib.RandomnessRequest[]` | Retrieves a list of all randomness requests submitted to the contract. |
 
 ### SignatureSender.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-| `isInFlight(uint64 requestID)` | `bool` | Returns true if the specified signature request is still pending.|
-| `getRequest(uint64 requestID)` | `TypesLib.SignatureRequest` | Returns the details of the signature request associated with the given request ID.|
+| `isInFlight(uint256 requestID)` | `bool` | Returns true if the specified signature request is still pending.|
+| `getRequest(uint256 requestID)` | `TypesLib.SignatureRequest` | Returns the details of the signature request associated with the given request ID.|
 | `getPublicKey()` | `uint256[2] memory, uint256[2] memory` | Returns the public key components used in the signature verification process.|
 
-### SignatureSender.sol
+### Randomness.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-|`function verify(address randomnessContract, address signatureContract, bytes calldata signature uint64 requestID, address requester)`  | `bool` | Verifies that the provided randomness is valid and was properly generated by the dcipher network for the given request.|
+|`function verify(address randomnessContract, address signatureContract, bytes calldata signature, uint256 requestID, address requester, string calldata schemeID)`  | `bool` | Verifies that the provided randomness is valid and was properly generated by the dcipher network for the given request.|
 
 ## License
 This library is licensed under the MIT License which can be accessed [here](./LICENSE).
