@@ -79,22 +79,6 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
         randomnessSender.fundSubscriptionWithNative{value: msg.value}(subscriptionId);
     }
 
-    /// @notice Function to fund the contract with native tokens for direct funding requests.
-    function fundContractNative() external payable {
-        require(msg.value > 0, "You must send some ETH");
-        emit Funded(msg.sender, msg.value);
-    }
-
-    /// @notice Function to withdraw native tokens from the contract.
-    /// @dev Only callable by contract owner.
-    /// @param amount The amount to withdraw.
-    /// @param recipient The address to send the tokens to.
-    function withdrawNative(uint256 amount, address recipient) external onlyOwner {
-        require(getBalance() >= amount, "Insufficient funds in contract");
-        payable(recipient).transfer(amount);
-        emit Withdrawn(recipient, amount);
-    }
-
     /// @notice Tops up the Randamu subscription using native currency (e.g., ETH).
     /// @dev Requires a valid subscription ID to be set before calling.
     /// @dev The amount to top up should be sent along with the transaction as `msg.value`.
@@ -167,11 +151,5 @@ abstract contract RandomnessReceiverBase is IRandomnessReceiver, ConfirmedOwner 
 
     function pendingRequestExists(uint256 subId) public view virtual returns (bool) {
         return randomnessSender.pendingRequestExists(subId);
-    }
-
-    /// @notice The receive function is executed on a call to the contract with empty calldata.
-    /// This is the function that is executed on plain Ether transfers (e.g. via .send() or .transfer()).
-    receive() external payable {
-        emit Received(msg.sender, msg.value);
     }
 }

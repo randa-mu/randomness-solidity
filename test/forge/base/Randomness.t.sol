@@ -29,7 +29,7 @@ contract RandomnessTest is Deployment {
 
         (signatureSchemeAddressProvider, bn254SignatureScheme, randomnessSender, signatureSender) = deployContracts();
 
-        mockRandomnessReceiver = deployAndFundReceiverWithDirectFunding(alice, address(randomnessSender), 1 ether);
+        mockRandomnessReceiver = deployRandomnessReceiver(alice, address(randomnessSender));
     }
 
     function test_Deployment_Configurations() public view {

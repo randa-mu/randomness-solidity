@@ -102,39 +102,14 @@ For deployment steps, please see [deployment documentation](script/README.md).
 
 ### Supported Networks
 
-#### Filecoin Calibnet
-
-| Contract      |  Description     | Address         |
-|---------| ----------------------|-------------|
-| **RandomnessSender Proxy**      | A lightweight and efficient proxy contract used in managing upgradeablility of the RandomnessSender implementation contract and delegates calls to the implementation contract (the logic contract) below. | [0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC](https://calibration.filfox.info/en/address/0x9c789bc7F2B5c6619Be1572A39F2C3d6f33001dC) |
-| RandomnessSender Implementation | Handles randomness requests from user's contracts and forwards the randomness to them via a callback to the `receiveRandomness(...)` function. Users interact with RandomnessSender via the **Proxy** contract. | [0x445741fBBF3545dfEED5383f6C7De055C13c4463](https://calibration.filfox.info/en/address/0x445741fBBF3545dfEED5383f6C7De055C13c4463) |
-| SignatureSender Proxy           | A lightweight and efficient proxy contract used in managing upgradeablility of the SignatureSender implementation contract | [0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B](https://calibration.filfox.info/en/address/0x1c86A81D3CDD897aFdcA62a9b7219a39Aef7910B) | 
-| SignatureSender Implementation  | Smart Contract for Conditional Threshold Signing of messages sent within signature requests. Signatures are sent in callbacks to contract addresses implementing the SignatureReceiverBase abstract contract. In this case, the hash of the signature `keccak256(signature)` represents the randomness. | [0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8](https://calibration.filfox.info/en/address/0x1790de5a9fBA748DCAf05e3a1755Cf1DD6b9B0F8) |
-| SignatureSchemeAddressProvider  | Manages the contract addresses for different signature schemes. |  [0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A](https://calibration.filfox.info/en/address/0xD2b5084E68230D609AEaAe5E4cF7df9ebDd6375A) |
-| BN254SignatureScheme        | The BN254 signature scheme contract. Contains signature verification logic using pairing checks. | [0xA3D123CDBd9B9a8F6C89775EcF123de0205808bb](https://calibration.filfox.info/en/address/0xA3D123CDBd9B9a8F6C89775EcF123de0205808bb) |
-
-#### Base Sepolia
-
-| Contract      |  Description     | Address         |
-|---------| ----------------------|-------------|
-| **RandomnessSender Proxy**      | A lightweight and efficient proxy contract used in managing upgradeablility of the RandomnessSender implementation contract and delegates calls to the implementation contract (the logic contract) below. | [0x455bfe4B1B4393b458d413E2B0778A95F9B84B82](https://sepolia.basescan.org/address/0x455bfe4B1B4393b458d413E2B0778A95F9B84B82) |
-| RandomnessSender Implementation | Handles randomness requests from user's contracts and forwards the randomness to them via a callback to the `receiveRandomness(...)` function. Users interact with RandomnessSender via the **Proxy** contract. | [0x7EadB9d0777fe2f8061c652135EB4db0AA51A281](https://sepolia.basescan.org/address/0x7EadB9d0777fe2f8061c652135EB4db0AA51A281) |
-| SignatureSender Proxy           | A lightweight and efficient proxy contract used in managing upgradeablility of the SignatureSender implementation contract | [0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871](https://sepolia.basescan.org/address/0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871) |
-| SignatureSender Implementation  | Smart Contract for Conditional Threshold Signing of messages sent within signature requests. Signatures are sent in callbacks to contract addresses implementing the SignatureReceiverBase abstract contract. In this case, the hash of the signature `keccak256(signature)` represents the randomness. | [0x8aA1B57a24887dbacd6A68F7361eB42c6faac108](https://sepolia.basescan.org/address/0x8aA1B57a24887dbacd6A68F7361eB42c6faac108) |
-| SignatureSchemeAddressProvider  | Manages the contract addresses for different signature schemes. | [0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8](https://sepolia.basescan.org/address/0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8) |
-| BN254SignatureScheme            | The BN254 signature scheme contract. Contains signature verification logic using pairing checks. | [0x9eE627D4591E57d40D72CfCcDb79751040862C18](https://sepolia.basescan.org/address/0x9eE627D4591E57d40D72CfCcDb79751040862C18) |
-
-
-#### Polygon PoS
-
-| Contract      |  Description                        | Address         |
-|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|-------------|
-| **RandomnessSender Proxy**      | A lightweight and efficient proxy contract used in managing upgradeablility of the RandomnessSender implementation contract and delegates calls to the implementation contract (the logic contract) below. | [0x455bfe4B1B4393b458d413E2B0778A95F9B84B82](https://polygonscan.com/address/0x455bfe4B1B4393b458d413E2B0778A95F9B84B82) |
-| RandomnessSender Implementation | Handles randomness requests from user's contracts and forwards the randomness to them via a callback to the `receiveRandomness(...)` function. Users interact with RandomnessSender via the **Proxy** contract. | [0x7EadB9d0777fe2f8061c652135EB4db0AA51A281](https://polygonscan.com/address/0x7EadB9d0777fe2f8061c652135EB4db0AA51A281) |
-| SignatureSender Proxy           | A lightweight and efficient proxy contract used in managing upgradeablility of the SignatureSender implementation contract | [0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871](https://polygonscan.com/address/0xB4564930153F0Ec9cb8f68E61EAE43de70B2A871) |
-| SignatureSender Implementation  | Smart Contract for Conditional Threshold Signing of messages sent within signature requests. Signatures are sent in callbacks to contract addresses implementing the SignatureReceiverBase abstract contract. In this case, the hash of the signature `keccak256(signature)` represents the randomness. | [0x8aA1B57a24887dbacd6A68F7361eB42c6faac108](https://polygonscan.com/address/0x8aA1B57a24887dbacd6A68F7361eB42c6faac108) |
-| SignatureSchemeAddressProvider  | Manages the contract addresses for different signature schemes. | [0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8](https://polygonscan.com/address/0xaf95ebdCD58fe8f3CaF9fe689DA2aE11fdaFc4e8) |
-| BN254SignatureScheme            | The BN254 signature scheme contract. Contains signature verification logic using pairing checks. |  [0x9eE627D4591E57d40D72CfCcDb79751040862C18](https://polygonscan.com/address/0x9eE627D4591E57d40D72CfCcDb79751040862C18) |
+| Contract        |  Description | Address | 
+|-----------------|---------|---------|
+| **RandomnessSender Proxy** | A lightweight proxy contract that enables upgradeability for the `BlocklockSender` implementation. It delegates all calls to the underlying implementation and serves as the primary interface for user interaction. | <br> - Base Sepolia: [0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779](https://sepolia.basescan.org/address/0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779) <br> - Polygon PoS: [0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779](https://polygonscan.com/address/0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779) <br> - Optimism Sepolia: [0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779](https://sepolia-optimism.etherscan.io/address/0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779) <br> - Arbitrum Sepolia: [0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779](https://sepolia.arbiscan.io/address/0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779) <br> - Avalanche (C-Chain) Testnet: [0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779](https://testnet.avascan.info/blockchain/all/address/0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779) <br> - Sei Testnet: [0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779](https://seitrace.com/address/0xf4e080Db4765C856c0af43e4A8C4e31aA3b48779?chain=atlantic-2) <br>- Filecoin Mainnet: [0xDD6FdE56432Cd3c868FEC7F1430F741967Fb0de8](https://filfox.info/en/address/0xDD6FdE56432Cd3c868FEC7F1430F741967Fb0de8) <br>- Filecoin Calibration Testnet: [0x94C5774DEa83a921244BF362a98c12A5aAD18c87](https://calibration.filfox.info/en/address/0x94C5774DEa83a921244BF362a98c12A5aAD18c87) <br> - Furnace Testnet: [0xbf6b0Ed504bf595021a634e5d7161DD20ea42f18](https://blockscout.firepit.network/address/0xbf6b0Ed504bf595021a634e5d7161DD20ea42f18) | 
+| RandomnessSender Implementation | Handles conditional encryption requests, callbacks, and fee collection. | <br> - Base Sepolia: [0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB](https://sepolia.basescan.org/address/0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB) <br> - Polygon PoS: [0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB](https://polygonscan.com/address/0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB) <br> - Optimism Sepolia: [0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB](https://sepolia-optimism.etherscan.io/address/0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB) <br> - Arbitrum Sepolia: [0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB](https://sepolia.arbiscan.io/address/0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB) <br> - Avalanche (C-Chain) Testnet: [0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB](https://testnet.avascan.info/blockchain/all/address/0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB) <br> - Sei Testnet: [0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB](https://seitrace.com/address/0xe26EB6390F9068Dc5D113DBA5A6831143D426DAB?chain=atlantic-2) <br>- Filecoin Mainnet: [0x03ea800bcD11aF907508Fbfb7BC122AfDDAcE99f](https://filfox.info/en/address/0x03ea800bcD11aF907508Fbfb7BC122AfDDAcE99f) <br>- Filecoin Calibration Testnet: [0xe6fB2eBF9aB76C5053428106750835d98cDDC058](https://calibration.filfox.info/en/address/0xe6fB2eBF9aB76C5053428106750835d98cDDC058) <br> - Furnace Testnet: [0xaaEf76DC51579aCdD847c94ECdd2E851fE91f833](https://blockscout.firepit.network/address/0xaaEf76DC51579aCdD847c94ECdd2E851fE91f833) | 
+| SignatureSender Proxy | Upgradeable proxy for DecryptionSender. | <br> - Base Sepolia: [0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8](https://sepolia.basescan.org/address/0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8) <br> - Polygon PoS: [0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8](https://polygonscan.com/address/0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8) <br> - Optimism Sepolia: [0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8](https://sepolia-optimism.etherscan.io/address/0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8) <br> - Arbitrum Sepolia: [0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8](https://sepolia.arbiscan.io/address/0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8) <br> - Avalanche (C-Chain) Testnet: [0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8](https://testnet.avascan.info/blockchain/all/address/0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8) <br> - Sei Testnet: [0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8](https://seitrace.com/address/0x7C58c2EC510BcA7db09dc4039115F0CcEBA2e8B8?chain=atlantic-2) <br>- Filecoin Mainnet: [0x01065df04A698B3Eb1b195b3952a098A97659Aba](https://filfox.info/en/address/0x01065df04A698B3Eb1b195b3952a098A97659Aba)<br>- Filecoin Calibration Testnet:[0xad16eeC3A1dc1F3335A04578C088EEa09c9dc05A](https://calibration.filfox.info/en/address/0xad16eeC3A1dc1F3335A04578C088EEa09c9dc05A) <br> - Furnace Testnet: [0xdddDB36316E395FdcF6F1A5D323Ea4165070eF5f](https://blockscout.firepit.network/address/0xdddDB36316E395FdcF6F1A5D323Ea4165070eF5f) | 
+| SignatureSender Implementation | Contract used by offchain oracle to fulfill conditional encryption requests. | <br> - Base Sepolia: [0x7be613b1c7245058A7C92B6C2FaD8fde6016b630](https://sepolia.basescan.org/address/0x7be613b1c7245058A7C92B6C2FaD8fde6016b630) <br> - Polygon PoS: [0x7be613b1c7245058A7C92B6C2FaD8fde6016b630](https://polygonscan.com/address/0x7be613b1c7245058A7C92B6C2FaD8fde6016b630) <br> - Optimism Sepolia: [0x7be613b1c7245058A7C92B6C2FaD8fde6016b630](https://sepolia-optimism.etherscan.io/address/0x7be613b1c7245058A7C92B6C2FaD8fde6016b630) <br> - Arbitrum Sepolia: [0x7be613b1c7245058A7C92B6C2FaD8fde6016b630](https://sepolia.arbiscan.io/address/0x7be613b1c7245058A7C92B6C2FaD8fde6016b630) <br> - Avalanche (C-Chain) Testnet: [0x7be613b1c7245058A7C92B6C2FaD8fde6016b630](https://testnet.avascan.info/blockchain/all/address/0x7be613b1c7245058A7C92B6C2FaD8fde6016b630) <br> - Sei Testnet: [0x7be613b1c7245058A7C92B6C2FaD8fde6016b630](https://seitrace.com/address/0x7be613b1c7245058A7C92B6C2FaD8fde6016b630?chain=atlantic-2) <br>- Filecoin Mainnet: [0x8d5fC647A864C522C2BB5Ba58A25715ED8778104](https://filfox.info/en/address/0x8d5fC647A864C522C2BB5Ba58A25715ED8778104)<br>- Filecoin Calibration Testnet: [0x6227e53F12B7bdCB55664ae100707169a77F207F](https://calibration.filfox.info/en/address/0x6227e53F12B7bdCB55664ae100707169a77F207F) <br> - Furnace Testnet: [0x80bF678c154F09479B4BC07B0906A9ef8Ac561Ad](https://blockscout.firepit.network/address/0x80bF678c154F09479B4BC07B0906A9ef8Ac561Ad) | 
+| SignatureSchemeAddressProvider | Stores contract addresses for signature schemes. | <br> - Base Sepolia: [0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F](https://sepolia.basescan.org/address/0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F) <br> - Polygon PoS: [0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F](https://polygonscan.com/address/0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F) <br> - Optimism Sepolia: [0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F](https://sepolia-optimism.etherscan.io/address/0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F) <br> - Arbitrum Sepolia: [0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F](https://sepolia.arbiscan.io/address/0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F) <br> - Avalanche (C-Chain) Testnet: [0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F](https://testnet.avascan.info/blockchain/all/address/0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F) <br> - Sei Testnet: [0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F](https://seitrace.com/address/0xaF85d5C7F8225FcF9Fe007B928A22d55cbA1947F?chain=atlantic-2) <br>- Filecoin Mainnet: [0xF0E404d9F74ef1283350C0BC9628928fbA9D4d6c](https://filfox.info/en/address/0xF0E404d9F74ef1283350C0BC9628928fbA9D4d6c) <br>- Filecoin Calibration Testnet: [0xD1AD99F76E3FE4978B022d78c31BBC58f5c56548](https://calibration.filfox.info/en/address/0xD1AD99F76E3FE4978B022d78c31BBC58f5c56548) <br> - Furnace Testnet: [0xee496cCc37cf5d9a180fFd88670b62722fea0153](https://blockscout.firepit.network/address/0xee496cCc37cf5d9a180fFd88670b62722fea0153) | 
+| BN254SignatureScheme | BN254 pairing-based signature verifier. | <br> - Base Sepolia: [0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94](https://sepolia.basescan.org/address/0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94) <br> - Polygon PoS: [0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94](https://polygonscan.com/address/0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94) <br> - Optimism Sepolia: [0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94](https://sepolia-optimism.etherscan.io/address/0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94) <br> - Arbitrum Sepolia: [0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94](https://sepolia.arbiscan.io/address/0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94) <br> - Avalanche (C-Chain) Testnet: [0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94](https://testnet.avascan.info/blockchain/all/address/0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94) <br> - Sei Testnet: [0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94](https://seitrace.com/address/0xF66afD0B5F7A65CddDe885128456EB0BdC85EA94?chain=atlantic-2) <br> - Filecoin Mainnet: [0xC1F5c6eA56496f47F9734B667d605Db5EA321f79](https://filfox.info/en/address/0xC1F5c6eA56496f47F9734B667d605Db5EA321f79) <br> - Filecoin Calibration Testnet: [0xA61E77A5210cDe8aEdcBFF2FD423093b6FdFCC00](https://calibration.filfox.info/en/address/0xA61E77A5210cDe8aEdcBFF2FD423093b6FdFCC00) <br> - Furnace Testnet: [0xda537C42c0Ce3D1c89e961c931f1c8903cBb824c](https://blockscout.firepit.network/address/0xda537C42c0Ce3D1c89e961c931f1c8903cBb824c) | 
 
 
 ### How to use the Solidity interaface
@@ -154,6 +129,14 @@ For deployment steps, please see [deployment documentation](script/README.md).
 
     ```solidity
     contract DiceRoller is RandomnessReceiverBase {
+        /// @notice Stores the latest received randomness value
+        bytes32 public randomness;
+
+        /// @notice Stores the request ID of the latest randomness request
+        uint256 public requestId;
+
+        /// @notice Initializes the contract with the address of the randomness sender
+        /// @param randomnessSender The address of the randomness provider
         constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
         ...
     }
@@ -161,19 +144,48 @@ For deployment steps, please see [deployment documentation](script/README.md).
 
 3. **Request Randomness**
 
-    Use the `requestRandomness()` function to send a randomness request to the dcipher network. This request will be forwarded to the pre-deployed `RandomnessSender` contract.
+    Requests can be paid for in two ways, either direct funding or subscription. 
 
-    The function returns a `requestId`, which should be stored to verify the response when randomness is delivered.
+    For both payment options, the [RandomnessReceiverBase](/src/RandomnessReceiverBase.sol) contract provides two functions for making requests:
+    - Direct Funding: `_requestRandomnessPayInNative(uint32 callbackGasLimit)` 
+    - Subscription: `_requestRandomnessWithSubscription(uint32 callbackGasLimit)`.
+
+    To estimate the price of a randomness request, you can use the `calculateRequestPriceNative()` function in the `RandomnessSender` contract (ensure that a buffer is added to the returned estimate to accomodate network gas price fluctuations between blocks):
 
     ```solidity
-    /**
-     * @dev Requests randomness.
-     *
-     * This function calls the `requestRandomness` method to request a random value.
-     * The `requestId` is updated with the ID returned from the randomness request.
-     */
-    function rollDice() external {
-        requestId = requestRandomness();
+    function calculateRequestPriceNative(uint32 _callbackGasLimit)
+        public
+        view
+        override (FeeCollector, IRandomnessSender)
+        returns (uint256)
+    {
+        return _calculateRequestPriceNative(_callbackGasLimit, tx.gasprice);
+    }
+    ```
+
+    In this example, we will be showing how to use both funding options to roll a dice. Both functions return the request id (and request price for the direct funding option).
+
+    To recap, using the internal `_requestRandomnessPayInNative()` and `_requestRandomnessWithSubscription()` functions derived from `RandomnessReceiverBase`, we can send randomness requests to the dcipher network using the direct funding and subscription payment options respectively. These requests are forwarded through the deployed `RandomnessSender` contract on a supported network. 
+
+    When calling `_requestRandomnessPayInNative()`, we need to fund the request via `msg.value` which should cover the estimated price for the request. It is advised to add a buffer to cover fluctuations in network gas price to avoid delays in processing the request. 
+
+    Both functions return a `requestId`, which should be stored and can be used to verify the response when the randomness is delivered through a callback from `RandomnessSender`. For the subscription payment option, the `_requestRandomnessWithSubscription()` function, uses the `subscriptionId` variable set in `RandomnessReceiverBase`.
+
+    ```solidity
+    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external payable returns (uint256, uint256) {
+        // create randomness request using direct funding
+        (uint256 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return (requestID, requestPrice);
+    }
+
+    function rollDiceWithSubscription(uint32 callbackGasLimit) external payable returns (uint256) {
+        // create randomness request using subscription
+        uint256 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return requestID;
     }
     ```
 
@@ -199,54 +211,117 @@ For deployment steps, please see [deployment documentation](script/README.md).
 
 ### Example Contract
 ```solidity
-// SPDX-License-Identifier: MIT
+/// SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import { RandomnessReceiverBase } from "randomness-solidity/src/RandomnessReceiverBase.sol";
+import {RandomnessReceiverBase} from "../RandomnessReceiverBase.sol";
 
-contract DiceRoller is RandomnessReceiverBase {
-    bytes32 public diceNumber;
+/// @title MockRandomnessReceiver contract
+/// @author Randamu
+/// @notice A contract that requests and consumes randomness
+contract MockRandomnessReceiver is RandomnessReceiverBase {
+    /// @notice Stores the latest received randomness value
+    bytes32 public randomness;
+
+    /// @notice Stores the request ID of the latest randomness request
     uint256 public requestId;
 
-    constructor(address randomnessSender) RandomnessReceiverBase(randomnessSender) {}
+    /// @notice Initializes the contract with the address of the randomness sender
+    /// @param randomnessSender The address of the randomness provider
+    constructor(address randomnessSender, address owner) RandomnessReceiverBase(randomnessSender, owner) {}
 
-    function rollDice() external {
-        requestId = requestRandomness();
+    /// @notice Requests randomness using the direct funding option
+    /// @dev Calls `_requestRandomnessPayInNative` to get a random value, updating `requestId` with the request ID
+    function rollDiceWithDirectFunding(uint32 callbackGasLimit) external payable returns (uint256, uint256) {
+        // create randomness request
+        (uint256 requestID, uint256 requestPrice) = _requestRandomnessPayInNative(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return (requestID, requestPrice);
     }
 
-    function onRandomnessReceived(uint64 requestID, bytes32 _randomness) internal override {
+    /// @notice Requests randomness using the subscription option
+    /// @dev Calls `_requestRandomnessWithSubscription` to get a random value, updating `requestId` with the request ID
+    function rollDiceWithSubscription(uint32 callbackGasLimit) external returns (uint256) {
+        // create randomness request
+        uint256 requestID = _requestRandomnessWithSubscription(callbackGasLimit);
+        // store request id
+        requestId = requestID;
+        return requestID;
+    }
+
+    function cancelSubscription(address to) external onlyOwner {
+        _cancelSubscription(to);
+    }
+
+    /// @notice Callback function that processes received randomness
+    /// @dev Ensures the received request ID matches the stored one before updating state
+    /// @param requestID The ID of the randomness request
+    /// @param _randomness The random value received from the oracle
+    function onRandomnessReceived(uint256 requestID, bytes32 _randomness) internal override {
         require(requestId == requestID, "Request ID mismatch");
-        diceNumber = _randomness;
+        randomness = _randomness;
     }
 }
 ```
+
+#### Sharing Subscription Accounts 
+
+To share a subscription account, the smart contract that owns the subscription must call the `updateSubscription()` function in `RandomnessSender` to approve other contracts to use its created `subscriptionId`.
+
+```solidity
+/// @notice Adds a list of consumer addresses to the Randamu subscription.
+/// @dev Requires the subscription ID to be set before calling.
+/// @param consumers An array of addresses to be added as authorized consumers.
+function updateSubscription(address[] calldata consumers) external onlyOwner {
+    require(subscriptionId != 0, "subID not set");
+    for (uint256 i = 0; i < consumers.length; i++) {
+        randomnessSender.addConsumer(subscriptionId, consumers[i]);
+    }
+```
+
+After calling `updateSubscription` all approved contracts can then call the `setSubId` function and start making subscription conditional encryption requests using the shared (funded) subscription account. 
+
+```solidity
+/// @notice Sets the Randamu subscription ID used for conditional encryption oracle services.
+/// @dev Only callable by the contract owner.
+/// @param subId The new subscription ID to be set.
+function setSubId(uint256 subId) external onlyOwner {
+    subscriptionId = subId;
+    emit NewSubscriptionId(subId);
+}
+```
+
+Please note that all approved contracts must also implement `RandomnessReceiverBase.sol`.
+
 
 ## API Documentation
 
 ### RandomnessReceiverBase.sol
 | Function  | Return | Description |
 |----------|------------|------------|
-| `requestRandomness()` | `uint64 requestID` |Requests the generation of a random value from the dcipher network | 
-| `onRandomnessReceived(uint64 requestID, bytes32 randomness)` | n/a |	Callback function to be implemented by the inheriting contract. Called when the randomness is delivered.  |
- 
+| `_requestRandomnessPayInNative(uint32 callbackGasLimit)` | `uint256 requestID, uint256 requestPrice` |Requests the generation of a random value from the dcipher network |
+| `_requestRandomnessWithSubscription(uint32 callbackGasLimit)` | `uint256 requestID` |Requests the generation of a random value from the dcipher network |
+| `onRandomnessReceived(uint256 requestID, bytes32 randomness)` | n/a |	Callback function to be implemented by the inheriting contract. Called when the randomness is delivered.  |
+
 ### RandomnessSender.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-| `isInFlight(uint64 requestID)` | `bool` | Returns `true` if the specified randomness request is still pending. |
-| `getRequest(uint64 requestId)` | `TypesLib.RandomnessRequest`  | Returns the details of the randomness request associated with the given request ID.  |
-| `getAllRequests()` | `TypesLib.RandomnessRequest[]` | Retrieves all randomness requests submitted to the contract.|
+| `isInFlight(uint256 requestID)` | `bool` | Returns `true` if the specified randomness request is still pending. |
+| `getRequest(uint256 requestID)` | `TypesLib.RandomnessRequest`  | Returns the details of the randomness request associated with the given request ID. The `RandomnessRequest` object (struct) contains the following variables for each request: `uint256 nonce; address callback;` |
+| `getAllRequests()` | `TypesLib.RandomnessRequest[]` | Retrieves a list of all randomness requests submitted to the contract. |
 
 ### SignatureSender.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-| `isInFlight(uint64 requestID)` | `bool` | Returns true if the specified signature request is still pending.|
-| `getRequest(uint64 requestID)` | `TypesLib.SignatureRequest` | Returns the details of the signature request associated with the given request ID.|
+| `isInFlight(uint256 requestID)` | `bool` | Returns true if the specified signature request is still pending.|
+| `getRequest(uint256 requestID)` | `TypesLib.SignatureRequest` | Returns the details of the signature request associated with the given request ID.|
 | `getPublicKey()` | `uint256[2] memory, uint256[2] memory` | Returns the public key components used in the signature verification process.|
 
-### SignatureSender.sol
+### Randomness.sol
 | Function | Return | Description |
 |----------|-------------|------------|
-|`function verify(address randomnessContract, address signatureContract, bytes calldata signature uint64 requestID, address requester)`  | `bool` | Verifies that the provided randomness is valid and was properly generated by the dcipher network for the given request.|
+|`function verify(address randomnessContract, address signatureContract, bytes calldata signature, uint256 requestID, address requester, string calldata schemeID)`  | `bool` | Verifies that the provided randomness is valid and was properly generated by the dcipher network for the given request.|
 
 ## License
 This library is licensed under the MIT License which can be accessed [here](./LICENSE).
