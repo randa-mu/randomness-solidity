@@ -69,7 +69,7 @@ npm run test
 
 ### Supported Networks
 
-For a list of supported network and contract addresses, please see the [project documentation website](https://docs.dcipher.network/category/networks). 
+For a list of supported networks and smart contract addresses, please see the [project documentation website](https://docs.dcipher.network/category/networks).
 
 
 ### How to use the Solidity interaface
