@@ -31,7 +31,7 @@ contract RandomnessSender is
     using CallWithExactGas for bytes;
 
     /// @notice The identifier for the signature scheme used.
-    string public constant SCHEME_ID = "BN254";
+    string public constant SCHEME_ID = "BLS12381";
     /// @notice Role identifier for the contract administrator.
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
