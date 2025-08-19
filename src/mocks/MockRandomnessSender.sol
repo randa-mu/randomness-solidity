@@ -447,7 +447,4 @@ contract MockRandomnessSender {
 
     /// @notice Allow contract to receive Ether
     receive() external payable {}
-
-    /// @notice Allow contract to receive Ether via fallback
-    fallback() external payable {}
 }

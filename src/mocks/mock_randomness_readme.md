@@ -204,6 +204,6 @@ mockRandomness.forceFailRequest(requestId3);
 - This is a **testing-only** contract - not suitable for production use
 - Subscription balance deduction is lenient (won't fail if insufficient funds)
 - All testing utilities are publicly accessible for maximum flexibility
-- Contract accepts Ether via `receive()` and `fallback()` functions
+- Contract accepts Ether via the `receive()` function
 
 Perfect for testing randomness-dependent smart contracts with full control over outcomes and edge cases!
