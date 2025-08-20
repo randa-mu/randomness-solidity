@@ -58,7 +58,7 @@ contract BLS12381SignatureScheme is SignatureSchemeBase {
         /// @dev Converts message hash bytes to G1 point
         BLS2.PointG1 memory _message = BLS2.g1Unmarshal(message);
         /// @dev Converts signature bytes to G1 point
-        BLS2.PointG1 memory _signature = BLS2.g1Unmarshal(signature);
+        BLS2.PointG1 memory _signature = BLS2.g1UnmarshalCompressed(signature);
         /// @dev Converts public key bytes to G2 point
         BLS2.PointG2 memory _publicKey = BLS2.g2Unmarshal(publicKey);
 
