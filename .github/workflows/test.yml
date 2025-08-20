@@ -22,9 +22,9 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
       
-      - name: Install hardhat
+      - name: Install Hardhat
         run: |
-          yarn add --dev hardhat
+          npm install
         id: hardhat-install
 
       - name: Show Forge version
