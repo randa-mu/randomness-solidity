@@ -13,12 +13,16 @@ import {
     RandomnessSender,
     SignatureSender,
     BN254SignatureScheme,
+    BLS12381SignatureScheme,
+    BLS12381CompressedSignatureScheme,
     MockRandomnessReceiver
 } from "./Deployment.t.sol";
 
 contract RandomnessTest is Deployment {
     SignatureSchemeAddressProvider internal signatureSchemeAddressProvider;
     BN254SignatureScheme internal bn254SignatureScheme;
+    BLS12381SignatureScheme internal bls12381SignatureScheme;
+    BLS12381CompressedSignatureScheme internal bls12381CompressedSignatureScheme;
     SignatureSender internal signatureSender;
     RandomnessSender internal randomnessSender;
     MockRandomnessReceiver internal mockRandomnessReceiver;
@@ -27,7 +31,14 @@ contract RandomnessTest is Deployment {
         // setup base test
         super.setUp();
 
-        (signatureSchemeAddressProvider, bn254SignatureScheme, randomnessSender, signatureSender) = deployContracts();
+        (
+            signatureSchemeAddressProvider,
+            bn254SignatureScheme,
+            bls12381SignatureScheme,
+            bls12381CompressedSignatureScheme,
+            randomnessSender,
+            signatureSender
+        ) = deployContracts();
 
         mockRandomnessReceiver = deployRandomnessReceiver(alice, address(randomnessSender));
     }
@@ -38,6 +49,8 @@ contract RandomnessTest is Deployment {
 
         assert(address(signatureSchemeAddressProvider) != address(0));
         assert(address(bn254SignatureScheme) != address(0));
+        assert(address(bls12381SignatureScheme) != address(0));
+        assert(address(bls12381CompressedSignatureScheme) != address(0));
         assert(address(signatureSender) != address(0));
         assert(address(randomnessSender) != address(0));
         assert(address(mockRandomnessReceiver) != address(0));
@@ -115,6 +128,36 @@ contract RandomnessTest is Deployment {
             requestID,
             requester,
             bn254SignatureSchemeID
+        );
+        assertTrue(passedVerificationCheck, "Signature verification failed");
+        console.logBool(passedVerificationCheck);
+    }
+
+    function test_Randomness_SignatureVerification_BLS2() public view {
+        address requester = address(10);
+        uint256 requestID = 1;
+        bool passedVerificationCheck = Randomness.verify(
+            address(randomnessSender),
+            address(signatureSender),
+            validSignatureBLS2,
+            requestID,
+            requester,
+            bls12381SignatureSchemeID
+        );
+        assertTrue(passedVerificationCheck, "Signature verification failed");
+        console.logBool(passedVerificationCheck);
+    }
+
+    function test_Randomness_SignatureVerification_BLS2C() public view {
+        address requester = address(10);
+        uint256 requestID = 1;
+        bool passedVerificationCheck = Randomness.verify(
+            address(randomnessSender),
+            address(signatureSender),
+            validSignatureBLS2Compressed,
+            requestID,
+            requester,
+            bls12381CompressedSignatureSchemeID
         );
         assertTrue(passedVerificationCheck, "Signature verification failed");
         console.logBool(passedVerificationCheck);

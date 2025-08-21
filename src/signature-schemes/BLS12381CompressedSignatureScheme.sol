@@ -9,11 +9,11 @@ import {SignatureSchemeBase} from "./SignatureSchemeBase.sol";
 /// @title BLS12381SignatureScheme contract
 /// @author Randamu
 /// @notice A contract that implements a BLS12381 signature scheme
-contract BLS12381SignatureScheme is SignatureSchemeBase {
+contract BLS12381CompressedSignatureScheme is SignatureSchemeBase {
     using BytesLib for bytes32;
 
     /// @notice Identifier for the BLS12381 signature scheme
-    string public constant SCHEME_ID = "BLS12381";
+    string public constant SCHEME_ID = "BLS12381Compressed";
 
     /// @notice Domain separation tag for the BLS signature scheme
     bytes public DST;
@@ -49,7 +49,7 @@ contract BLS12381SignatureScheme is SignatureSchemeBase {
         /// @dev Converts message hash bytes to G1 point
         BLS2.PointG1 memory _message = BLS2.g1Unmarshal(message);
         /// @dev Converts signature bytes to G1 point
-        BLS2.PointG1 memory _signature = BLS2.g1Unmarshal(signature);
+        BLS2.PointG1 memory _signature = BLS2.g1UnmarshalCompressed(signature);
         /// @dev Converts public key bytes to G2 point
         BLS2.PointG2 memory _publicKey = BLS2.g2Unmarshal(publicKey);
 

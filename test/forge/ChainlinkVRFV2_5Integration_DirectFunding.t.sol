@@ -8,7 +8,9 @@ import {
     SignatureSchemeAddressProvider,
     RandomnessSender,
     SignatureSender,
-    BN254SignatureScheme
+    BN254SignatureScheme,
+    BLS12381SignatureScheme,
+    BLS12381CompressedSignatureScheme
 } from "./base/Deployment.t.sol";
 
 import {ChainlinkVRFDirectFundingConsumer} from
@@ -22,6 +24,8 @@ import {ChainlinkVRFV2PlusWrapperAdapter} from "../../src/chainlink_compatible/C
 contract ChainlinkVRFV2_5Integration_DirectFundingTest is Deployment {
     SignatureSchemeAddressProvider internal signatureSchemeAddressProvider;
     BN254SignatureScheme internal bn254SignatureScheme;
+    BLS12381SignatureScheme internal bls12381SignatureScheme;
+    BLS12381CompressedSignatureScheme internal bls12381CompressedSignatureScheme;
     SignatureSender internal signatureSender;
     RandomnessSender internal randomnessSender;
 
@@ -29,7 +33,14 @@ contract ChainlinkVRFV2_5Integration_DirectFundingTest is Deployment {
     function setUp() public override {
         super.setUp();
 
-        (signatureSchemeAddressProvider, bn254SignatureScheme, randomnessSender, signatureSender) = deployContracts();
+        (
+            signatureSchemeAddressProvider,
+            bn254SignatureScheme,
+            bls12381SignatureScheme,
+            bls12381CompressedSignatureScheme,
+            randomnessSender,
+            signatureSender
+        ) = deployContracts();
     }
 
     /// @notice Tests a direct funding randomness request using the Chainlink-compatible wrapper
