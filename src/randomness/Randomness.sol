@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {BLS} from "../libraries/BLS.sol";
 import {TypesLib} from "../libraries/TypesLib.sol";
 
 import {IRandomnessSender} from "../interfaces/IRandomnessSender.sol";
@@ -31,17 +30,13 @@ library Randomness {
         ISignatureScheme signatureScheme =
             ISignatureScheme(signatureSchemeAddressProvider.getSignatureSchemeAddress(schemeID));
 
-        BLS.PointG1 memory messageHash = BLS.hashToPoint(
-            signatureScheme.DST(),
+        bytes memory messagePoint = signatureScheme.hashToBytes(
             IRandomnessSender(randomnessContract).messageFrom(
                 TypesLib.RandomnessRequestCreationParams(requestID, requester)
             )
         );
-        BLS.PointG1 memory _signature = BLS.g1Unmarshal(signature);
-
-        bool pairingSuccess = signatureScheme.verifySignature(
-            BLS.g1Marshal(messageHash), BLS.g1Marshal(_signature), signatureScheme.getPublicKeyBytes()
-        );
+        bool pairingSuccess =
+            signatureScheme.verifySignature(messagePoint, signature, signatureScheme.getPublicKeyBytes());
         return pairingSuccess;
     }
 

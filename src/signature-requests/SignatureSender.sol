@@ -8,7 +8,6 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-import {BLS} from "../libraries/BLS.sol";
 import {TypesLib} from "../libraries/TypesLib.sol";
 import {BytesLib} from "../libraries/BytesLib.sol";
 
