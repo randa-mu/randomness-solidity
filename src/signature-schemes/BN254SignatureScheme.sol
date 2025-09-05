@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {BLS} from "../libraries/BLS.sol";
+import {BLS} from "bls-solidity-0.1.0/BLS.sol";
 import {BytesLib} from "../libraries/BytesLib.sol";
 
 import {SignatureSchemeBase} from "./SignatureSchemeBase.sol";
@@ -19,14 +19,14 @@ contract BN254SignatureScheme is SignatureSchemeBase {
     bytes public DST;
 
     /// @notice Links public keys of threshold network statically to signature scheme contracts and remove from constructor of sender contracts. Admin cannot update, simply use new scheme id.
-    BLS.PointG2 private publicKey = BLS.PointG2({x: [uint256(0), uint256(0)], y: [uint256(0), uint256(0)]});
+    BLS.PointG2 private publicKey;
 
     /// @notice Sets the DST with the current chain ID as a hex string (converted to bytes)
-    constructor(uint256[2] memory x, uint256[2] memory y) {
+    constructor(bytes memory _publicKey) {
         DST = abi.encodePacked(
             "dcipher-randomness-v01-BN254G1_XMD:KECCAK-256_SVDW_RO_", bytes32(getChainId()).toHexString(), "_"
         );
-        publicKey = BLS.PointG2({x: x, y: y});
+        publicKey = BLS.g2Unmarshal(_publicKey);
     }
 
     /// @notice Retrieves the public key associated with the decryption process.

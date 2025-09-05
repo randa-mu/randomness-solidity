@@ -6,10 +6,11 @@ import {IRandomnessSender} from "../interfaces/IRandomnessSender.sol";
 import {IVRFV2PlusWrapper} from "./internal/IVRFV2PlusWrapper.sol";
 import {ConfirmedOwner} from "../access/ConfirmedOwner.sol";
 
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {ReentrancyGuard} from "openzeppelin-contracts-5.2.0/contracts/utils/ReentrancyGuard.sol";
 
-import {ITypeAndVersion} from "@chainlink/contracts/src/v0.8/shared/interfaces/ITypeAndVersion.sol";
-import {VRFV2PlusWrapperConsumerBase} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFV2PlusWrapperConsumerBase.sol";
+import {ITypeAndVersion} from "chainlink-2.24.0/contracts/src/v0.8/shared/interfaces/ITypeAndVersion.sol";
+import {VRFV2PlusWrapperConsumerBase} from
+    "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/VRFV2PlusWrapperConsumerBase.sol";
 
 /// @dev Partial implementation of Chainlink's `VRFV2PlusWrapper` with no-ops and dummy values for the methods RandamuVRF does not need.
 /// @notice A wrapper for VRFCoordinatorV2 that provides an interface better suited to one-off

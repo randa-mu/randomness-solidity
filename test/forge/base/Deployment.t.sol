@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {Test, console} from "forge-std/Test.sol";
+import {Test, console} from "forge-std-1.10.0/Test.sol";
 
 // helpers
-import {BLS} from "../../../src/libraries/BLS.sol";
+import {BLS} from "bls-solidity-0.1.0/BLS.sol";
 import {TypesLib} from "../../../src/libraries/TypesLib.sol";
 import {UUPSProxy} from "../../../src/proxy/UUPSProxy.sol";
 import {Base} from "./Base.t.sol";
@@ -58,13 +58,11 @@ abstract contract Deployment is Base {
     {
         vm.startPrank(admin);
 
-        BLS.PointG2 memory pk = abi.decode(validPK, (BLS.PointG2));
-
         // deploy signature scheme address provider
         signatureSchemeAddressProvider = new SignatureSchemeAddressProvider(address(0));
 
         // deploy bn254 signature scheme
-        bn254SignatureScheme = new BN254SignatureScheme([pk.x[1], pk.x[0]], [pk.y[1], pk.y[0]]);
+        bn254SignatureScheme = new BN254SignatureScheme(validPK);
         bls12381SignatureScheme = new BLS12381SignatureScheme(validPkBLS2);
         bls12381CompressedSignatureScheme = new BLS12381CompressedSignatureScheme(validPkBLS2);
         signatureSchemeAddressProvider.updateSignatureScheme(bn254SignatureSchemeID, address(bn254SignatureScheme));

@@ -5,16 +5,16 @@ import {IRandomnessReceiver} from "../interfaces/IRandomnessReceiver.sol";
 import {IRandomnessSender} from "../interfaces/IRandomnessSender.sol";
 import {ConfirmedOwner} from "../access/ConfirmedOwner.sol";
 
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {ReentrancyGuard} from "openzeppelin-contracts-5.2.0/contracts/utils/ReentrancyGuard.sol";
 
-import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
-import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
-import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+import {VRFConsumerBaseV2Plus} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFConsumerBaseV2Plus} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFV2PlusClient} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 // solhint-disable-next-line no-unused-import
 import {
     IVRFCoordinatorV2Plus,
     IVRFSubscriptionV2Plus
-} from "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2Plus.sol";
+} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2Plus.sol";
 
 /// @dev Partial implementation of Chainlink's `VRFCoordinatorV2_5` with no-ops and dummy values for the methods RandamuVRF does not need.
 // solhint-disable-next-line contract-name-camelcase

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {console} from "forge-std/Test.sol";
+import {console} from "forge-std-1.10.0/Test.sol";
 
 import {TypesLib, BLS} from "./Deployment.t.sol";
 

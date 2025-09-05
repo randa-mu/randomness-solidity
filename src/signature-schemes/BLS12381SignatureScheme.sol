@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {BLS2} from "../libraries/BLS2.sol";
+import {BLS2} from "bls-solidity-0.1.0/BLS2.sol";
 import {BytesLib} from "../libraries/BytesLib.sol";
 
 import {SignatureSchemeBase} from "./SignatureSchemeBase.sol";

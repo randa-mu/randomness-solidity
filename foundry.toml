@@ -1,7 +1,7 @@
 [profile.default]
 src = "src"
 out = "out"
-libs = ["lib"]
+libs = ["lib", "dependencies"]
 optimizer = true
 optimizer_runs = 20_000
 solc_version = '0.8.28'
@@ -25,5 +25,12 @@ gas_reports = ["*"]
 [profile.coverage]
 via_ir = true
 no_match_coverage = "(script|test)"
+
+[dependencies]
+forge-std = "1.10.0"
+bls-solidity = { version = "0.1.0", url = "https://github.com/randa-mu/bls-solidity/archive/refs/tags/v0.1.0.zip" }
+chainlink = { version = "2.24.0", url = "https://github.com/smartcontractkit/chainlink/archive/refs/tags/v2.24.0.zip" }
+openzeppelin-contracts-upgradeable = { version = "5.2.0", url = "https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/archive/refs/tags/v5.2.0.zip" }
+openzeppelin-contracts = { version = "5.2.0", url = "https://github.com/OpenZeppelin/openzeppelin-contracts/archive/refs/tags/v5.2.0.zip" }
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

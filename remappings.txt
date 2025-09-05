@@ -1,5 +1,5 @@
-@forge-std/=lib/forge-std/src/
-@ds-test/=lib/forge-std/lib/ds-test/src/
-
-@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
-@chainlink/contracts/=lib/chainlink/contracts/
+bls-solidity-0.1.0/=dependencies/bls-solidity-0.1.0/src/libraries/
+chainlink-2.24.0/=dependencies/chainlink-2.24.0/
+forge-std-1.10.0/=dependencies/forge-std-1.10.0/src/
+openzeppelin-contracts-5.2.0/=dependencies/openzeppelin-contracts-5.2.0/
+openzeppelin-contracts-upgradeable-5.2.0/=dependencies/openzeppelin-contracts-upgradeable-5.2.0/

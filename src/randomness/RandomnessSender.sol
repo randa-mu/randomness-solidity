@@ -2,9 +2,9 @@
 pragma solidity ^0.8;
 
 import {AccessControlEnumerableUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+    "openzeppelin-contracts-upgradeable-5.2.0/contracts/access/extensions/AccessControlEnumerableUpgradeable.sol";
+import {Initializable} from "openzeppelin-contracts-upgradeable-5.2.0/contracts/proxy/utils/Initializable.sol";
+import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-5.2.0/contracts/proxy/utils/UUPSUpgradeable.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
 import {CallWithExactGas} from "../libraries/CallWithExactGas.sol";
@@ -31,7 +31,7 @@ contract RandomnessSender is
     using CallWithExactGas for bytes;
 
     /// @notice The identifier for the signature scheme used.
-    string public constant SCHEME_ID = "BLS12381Compressed";
+    string public constant SCHEME_ID = "BN254";
     /// @notice Role identifier for the contract administrator.
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
