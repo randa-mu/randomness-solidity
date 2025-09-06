@@ -1,7 +1,7 @@
 /// SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {AccessControl} from "openzeppelin-contracts-5.2.0/contracts/access/AccessControl.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {ISignatureSchemeAddressProvider} from "../interfaces/ISignatureSchemeAddressProvider.sol";
 
 /// @title SignatureSchemeAddressProvider

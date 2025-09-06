@@ -2,9 +2,9 @@
 pragma solidity ^0.8;
 
 import {AccessControlEnumerableUpgradeable} from
-    "openzeppelin-contracts-upgradeable-5.2.0/contracts/access/extensions/AccessControlEnumerableUpgradeable.sol";
-import {Initializable} from "openzeppelin-contracts-upgradeable-5.2.0/contracts/proxy/utils/Initializable.sol";
-import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-5.2.0/contracts/proxy/utils/UUPSUpgradeable.sol";
+    "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
 import {CallWithExactGas} from "../libraries/CallWithExactGas.sol";

@@ -2,18 +2,18 @@
 pragma solidity ^0.8;
 
 import {AccessControlEnumerableUpgradeable} from
-    "openzeppelin-contracts-upgradeable-5.2.0/contracts/access/extensions/AccessControlEnumerableUpgradeable.sol";
-import {Initializable} from "openzeppelin-contracts-upgradeable-5.2.0/contracts/proxy/utils/Initializable.sol";
-import {UUPSUpgradeable} from "openzeppelin-contracts-upgradeable-5.2.0/contracts/proxy/utils/UUPSUpgradeable.sol";
-import {ContextUpgradeable} from "openzeppelin-contracts-upgradeable-5.2.0/contracts/utils/ContextUpgradeable.sol";
-import {EnumerableSet} from "openzeppelin-contracts-5.2.0/contracts/utils/structs/EnumerableSet.sol";
+    "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
 import {BytesLib} from "../libraries/BytesLib.sol";
 
-import {Multicall} from "openzeppelin-contracts-5.2.0/contracts/utils/Multicall.sol";
-import {Context} from "openzeppelin-contracts-5.2.0/contracts/utils/Context.sol";
-import {AccessControl} from "openzeppelin-contracts-5.2.0/contracts/access/AccessControl.sol";
+import {Multicall} from "@openzeppelin/contracts/utils/Multicall.sol";
+import {Context} from "@openzeppelin/contracts/utils/Context.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 import {ISignatureReceiver} from "../interfaces/ISignatureReceiver.sol";
 import {ISignatureSender} from "../interfaces/ISignatureSender.sol";

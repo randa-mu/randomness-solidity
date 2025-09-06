@@ -5,7 +5,7 @@ import {IRandomnessReceiver} from "../interfaces/IRandomnessReceiver.sol";
 import {IRandomnessSender} from "../interfaces/IRandomnessSender.sol";
 import {ConfirmedOwner} from "../access/ConfirmedOwner.sol";
 
-import {ReentrancyGuard} from "openzeppelin-contracts-5.2.0/contracts/utils/ReentrancyGuard.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 import {VRFConsumerBaseV2Plus} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {VRFConsumerBaseV2Plus} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
