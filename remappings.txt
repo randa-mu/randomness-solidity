@@ -1,5 +1,5 @@
 @openzeppelin/contracts-upgradeable/=dependencies/@openzeppelin-contracts-upgradeable-5.4.0/
 @openzeppelin/contracts/=dependencies/@openzeppelin-contracts-5.4.0/
-bls-solidity-0.1.0/=dependencies/bls-solidity-0.1.0/src/libraries/
+bls-solidity-0.3.0/=dependencies/bls-solidity-0.3.0/
 chainlink-2.24.0/=dependencies/chainlink-2.24.0/
 forge-std-1.10.0/=dependencies/forge-std-1.10.0/src/

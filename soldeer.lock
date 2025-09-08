@@ -14,10 +14,10 @@ integrity = "eeb22da11d2b7a8202e43a3a91978f0d9e6cdabfe006cf799f57282065267a1a"
 
 [[dependencies]]
 name = "bls-solidity"
-version = "0.1.0"
-url = "https://github.com/randa-mu/bls-solidity/archive/refs/tags/v0.1.0.zip"
-checksum = "a19123a398dbd8b4bccc88c3910ae40447dde7651756ac93716410da38ac5749"
-integrity = "a2a33599cc0c7d336dfc9501490bc5cfef581e67934b74ac8457e53f9179f887"
+version = "0.3.0"
+url = "https://github.com/randa-mu/bls-solidity/archive/refs/tags/v0.3.0.zip"
+checksum = "d533bb18a246cc73b11ca14fb5950c7bc50525e4ac39882c7c04601a3cca1c58"
+integrity = "6c9c930aa29d8bec92df355a27e76a1e26298576c3157604ba5344ce99584b3d"
 
 [[dependencies]]
 name = "chainlink"
@@ -32,17 +32,3 @@ version = "1.10.0"
 url = "https://soldeer-revisions.s3.amazonaws.com/forge-std/1_10_0_02-08-2025_06:50:35_forge-std-1.10.zip"
 checksum = "8cc59e92a7762c170c15f2102c4f3718106dfc78239978fe87c64f316740cc09"
 integrity = "3fd441e2499c5cf04ef9b4126f52150a50dcef9cac1645ff7a955345e947cd04"
-
-[[dependencies]]
-name = "openzeppelin-contracts"
-version = "5.2.0"
-url = "https://github.com/OpenZeppelin/openzeppelin-contracts/archive/refs/tags/v5.2.0.zip"
-checksum = "153b3eb6220d019f39de7c546754158705f290957fdbc02e13f4c96655496019"
-integrity = "7a943ec0b157a48b08d1b2dcb2c5f3949da8514a92d102c4b95e49ff7cbb1294"
-
-[[dependencies]]
-name = "openzeppelin-contracts-upgradeable"
-version = "5.2.0"
-url = "https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/archive/refs/tags/v5.2.0.zip"
-checksum = "2f8f562e4a9436e9de5ea13838f2c5c13dc7fa3b709b49e41e7eb5992b86789a"
-integrity = "7a5c5cf34cd9f3a637caa8562ba6ae5127c9fe4986736ce207e86ea09f00efc4"

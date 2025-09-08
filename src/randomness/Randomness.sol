@@ -5,7 +5,7 @@ import {TypesLib} from "../libraries/TypesLib.sol";
 
 import {IRandomnessSender} from "../interfaces/IRandomnessSender.sol";
 import {ISignatureSender} from "../interfaces/ISignatureSender.sol";
-import {ISignatureScheme} from "../interfaces/ISignatureScheme.sol";
+import {ISignatureScheme} from "bls-solidity-0.3.0/src/interfaces/ISignatureScheme.sol";
 import {ISignatureSchemeAddressProvider} from "../interfaces/ISignatureSchemeAddressProvider.sol";
 
 import {RandomnessSender} from "./RandomnessSender.sol";
@@ -35,8 +35,7 @@ library Randomness {
                 TypesLib.RandomnessRequestCreationParams(requestID, requester)
             )
         );
-        bool pairingSuccess =
-            signatureScheme.verifySignature(messagePoint, signature, signatureScheme.getPublicKeyBytes());
+        bool pairingSuccess = signatureScheme.verifySignature(messagePoint, signature);
         return pairingSuccess;
     }
 

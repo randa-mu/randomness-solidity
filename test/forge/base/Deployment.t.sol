@@ -4,7 +4,7 @@ pragma solidity ^0.8;
 import {Test, console} from "forge-std-1.10.0/Test.sol";
 
 // helpers
-import {BLS} from "bls-solidity-0.1.0/BLS.sol";
+import {BLS} from "bls-solidity-0.3.0/src/libraries/BLS.sol";
 import {TypesLib} from "../../../src/libraries/TypesLib.sol";
 import {UUPSProxy} from "../../../src/proxy/UUPSProxy.sol";
 import {Base} from "./Base.t.sol";
@@ -12,9 +12,10 @@ import {Base} from "./Base.t.sol";
 // core contracts
 import {SignatureSchemeAddressProvider} from "../../../src/signature-schemes/SignatureSchemeAddressProvider.sol";
 import {SignatureSender} from "../../../src/signature-requests/SignatureSender.sol";
-import {BN254SignatureScheme} from "../../../src/signature-schemes/BN254SignatureScheme.sol";
-import {BLS12381SignatureScheme} from "../../../src/signature-schemes/BLS12381SignatureScheme.sol";
-import {BLS12381CompressedSignatureScheme} from "../../../src/signature-schemes/BLS12381CompressedSignatureScheme.sol";
+import {BN254SignatureScheme} from "bls-solidity-0.3.0/src/signature-schemes/BN254SignatureScheme.sol";
+import {BLS12381SignatureScheme} from "bls-solidity-0.3.0/src/signature-schemes/BLS12381SignatureScheme.sol";
+import {BLS12381CompressedSignatureScheme} from
+    "bls-solidity-0.3.0/src/signature-schemes/BLS12381CompressedSignatureScheme.sol";
 
 import {RandomnessSender} from "../../../src/randomness/RandomnessSender.sol";
 import {Randomness} from "../../../src/randomness/Randomness.sol";
@@ -23,11 +24,12 @@ import {Randomness} from "../../../src/randomness/Randomness.sol";
 import {MockRandomnessReceiver} from "../../../src/mocks/MockRandomnessReceiver.sol";
 
 abstract contract Deployment is Base {
+    string internal constant applicationNameForDST = "dcipher-randomness-v01";
     string internal constant bn254SignatureSchemeID = "BN254";
     string internal constant bls12381SignatureSchemeID = "BLS12381";
     string internal constant bls12381CompressedSignatureSchemeID = "BLS12381Compressed";
     bytes internal validPK =
-        hex"00899f6a3998ecb2f832d35025bf38bef7429005e6b591d9e0ffb10078409f22204a5468e6d01b87c07655eebbb1d43913e197f53281a7d56e2b1a0beac194aa05d04df1d2daeefa07790b41a9e0ab762e264798bc36340dc3a0cc5654cefa4b0a6758eec538bb8a511eed78c922a213e4cc06743aeb10ed77f63416fe964c35";
+        hex"204a5468e6d01b87c07655eebbb1d43913e197f53281a7d56e2b1a0beac194aa00899f6a3998ecb2f832d35025bf38bef7429005e6b591d9e0ffb10078409f220a6758eec538bb8a511eed78c922a213e4cc06743aeb10ed77f63416fe964c3505d04df1d2daeefa07790b41a9e0ab762e264798bc36340dc3a0cc5654cefa4b";
     bytes internal validPkBLS2 =
         hex"0eb3c62c162b4bf3da2df034c4ebf8f753c929a6e2424269f41558c8d3c6358a38bc199199a3cc4f3c275525f72e6ed00ea36aa928f4d6a58765ac61398baed7d1b195b71f7de3714fb0b87edf71792313a5b1650264cbfff03f78bafbd6590001d140f45a64fcf285f51f2e55ed11432e3829cd027dc2e6adb4a2fbc99e2aac0faf0aef517b525a3d5d80aa6cc41acd12c785bd8662d22ce36627e15ea5de6d3cb642be582410da7c95dc1ffc9bff902f05fff594f4956b2137cde3f172c71d";
     bytes internal validSignature =
@@ -62,9 +64,9 @@ abstract contract Deployment is Base {
         signatureSchemeAddressProvider = new SignatureSchemeAddressProvider(address(0));
 
         // deploy bn254 signature scheme
-        bn254SignatureScheme = new BN254SignatureScheme(validPK);
-        bls12381SignatureScheme = new BLS12381SignatureScheme(validPkBLS2);
-        bls12381CompressedSignatureScheme = new BLS12381CompressedSignatureScheme(validPkBLS2);
+        bn254SignatureScheme = new BN254SignatureScheme(validPK, applicationNameForDST);
+        bls12381SignatureScheme = new BLS12381SignatureScheme(validPkBLS2, applicationNameForDST);
+        bls12381CompressedSignatureScheme = new BLS12381CompressedSignatureScheme(validPkBLS2, applicationNameForDST);
         signatureSchemeAddressProvider.updateSignatureScheme(bn254SignatureSchemeID, address(bn254SignatureScheme));
         signatureSchemeAddressProvider.updateSignatureScheme(
             bls12381SignatureSchemeID, address(bls12381SignatureScheme)
