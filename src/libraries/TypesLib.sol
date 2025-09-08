@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import "./BLS.sol";
-
 /// @title TypesLib
 /// @author Randamu
 /// @notice Library declaring custom data types used for randomness and blocklock requests

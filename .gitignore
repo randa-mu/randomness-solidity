@@ -168,3 +168,7 @@ typechain-types
 
 # Deployments
 script/json/Deployment_input.json
+
+
+# Soldeer
+/dependencies

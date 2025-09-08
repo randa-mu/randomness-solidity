@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {Test, console} from "forge-std/Test.sol";
+import {Test, console} from "forge-std-1.10.0/Test.sol";
 
 abstract contract Base is Test {
     address internal admin;

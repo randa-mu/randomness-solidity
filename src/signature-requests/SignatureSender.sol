@@ -8,7 +8,6 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-import {BLS} from "../libraries/BLS.sol";
 import {TypesLib} from "../libraries/TypesLib.sol";
 import {BytesLib} from "../libraries/BytesLib.sol";
 
@@ -18,7 +17,7 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 import {ISignatureReceiver} from "../interfaces/ISignatureReceiver.sol";
 import {ISignatureSender} from "../interfaces/ISignatureSender.sol";
-import {ISignatureScheme} from "../interfaces/ISignatureScheme.sol";
+import {ISignatureScheme} from "bls-solidity-0.3.0/src/interfaces/ISignatureScheme.sol";
 import {ISignatureSchemeAddressProvider} from "../interfaces/ISignatureSchemeAddressProvider.sol";
 
 /// @title SignatureSender contract
@@ -164,10 +163,7 @@ contract SignatureSender is
         address schemeContractAddress = signatureSchemeAddressProvider.getSignatureSchemeAddress(schemeID);
         ISignatureScheme sigScheme = ISignatureScheme(schemeContractAddress);
 
-        require(
-            sigScheme.verifySignature(request.messageHash, signature, sigScheme.getPublicKeyBytes()),
-            "Signature verification failed"
-        );
+        require(sigScheme.verifySignature(request.messageHash, signature), "Signature verification failed");
 
         (bool success,) = request.callback.call(
             abi.encodeWithSelector(ISignatureReceiver.receiveSignature.selector, requestID, signature)

@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {Test, console} from "forge-std/Test.sol";
+import {Test, console} from "forge-std-1.10.0/Test.sol";
 
 import {
     Deployment,
     SignatureSchemeAddressProvider,
     RandomnessSender,
     SignatureSender,
-    BN254SignatureScheme
+    BN254SignatureScheme,
+    BLS12381SignatureScheme,
+    BLS12381CompressedSignatureScheme
 } from "./base/Deployment.t.sol";
 
 import {ChainlinkVRFSubscriptionConsumer} from
@@ -23,6 +25,8 @@ import {ChainlinkVRFCoordinatorV2_5Adapter} from "../../src/chainlink_compatible
 contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
     SignatureSchemeAddressProvider internal signatureSchemeAddressProvider;
     BN254SignatureScheme internal bn254SignatureScheme;
+    BLS12381SignatureScheme internal bls12381SignatureScheme;
+    BLS12381CompressedSignatureScheme internal bls12381CompressedSignatureScheme;
     SignatureSender internal signatureSender;
     RandomnessSender internal randomnessSender;
 
@@ -30,7 +34,14 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
     function setUp() public override {
         super.setUp();
 
-        (signatureSchemeAddressProvider, bn254SignatureScheme, randomnessSender, signatureSender) = deployContracts();
+        (
+            signatureSchemeAddressProvider,
+            bn254SignatureScheme,
+            bls12381SignatureScheme,
+            bls12381CompressedSignatureScheme,
+            randomnessSender,
+            signatureSender
+        ) = deployContracts();
     }
 
     /// @notice Tests that a randomness request via a Chainlink-compatible subscription is fulfilled correctly

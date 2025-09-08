@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {BLS} from "../libraries/BLS.sol";
+import {BLS} from "bls-solidity-0.3.0/src/libraries/BLS.sol";
 
-import {Test} from "forge-std/Test.sol";
+import {Test} from "forge-std-1.10.0/Test.sol";
 
 contract BLSTest is Test {
     function test__expandMsgTo96(bytes memory domain, bytes memory message)

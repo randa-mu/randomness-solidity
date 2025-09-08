@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IVRFV2PlusWrapper} from "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFV2PlusWrapper.sol";
+import {IVRFV2PlusWrapper} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/interfaces/IVRFV2PlusWrapper.sol";
 
 /// @dev Partial implementation of Chainlink's `VRFV2PlusWrapperConsumerBase` without the option to fund requests with LINK tokens.
 /// @dev Only native tokens are supported, e.g., Ether.

@@ -3,8 +3,8 @@
 pragma solidity ^0.8;
 
 ///// UPDATE IMPORTS TO V2.5 /////
-import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
-import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+import {VRFConsumerBaseV2Plus} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFV2PlusClient} from "chainlink-2.24.0/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 
 /// @dev THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
 /// @dev THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
