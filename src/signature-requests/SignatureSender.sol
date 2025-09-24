@@ -86,13 +86,13 @@ contract SignatureSender is ISignatureSender, Multicall, ScheduledUpgradeable, A
     }
 
     /// @notice Initializes the contract with the given parameters.
-    function initialize(address owner, address _signatureSchemeAddressProvider, address _contractUpgradeBlsValidator)
+    function initialize(address owner, address _signatureSchemeAddressProvider, address _contractUpgradeBlsValidator, uint256 _minimumContractUpgradeDelay)
         public
         initializer
     {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
-        __ScheduledUpgradeable_init(_contractUpgradeBlsValidator, 2 days);
+        __ScheduledUpgradeable_init(_contractUpgradeBlsValidator, _minimumContractUpgradeDelay);
 
         require(_grantRole(ADMIN_ROLE, owner), "Grant role failed");
         require(_grantRole(DEFAULT_ADMIN_ROLE, owner), "Grant role reverts");
