@@ -65,10 +65,12 @@ contract RandomnessSender is
     }
 
     /// @notice Initializes the contract with a signature sender and owner.
-    function initialize(address _signatureSender, address owner, address _contractUpgradeBlsValidator, uint256 _minimumContractUpgradeDelay)
-        public
-        initializer
-    {
+    function initialize(
+        address _signatureSender,
+        address owner,
+        address _contractUpgradeBlsValidator,
+        uint256 _minimumContractUpgradeDelay
+    ) public initializer {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
         __ScheduledUpgradeable_init(_contractUpgradeBlsValidator, _minimumContractUpgradeDelay);

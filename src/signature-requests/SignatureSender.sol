@@ -86,10 +86,12 @@ contract SignatureSender is ISignatureSender, Multicall, ScheduledUpgradeable, A
     }
 
     /// @notice Initializes the contract with the given parameters.
-    function initialize(address owner, address _signatureSchemeAddressProvider, address _contractUpgradeBlsValidator, uint256 _minimumContractUpgradeDelay)
-        public
-        initializer
-    {
+    function initialize(
+        address owner,
+        address _signatureSchemeAddressProvider,
+        address _contractUpgradeBlsValidator,
+        uint256 _minimumContractUpgradeDelay
+    ) public initializer {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
         __ScheduledUpgradeable_init(_contractUpgradeBlsValidator, _minimumContractUpgradeDelay);
