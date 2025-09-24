@@ -3,9 +3,10 @@ pragma solidity ^0.8;
 
 import {AccessControlEnumerableUpgradeable} from
     "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+
+import {ScheduledUpgradeable} from "../scheduled-contract-upgrades/ScheduledUpgradeable.sol";
+
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
@@ -24,13 +25,7 @@ import {ISignatureSchemeAddressProvider} from "../interfaces/ISignatureSchemeAdd
 /// @author Randamu
 /// @notice Smart Contract for Conditional Threshold Signing of messages sent within signature requests.
 /// @dev Signatures are sent in callbacks to contract addresses implementing the SignatureReceiverBase abstract contract which implements the ISignatureReceiver interface.
-contract SignatureSender is
-    ISignatureSender,
-    Multicall,
-    Initializable,
-    UUPSUpgradeable,
-    AccessControlEnumerableUpgradeable
-{
+contract SignatureSender is ISignatureSender, Multicall, ScheduledUpgradeable, AccessControlEnumerableUpgradeable {
     using BytesLib for bytes;
     using EnumerableSet for EnumerableSet.UintSet;
 
@@ -91,26 +86,32 @@ contract SignatureSender is
     }
 
     /// @notice Initializes the contract with the given parameters.
-    function initialize(address owner, address _signatureSchemeAddressProvider) public initializer {
+    function initialize(address owner, address _signatureSchemeAddressProvider, address _contractUpgradeBlsValidator)
+        public
+        initializer
+    {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
+        __ScheduledUpgradeable_init(_contractUpgradeBlsValidator, 2 days);
 
         require(_grantRole(ADMIN_ROLE, owner), "Grant role failed");
         require(_grantRole(DEFAULT_ADMIN_ROLE, owner), "Grant role reverts");
         signatureSchemeAddressProvider = ISignatureSchemeAddressProvider(_signatureSchemeAddressProvider);
     }
 
-    // OVERRIDDEN UPGRADE FUNCTIONS
-    function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
+    /// @dev Overridden upgrade functions
 
+    /// @dev Overridden msg.sender function to return the correct sender address.
     function _msgSender() internal view override (Context, ContextUpgradeable) returns (address) {
         return msg.sender;
     }
 
+    /// @dev Overridden msg.data function to return the correct data.
     function _msgData() internal pure override (Context, ContextUpgradeable) returns (bytes calldata) {
         return msg.data;
     }
 
+    /// @dev Overridden context suffix length function.
     function _contextSuffixLength() internal pure override (Context, ContextUpgradeable) returns (uint256) {
         return 0;
     }

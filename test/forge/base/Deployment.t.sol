@@ -91,8 +91,8 @@ abstract contract Deployment is Base {
         randomnessSender = RandomnessSender(address(randomnessSenderProxy));
 
         // initialize the contracts
-        signatureSender.initialize(admin, address(signatureSchemeAddressProvider));
-        randomnessSender.initialize(address(signatureSender), admin);
+        signatureSender.initialize(admin, address(signatureSchemeAddressProvider), address(bn254SignatureScheme));
+        randomnessSender.initialize(address(signatureSender), admin, address(bn254SignatureScheme));
 
         // set blocklockSender contract config
         uint32 maxGasLimit = 500_000;

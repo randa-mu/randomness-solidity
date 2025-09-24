@@ -3,8 +3,8 @@ pragma solidity ^0.8;
 
 import {AccessControlEnumerableUpgradeable} from
     "@openzeppelin/contracts-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+
+import {ScheduledUpgradeable} from "../scheduled-contract-upgrades/ScheduledUpgradeable.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
 import {CallWithExactGas} from "../libraries/CallWithExactGas.sol";
@@ -24,8 +24,7 @@ contract RandomnessSender is
     IRandomnessSender,
     SignatureReceiverBase,
     FeeCollector,
-    Initializable,
-    UUPSUpgradeable,
+    ScheduledUpgradeable,
     AccessControlEnumerableUpgradeable
 {
     using CallWithExactGas for bytes;
@@ -66,9 +65,13 @@ contract RandomnessSender is
     }
 
     /// @notice Initializes the contract with a signature sender and owner.
-    function initialize(address _signatureSender, address owner) public initializer {
+    function initialize(address _signatureSender, address owner, address _contractUpgradeBlsValidator)
+        public
+        initializer
+    {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
+        __ScheduledUpgradeable_init(_contractUpgradeBlsValidator, 2 days);
 
         require(_grantRole(ADMIN_ROLE, owner), "Grant role failed");
         require(_grantRole(DEFAULT_ADMIN_ROLE, owner), "Grant role failed");
@@ -76,9 +79,6 @@ contract RandomnessSender is
         require(_signatureSender != address(0), "Cannot set zero address as signature sender");
         signatureSender = ISignatureSender(_signatureSender);
     }
-
-    /// @notice Authorizes contract upgrades.
-    function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {}
 
     /// @notice Requests randomness with a callback gas limit but without a subscription id and returns a request ID.
     /// @dev Used for direct funding requests where subscription id == 0.
