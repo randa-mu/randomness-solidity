@@ -90,7 +90,6 @@ contract SignatureSender is
     constructor() {
         _disableInitializers();
     }
-
     function initialize(address owner, address _signatureSchemeAddressProvider) public initializer {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
