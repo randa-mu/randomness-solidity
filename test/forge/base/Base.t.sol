@@ -7,15 +7,18 @@ abstract contract Base is Test {
     address internal admin;
     address internal alice;
     address internal bob;
+    address internal charlie;
 
     function setUp() public virtual {
         admin = makeAddr("admin");
         alice = makeAddr("alice");
         bob = makeAddr("bob");
+        charlie = makeAddr("charlie");
 
         vm.deal(admin, 10 ether);
         vm.deal(alice, 10 ether);
         vm.deal(bob, 10 ether);
+        vm.deal(charlie, 10 ether);
     }
 
     function signers() internal view returns (address[] memory) {
@@ -23,6 +26,7 @@ abstract contract Base is Test {
         _signers[0] = admin;
         _signers[1] = alice;
         _signers[2] = bob;
+        _signers[3] = charlie;
         _signers = sortAccounts(_signers);
         return _signers;
     }

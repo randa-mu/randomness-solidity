@@ -6,7 +6,7 @@ import {AccessControlEnumerableUpgradeable} from
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
-import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
@@ -30,7 +30,7 @@ contract SignatureSender is
     Initializable,
     UUPSUpgradeable,
     AccessControlEnumerableUpgradeable,
-    ReentrancyGuardUpgradeable
+    ReentrancyGuard
 {
     using BytesLib for bytes;
     using EnumerableSet for EnumerableSet.UintSet;
@@ -93,7 +93,6 @@ contract SignatureSender is
     function initialize(address owner, address _signatureSchemeAddressProvider) public initializer {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
-        __ReentrancyGuard_init();
 
         require(_grantRole(ADMIN_ROLE, owner), "Grant role failed");
         require(_grantRole(DEFAULT_ADMIN_ROLE, owner), "Grant role reverts");
@@ -165,12 +164,13 @@ contract SignatureSender is
 
         require(sigScheme.verifySignature(request.messageHash, signature), "Signature verification failed");
 
+        // Apply CEI pattern: Update state before external interaction
+        requests[requestID].isFulfilled = true;
+        unfulfilledRequestIds.remove(requestID);
+
         (bool success,) = request.callback.call(
             abi.encodeWithSelector(ISignatureReceiver.receiveSignature.selector, requestID, signature)
         );
-
-        requests[requestID].isFulfilled = true;
-        unfulfilledRequestIds.remove(requestID);
 
         if (!success) {
             erroredRequestIds.add(requestID);
