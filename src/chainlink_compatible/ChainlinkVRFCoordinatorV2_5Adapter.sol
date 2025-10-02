@@ -254,7 +254,6 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
 
     /// @notice Request subscription owner transfer.
     /// @notice For inheriting contracts: ensure proper access control is implemented for this function to restrict usage to authorized accounts only.
-    /// @dev will revert if msg.sender is not the current owner.
     /// @param subId - ID of the subscription
     /// @param newOwner - proposed new owner of the subscription
     function requestSubscriptionOwnerTransfer(uint256 subId, address newOwner) external override {
