@@ -136,7 +136,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
     /// @notice Tests successful subscription ownership transfer flow
     function test_subscriptionOwnershipTransfer_successful() public {
         // Deploy wrapper adapter
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         // Create subscription as alice
         vm.prank(alice);
@@ -144,7 +145,7 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
         // Verify initial state
         assertTrue(wrapper.getPendingSubscriptionOwner(subId) == address(0), "No pending owner initially");
-        
+
         // Request ownership transfer to bob
         vm.prank(alice);
         vm.expectEmit(true, false, false, true);
@@ -175,7 +176,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
     /// @notice Tests that non-owner cannot request ownership transfer
     function test_subscriptionOwnershipTransfer_onlyOwnerCanRequest() public {
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         vm.prank(alice);
         uint256 subId = wrapper.createSubscription();
@@ -188,7 +190,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
     /// @notice Tests that only pending owner can accept transfer
     function test_subscriptionOwnershipTransfer_onlyPendingOwnerCanAccept() public {
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         vm.prank(alice);
         uint256 subId = wrapper.createSubscription();
@@ -210,7 +213,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
     /// @notice Tests that accepting transfer without pending transfer fails
     function test_subscriptionOwnershipTransfer_noPendingTransfer() public {
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         vm.prank(alice);
         uint256 subId = wrapper.createSubscription();
@@ -223,7 +227,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
     /// @notice Tests that requesting transfer to zero address fails
     function test_subscriptionOwnershipTransfer_zeroAddressRevert() public {
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         vm.prank(alice);
         uint256 subId = wrapper.createSubscription();
@@ -236,7 +241,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
     /// @notice Tests that requesting transfer to same owner fails
     function test_subscriptionOwnershipTransfer_sameOwnerRevert() public {
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         vm.prank(alice);
         uint256 subId = wrapper.createSubscription();
@@ -249,7 +255,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
     /// @notice Tests that pending transfer is cleared when subscription is cancelled
     function test_subscriptionOwnershipTransfer_clearedOnCancellation() public {
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         vm.prank(alice);
         uint256 subId = wrapper.createSubscription();
@@ -280,7 +287,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
     /// @notice Tests that adapter remains owner in underlying SubscriptionAPI after transfer
     function test_subscriptionOwnershipTransfer_adapterRemainsUnderlyingOwner() public {
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         vm.prank(alice);
         uint256 subId = wrapper.createSubscription();
@@ -307,7 +315,8 @@ contract ChainlinkVRFV2_5Integration_SubscriptionTest is Deployment {
 
     /// @notice Tests that multiple ownership transfers can be requested (overwriting pending)
     function test_subscriptionOwnershipTransfer_overwritePending() public {
-        ChainlinkVRFCoordinatorV2_5Adapter wrapper = new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
+        ChainlinkVRFCoordinatorV2_5Adapter wrapper =
+            new ChainlinkVRFCoordinatorV2_5Adapter(admin, address(randomnessSender));
 
         vm.prank(alice);
         uint256 subId = wrapper.createSubscription();
