@@ -256,7 +256,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// @notice For inheriting contracts: ensure proper access control is implemented for this function to restrict usage to authorized accounts only.
     /// @param subId - ID of the subscription
     /// @param newOwner - proposed new owner of the subscription
-    function requestSubscriptionOwnerTransfer(uint256 subId, address newOwner) external override {
+    function requestSubscriptionOwnerTransfer(uint256 subId, address newOwner) external onlySubscriptionOwner(subId) override {
         randomnessSender.requestSubscriptionOwnerTransfer(subId, newOwner);
     }
 
