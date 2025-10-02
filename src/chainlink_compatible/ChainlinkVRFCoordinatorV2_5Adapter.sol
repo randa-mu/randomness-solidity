@@ -36,6 +36,8 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
 
     event WrapperFulfillmentFailed(uint256 indexed requestId, address indexed consumer);
     event WrapperGasOverheadUpdated(uint32 newWrapperGasOverhead);
+    event SubscriptionOwnerTransferRequested(uint256 indexed subId, address from, address to);
+    event SubscriptionOwnerTransferred(uint256 indexed subId, address from, address to);
 
     /// @notice The contract responsible for providing randomness.
     /// @dev This is an immutable reference set at deployment.
@@ -50,6 +52,7 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     uint256 public lastRequestId;
 
     mapping(uint256 => address) private subscriptionOwners;
+    mapping(uint256 => address) private pendingSubscriptionOwners;
     mapping(uint256 => Callback) /* requestID */ /* callback */ public s_callbacks;
 
     /// @notice Ensures that only the designated randomness sender can call the function.
@@ -254,14 +257,26 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
 
         // Clear the subscription owner mapping since subscription is cancelled
         delete subscriptionOwners[subId];
+        delete pendingSubscriptionOwners[subId];
     }
 
     /// @notice Accept subscription owner transfer.
     /// @param subId - ID of the subscription
-    /// @dev will revert if original owner of subId has
-    /// not requested that msg.sender become the new owner.
-    function acceptSubscriptionOwnerTransfer(uint256 subId) external override onlySubscriptionOwner(subId) {
-        randomnessSender.acceptSubscriptionOwnerTransfer(subId);
+    /// @dev will accept ownership transfer if msg.sender is the pending owner.
+    function acceptSubscriptionOwnerTransfer(uint256 subId) external override {
+        address pendingOwner = pendingSubscriptionOwners[subId];
+        require(pendingOwner != address(0), "No pending ownership transfer");
+        require(msg.sender == pendingOwner, "Caller is not the pending owner");
+
+        address previousOwner = subscriptionOwners[subId];
+
+        // Update the subscription owner mapping to the new owner
+        subscriptionOwners[subId] = pendingOwner;
+
+        // Clear the pending transfer
+        delete pendingSubscriptionOwners[subId];
+
+        emit SubscriptionOwnerTransferred(subId, previousOwner, pendingOwner);
     }
 
     /// @notice Request subscription owner transfer.
@@ -273,7 +288,13 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
         override
         onlySubscriptionOwner(subId)
     {
-        randomnessSender.requestSubscriptionOwnerTransfer(subId, newOwner);
+        require(newOwner != address(0), "New owner cannot be zero address");
+        require(newOwner != subscriptionOwners[subId], "New owner is the same as current owner");
+
+        // Only update the pending owner in the adapter, don't call the underlying contract
+        pendingSubscriptionOwners[subId] = newOwner;
+
+        emit SubscriptionOwnerTransferRequested(subId, subscriptionOwners[subId], newOwner);
     }
 
     /// @notice Create a VRF subscription.
@@ -332,6 +353,19 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// @notice This method expects msg.value to be greater than or equal to 0.
     function fundSubscriptionWithNative(uint256 subId) external payable override {
         randomnessSender.fundSubscriptionWithNative{value: msg.value}(subId);
+    }
+
+    /// @notice Get the pending owner for a subscription
+    /// @param subId - ID of the subscription
+    /// @return The address of the pending owner, or zero address if no transfer pending
+    function getPendingSubscriptionOwner(uint256 subId) external view returns (address) {
+        return pendingSubscriptionOwners[subId];
+    }
+
+    /// @notice Allows contract to receive native tokens when subscription is cancelled
+    receive() external payable {
+        // This function allows the contract to receive ETH when cancelSubscription
+        // sends the subscription balance to the adapter contract
     }
 
     /// @notice Internal function to transfer native tokens with proper validation
