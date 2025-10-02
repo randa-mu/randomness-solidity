@@ -6,6 +6,7 @@ import {AccessControlEnumerableUpgradeable} from
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
@@ -23,13 +24,13 @@ import {ISignatureSchemeAddressProvider} from "../interfaces/ISignatureSchemeAdd
 /// @title SignatureSender contract
 /// @author Randamu
 /// @notice Smart Contract for Conditional Threshold Signing of messages sent within signature requests.
-/// @dev Signatures are sent in callbacks to contract addresses implementing the SignatureReceiverBase abstract contract which implements the ISignatureReceiver interface.
 contract SignatureSender is
     ISignatureSender,
     Multicall,
     Initializable,
     UUPSUpgradeable,
-    AccessControlEnumerableUpgradeable
+    AccessControlEnumerableUpgradeable,
+    ReentrancyGuardUpgradeable
 {
     using BytesLib for bytes;
     using EnumerableSet for EnumerableSet.UintSet;
@@ -90,10 +91,10 @@ contract SignatureSender is
         _disableInitializers();
     }
 
-    /// @notice Initializes the contract with the given parameters.
     function initialize(address owner, address _signatureSchemeAddressProvider) public initializer {
         __UUPSUpgradeable_init();
         __AccessControlEnumerable_init();
+        __ReentrancyGuard_init();
 
         require(_grantRole(ADMIN_ROLE, owner), "Grant role failed");
         require(_grantRole(DEFAULT_ADMIN_ROLE, owner), "Grant role reverts");
@@ -155,7 +156,7 @@ contract SignatureSender is
 
     /// @notice Fulfils a unique signature request.
     /// @dev See {ISignatureSender-fulfillSignatureRequest}.
-    function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external {
+    function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external nonReentrant {
         require(isInFlight(requestID), "No request with specified requestID");
         TypesLib.SignatureRequest memory request = requests[requestID];
 
