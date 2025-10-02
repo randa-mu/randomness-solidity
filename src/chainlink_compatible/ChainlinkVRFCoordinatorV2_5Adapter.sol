@@ -243,15 +243,15 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     function cancelSubscription(uint256 subId, address to) external override onlySubscriptionOwner(subId) {
         // Get the subscription balance before cancellation
         (uint96 nativeBalance,,,) = randomnessSender.getSubscription(subId);
-        
+
         // Cancel the subscription - funds will come to this contract since it's the actual owner
         randomnessSender.cancelSubscription(subId, address(this));
-        
+
         // Forward the funds to the intended recipient
         if (nativeBalance > 0) {
             _transferNative(to, nativeBalance);
         }
-        
+
         // Clear the subscription owner mapping since subscription is cancelled
         delete subscriptionOwners[subId];
     }
@@ -268,7 +268,11 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     /// @notice The onlySubscriptionOwner modifier is used to ensure proper access control is implemented for this function to restrict usage to authorized accounts only.
     /// @param subId - ID of the subscription
     /// @param newOwner - proposed new owner of the subscription
-    function requestSubscriptionOwnerTransfer(uint256 subId, address newOwner) external onlySubscriptionOwner(subId) override {
+    function requestSubscriptionOwnerTransfer(uint256 subId, address newOwner)
+        external
+        override
+        onlySubscriptionOwner(subId)
+    {
         randomnessSender.requestSubscriptionOwnerTransfer(subId, newOwner);
     }
 
@@ -336,8 +340,8 @@ contract ChainlinkVRFCoordinatorV2_5Adapter is
     function _transferNative(address to, uint256 amount) internal {
         require(to != address(0), "Invalid transfer address");
         require(amount > 0, "Amount must be greater than 0");
-        
-        (bool success, ) = to.call{value: amount}("");
+
+        (bool success,) = to.call{value: amount}("");
         require(success, "Transfer failed");
     }
 }
