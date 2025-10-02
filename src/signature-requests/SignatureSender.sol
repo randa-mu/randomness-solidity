@@ -6,7 +6,6 @@ import {AccessControlEnumerableUpgradeable} from
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import {TypesLib} from "../libraries/TypesLib.sol";
@@ -29,8 +28,7 @@ contract SignatureSender is
     Multicall,
     Initializable,
     UUPSUpgradeable,
-    AccessControlEnumerableUpgradeable,
-    ReentrancyGuard
+    AccessControlEnumerableUpgradeable
 {
     using BytesLib for bytes;
     using EnumerableSet for EnumerableSet.UintSet;
@@ -155,7 +153,7 @@ contract SignatureSender is
 
     /// @notice Fulfils a unique signature request.
     /// @dev See {ISignatureSender-fulfillSignatureRequest}.
-    function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external nonReentrant {
+    function fulfillSignatureRequest(uint256 requestID, bytes calldata signature) external {
         require(isInFlight(requestID), "No request with specified requestID");
         TypesLib.SignatureRequest memory request = requests[requestID];
 
