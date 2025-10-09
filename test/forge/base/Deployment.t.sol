@@ -114,6 +114,9 @@ abstract contract Deployment is Base {
             gasForExactCallCheck
         );
 
+        // give randomness sender SIGNATURE_REQUESTER_ROLE on signature sender
+        signatureSender.addToWhitelist(address(randomnessSender));
+
         vm.stopPrank();
     }
 
