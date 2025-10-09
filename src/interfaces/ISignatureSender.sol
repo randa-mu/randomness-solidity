@@ -66,4 +66,17 @@ interface ISignatureSender {
 
     /// @notice Returns the version number of the upgradeable contract.
     function version() external pure returns (string memory);
+
+    /// @notice Adds an address to the signature requester whitelist.
+    /// @param account The address to whitelist.
+    function addToWhitelist(address account) external;
+
+    /// @notice Removes an address from the signature requester whitelist.
+    /// @param account The address to remove from whitelist.
+    function removeFromWhitelist(address account) external;
+
+    /// @notice Checks if an address is whitelisted to request signatures.
+    /// @param account The address to check.
+    /// @return True if the address is whitelisted, false otherwise.
+    function isWhitelisted(address account) external view returns (bool);
 }

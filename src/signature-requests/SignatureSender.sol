@@ -78,6 +78,16 @@ contract SignatureSender is
     /// @notice Emitted when a signature callback fails.
     event SignatureCallbackFailed(uint256 indexed requestID);
 
+    // Add this after the existing ADMIN_ROLE constant
+    bytes32 public constant SIGNATURE_REQUESTER_ROLE = keccak256("SIGNATURE_REQUESTER_ROLE");
+
+    // Add this modifier after the onlyAdmin modifier
+    /// @notice Ensures that only whitelisted addresses can request signatures.
+    modifier onlyWhitelistedRequester() {
+        _checkRole(SIGNATURE_REQUESTER_ROLE);
+        _;
+    }
+
     /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
     modifier onlyAdmin() {
         _checkRole(ADMIN_ROLE);
@@ -117,6 +127,7 @@ contract SignatureSender is
     /// @dev See {ISignatureSender-requestSignature}.
     function requestSignature(string calldata schemeID, bytes calldata message, bytes calldata condition)
         external
+        onlyWhitelistedRequester
         returns (uint256)
     {
         lastRequestID += 1;
@@ -229,5 +240,24 @@ contract SignatureSender is
     /// @notice Returns the version number of the upgradeable contract.
     function version() external pure returns (string memory) {
         return "0.0.1";
+    }
+
+    /// @notice Adds an address to the signature requester whitelist.
+    /// @param account The address to whitelist.
+    function addToWhitelist(address account) external onlyAdmin {
+        grantRole(SIGNATURE_REQUESTER_ROLE, account);
+    }
+
+    /// @notice Removes an address from the signature requester whitelist.
+    /// @param account The address to remove from whitelist.
+    function removeFromWhitelist(address account) external onlyAdmin {
+        revokeRole(SIGNATURE_REQUESTER_ROLE, account);
+    }
+
+    /// @notice Checks if an address is whitelisted to request signatures.
+    /// @param account The address to check.
+    /// @return True if the address is whitelisted, false otherwise.
+    function isWhitelisted(address account) external view returns (bool) {
+        return hasRole(SIGNATURE_REQUESTER_ROLE, account);
     }
 }
