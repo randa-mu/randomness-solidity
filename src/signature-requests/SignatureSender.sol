@@ -78,19 +78,17 @@ contract SignatureSender is
     /// @notice Emitted when a signature callback fails.
     event SignatureCallbackFailed(uint256 indexed requestID);
 
-    // Add this after the existing ADMIN_ROLE constant
     bytes32 public constant SIGNATURE_REQUESTER_ROLE = keccak256("SIGNATURE_REQUESTER_ROLE");
-
-    // Add this modifier after the onlyAdmin modifier
-    /// @notice Ensures that only whitelisted addresses can request signatures.
-    modifier onlyWhitelistedRequester() {
-        _checkRole(SIGNATURE_REQUESTER_ROLE);
-        _;
-    }
 
     /// @notice Ensures that only an account with the ADMIN_ROLE can execute a function.
     modifier onlyAdmin() {
         _checkRole(ADMIN_ROLE);
+        _;
+    }
+
+    /// @notice Ensures that only whitelisted addresses can request signatures.
+    modifier onlyWhitelistedRequester() {
+        _checkRole(SIGNATURE_REQUESTER_ROLE);
         _;
     }
 
